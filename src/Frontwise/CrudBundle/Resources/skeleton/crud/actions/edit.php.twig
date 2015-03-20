@@ -1,0 +1,62 @@
+    /**
+{% block phpdoc_method_header %}
+     * Displays a form to edit an existing {{ entity }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+{% if 'annotation' == format %}
+     * @Route("/{id}/edit", name="{{ route_name_prefix }}_edit")
+     * @Method("GET")
+     * @Template()
+{% endif %}
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function editAction(Request $request, $id)
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        $em = $this->getDoctrine()->getManager();
+
+        ${{varName}} = $em->getRepository('{{ bundle }}:{{ entity }}')->find($id);
+        $this->checkExists(${{varName}});
+
+        $form = $this->createForm(new {{ entity_class }}Type(), ${{varName}}, array(
+            'action' => $this->generateUrl('{{ route_name_prefix }}_update', array('id' => ${{varName}}->getId())),
+            'method' => 'PUT',
+        ));
+        $form->add('submit', 'submit', array('label' => 'Update'));
+{% if 'delete' in actions %}
+
+        $deleteForm = $this->createDeleteForm($id);
+{% endif %}
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('{{ route_name_prefix }}_edit', array('id' => $id)));
+        }
+{% endblock method_body %}
+
+{% block method_return %}
+{% if 'annotation' == format %}
+        return array(
+            '{{varName}}' => ${{varName}},
+            'form' => $form->createView(),
+{% if 'delete' in actions %}
+            'delete_form' => $deleteForm->createView(),
+{% endif %}
+        );
+{% else %}
+        return $this->render('{{ bundle }}:{{ entity|replace({'\\': '/'}) }}:edit.html.twig', array(
+            '{{varName}}' => ${{varName}},
+            'form' => $form->createView(),
+{% if 'delete' in actions %}
+            'delete_form' => $deleteForm->createView(),
+{% endif %}
+        ));
+{% endif %}
+{% endblock method_return %}
+    }
+

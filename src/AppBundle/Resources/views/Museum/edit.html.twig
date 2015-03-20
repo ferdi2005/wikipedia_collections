@@ -1,0 +1,16 @@
+{% extends '::baseAdmin.html.twig' %}
+
+{% block content -%}
+    <h1>Museum edit</h1>
+
+    {{ form(form) }}
+
+        <ul class="record_actions">
+    <li>
+        <a class="btn btn-default" href="{{ path('museum') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}

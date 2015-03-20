@@ -1,0 +1,43 @@
+
+{% extends '::baseAdmin.html.twig' %}
+
+{% block content -%}
+    <h1>Museum list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>{% include 'FrontwiseCrudBundle:index:_order.html.twig' with {field: 'id', route: 'museum'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:_order.html.twig' with {field: 'name', route: 'museum'} %}</th>
+                <th class="entity_actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for museum in museums %}
+            <tr>
+                <td><a href="{{ path('museum_show', { 'id': museum.id }) }}">{{ museum.id }}</a></td>
+                <td>{{ museum.name }}</td>
+                <td class="entity_actions">
+                    <ul class="entity_actions">
+                        <li>
+                            <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}">Show</a>
+                        </li>
+                        <li>
+                            <a class="btn btn-default" href="{{ path('museum_edit', { 'id': museum.id }) }}">Edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-primary" href="{{ path('museum_new') }}">
+                Create new
+            </a>
+        </li>
+    </ul>
+    
+{% endblock %}

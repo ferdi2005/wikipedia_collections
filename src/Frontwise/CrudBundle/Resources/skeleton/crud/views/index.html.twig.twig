@@ -1,0 +1,67 @@
+{% set varName = (entity|slice(0,1)|lower) ~ (entity|slice(1)) %}
+
+{% block extends %}
+{{ "{% extends '::baseAdmin.html.twig' %}" }}
+{% endblock extends %}
+
+{% block body %}
+{{ "{% block content -%}" }}
+    <h1>{{ entity }} list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+            {%- for field, metadata in fields %}
+
+                <th>{{ field|capitalize }}</th>
+
+            {%- endfor %}
+
+                <th class="entity_actions">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{ '{% for ' ~ varName ~ ' in ' ~ varName ~ 's %}' }}
+            <tr>
+
+        {%- for field, metadata in fields %}
+            {%- if loop.first and ('show' in actions) %}
+
+                <td><a href="{{ "{{ path('" ~ route_name_prefix ~ "_show', { 'id': " ~ varName ~ "."~ identifier ~" }) }}" }}">{{ '{{ ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</a></td>
+
+            {%- elseif metadata.type in ['date', 'datetime'] %}
+
+                <td>{{ '{% if ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}{% endif %}' }}</td>
+
+            {%- else %}
+
+                <td>{{ '{{ ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
+
+            {%- endif %}
+
+            {%- if loop.last %}
+
+                <td class="entity_actions">
+                    {%- include "crud/views/others/actions.html.twig.twig" %}
+                </td>
+
+            {%- endif %}
+        {%- endfor %}
+
+            </tr>
+        {{ '{% endfor %}' }}
+        </tbody>
+    </table>
+
+    {% if 'new' in actions %}
+<ul class="record_actions">
+        <li>
+            <a class="btn btn-primary" href="{{ "{{ path('" ~ route_name_prefix ~ "_new') }}" }}">
+                Create new
+            </a>
+        </li>
+    </ul>
+    {% endif %}
+
+{{ "{% endblock %}" }}
+{% endblock body %}

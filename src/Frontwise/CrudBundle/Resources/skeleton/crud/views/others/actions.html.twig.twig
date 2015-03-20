@@ -1,0 +1,13 @@
+{% set varName = (entity|slice(0,1)|lower) ~ (entity|slice(1)) %}
+
+                    <ul class="entity_actions">
+
+                    {%- for action in record_actions %}
+
+                        <li>
+                            <a class="btn btn-default" href="{{ "{{ path('" ~ route_name_prefix ~ "_" ~ action ~ "', { 'id': " ~ varName ~ "."~ identifier ~" }) }}" }}">{{ action|capitalize }}</a>
+                        </li>
+
+                    {%- endfor %}
+
+                    </ul>

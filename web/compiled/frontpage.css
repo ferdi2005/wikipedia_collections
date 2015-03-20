@@ -1,0 +1,52 @@
+.records_list {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #dddddd;
+}
+.records_list > thead > tr > th,
+.records_list > tbody > tr > th,
+.records_list > tfoot > tr > th,
+.records_list > thead > tr > td,
+.records_list > tbody > tr > td,
+.records_list > tfoot > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+.records_list > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dddddd;
+}
+.records_list > caption + thead > tr:first-child > th,
+.records_list > colgroup + thead > tr:first-child > th,
+.records_list > thead:first-child > tr:first-child > th,
+.records_list > caption + thead > tr:first-child > td,
+.records_list > colgroup + thead > tr:first-child > td,
+.records_list > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+.records_list > tbody + tbody {
+  border-top: 2px solid #dddddd;
+}
+.records_list .table {
+  background-color: #ffffff;
+}
+.records_list > thead > tr > th,
+.records_list > tbody > tr > th,
+.records_list > tfoot > tr > th,
+.records_list > thead > tr > td,
+.records_list > tbody > tr > td,
+.records_list > tfoot > tr > td {
+  border: 1px solid #dddddd;
+}
+.records_list > thead > tr > th,
+.records_list > thead > tr > td {
+  border-bottom-width: 2px;
+}
+.records_list > tbody > tr:hover {
+  background-color: #f5f5f5;
+}
+
+/*# sourceMappingURL=frontpage.css.map */
