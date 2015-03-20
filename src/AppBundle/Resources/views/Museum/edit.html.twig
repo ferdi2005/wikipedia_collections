@@ -5,12 +5,14 @@
 
     {{ form(form) }}
 
-        <ul class="record_actions">
-    <li>
-        <a class="btn btn-default" href="{{ path('museum') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-default" href="{{ path('museum') }}">
+                Back to list
+            </a>
+        </li>
+        {% if delete_form is defined %}
+            <li class="delete_action">{{ form(delete_form) }}</li>
+        {% endif %}
+    </ul>
 {% endblock %}

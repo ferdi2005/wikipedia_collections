@@ -1,4 +1,4 @@
-{% set varName = (entity|slice(0,1)|lower) ~ (entity|slice(1)) %}
+{% set varName = entity|first|lower ~ entity|slice(1) %}
 
 {% block extends %}
 {{ "{% extends '::baseAdmin.html.twig' %}" }}
@@ -13,11 +13,11 @@
             <tr>
             {%- for field, metadata in fields %}
 
-                <th>{{ field|capitalize }}</th>
+                <th>{{ "{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: '" ~ field ~ "', route: '" ~ route_name_prefix ~ "'} %}" }}</th>
 
             {%- endfor %}
 
-                <th class="entity_actions">Actions</th>
+                <th class="actions">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -41,7 +41,7 @@
 
             {%- if loop.last %}
 
-                <td class="entity_actions">
+                <td class="actions">
                     {%- include "crud/views/others/actions.html.twig.twig" %}
                 </td>
 
@@ -52,6 +52,8 @@
         {{ '{% endfor %}' }}
         </tbody>
     </table>
+    
+    {{ "{% include 'FrontwiseCrudBundle:index:pagination.html.twig' with {route: '" ~ route_name_prefix ~ "'} %}" }}
 
     {% if 'new' in actions %}
 <ul class="record_actions">

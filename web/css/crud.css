@@ -1,20 +1,14 @@
-ul.entity_actions,
+.records_list ul.actions,
 ul.record_actions {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-ul.entity_actions > li,
-ul.record_actions > li {
+.records_list ul.actions > li {
     display: inline-block;
 }
-
-.record_actions form,
-.record_actions div {
-    display: inline;
-    float: none;
-    margin: 0;
-    padding: 0;
+ul.record_actions > li {
+    margin: 15px 0;
 }
 
 /* Table borders */
@@ -69,6 +63,57 @@ ul.record_actions > li {
     background-color: #f5f5f5;
 }
 
+.record_properties {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid #dddddd;
+}
+.record_properties > thead > tr > th,
+.record_properties > tbody > tr > th,
+.record_properties > tfoot > tr > th,
+.record_properties > thead > tr > td,
+.record_properties > tbody > tr > td,
+.record_properties > tfoot > tr > td {
+    padding: 8px;
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+}
+.record_properties > thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dddddd;
+}
+.record_properties > caption + thead > tr:first-child > th,
+.record_properties > colgroup + thead > tr:first-child > th,
+.record_properties > thead:first-child > tr:first-child > th,
+.record_properties > caption + thead > tr:first-child > td,
+.record_properties > colgroup + thead > tr:first-child > td,
+.record_properties > thead:first-child > tr:first-child > td {
+    border-top: 0;
+}
+.record_properties > tbody + tbody {
+    border-top: 2px solid #dddddd;
+}
+.record_properties .table {
+    background-color: #ffffff;
+}
+.record_properties > thead > tr > th,
+.record_properties > tbody > tr > th,
+.record_properties > tfoot > tr > th,
+.record_properties > thead > tr > td,
+.record_properties > tbody > tr > td,
+.record_properties > tfoot > tr > td {
+    border: 1px solid #dddddd;
+}
+.record_properties > thead > tr > th,
+.record_properties > thead > tr > td {
+    border-bottom-width: 2px;
+}
+.record_properties > tbody > tr:hover {
+    background-color: #f5f5f5;
+}
+
 /* Ordering */
 .records_list a.order {
     color: inherit;
@@ -85,11 +130,18 @@ ul.record_actions > li {
 }
 
 .records_list .order.active:after,
-.records_list .order.active.descending:hover:after {
+.records_list .order.active.ascending:hover:after,
+.records_list .order:hover:after {
+    border-width: 5px 5px 0 5px;
     border-color: #424242 transparent transparent transparent;
 }
-.records_list .order.active.descending:after,
+.records_list .order.active.ascending:after,
 .records_list .order.active:hover:after {
     border-width: 0 5px 5px 5px;
     border-color: transparent transparent #424242 transparent;
+}
+
+.pagination {
+    float: right;
+    margin: 0;
 }

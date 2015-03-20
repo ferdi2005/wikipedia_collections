@@ -1,15 +1,3 @@
-{% extends '::base.html.twig' %}
+{% extends 'AppBundle:Museum:edit.html.twig' %}
 
-{% block body -%}
-    <h1>Museum creation</h1>
-
-    {{ form(form) }}
-
-        <ul class="record_actions">
-    <li>
-        <a class="btn btn-default" href="{{ path('museum') }}">
-            Back to the list
-        </a>
-    </li>
-</ul>
-{% endblock %}
+{% block pageTitle %}Museum creation{% endblock %}

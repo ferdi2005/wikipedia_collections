@@ -1,9 +1,10 @@
+{% set varName = entity|first|lower ~ entity|slice(1) %}
 {% block extends %}
-{{ "{% extends '::base.html.twig' %}" }}
+{{ "{% extends '::baseAdmin.html.twig' %}" }}
 {% endblock extends %}
 
 {% block body %}
-{{ "{% block body -%}" }}
+{{ "{% block content -%}" }}
     <h1>{{ entity }}</h1>
 
     <table class="record_properties">
@@ -15,11 +16,11 @@
 
             {%- if metadata.type in ['date', 'datetime'] %}
 
-                <td>{{ '{{ entity.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}' }}</td>
+                <td>{{ '{{ ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}' }}</td>
 
             {%- else %}
 
-                <td>{{ '{{ entity.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
+                <td>{{ '{{ ' ~ varName ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
 
             {%- endif %}
 

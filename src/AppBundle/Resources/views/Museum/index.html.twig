@@ -7,9 +7,9 @@
     <table class="records_list">
         <thead>
             <tr>
-                <th>{% include 'FrontwiseCrudBundle:index:_order.html.twig' with {field: 'id', route: 'museum'} %}</th>
-                <th>{% include 'FrontwiseCrudBundle:index:_order.html.twig' with {field: 'name', route: 'museum'} %}</th>
-                <th class="entity_actions">Actions</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'id', route: 'museum'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'name', route: 'museum'} %}</th>
+                <th class="actions">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -17,8 +17,8 @@
             <tr>
                 <td><a href="{{ path('museum_show', { 'id': museum.id }) }}">{{ museum.id }}</a></td>
                 <td>{{ museum.name }}</td>
-                <td class="entity_actions">
-                    <ul class="entity_actions">
+                <td class="actions">
+                    <ul class="actions">
                         <li>
                             <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}">Show</a>
                         </li>
@@ -31,6 +31,8 @@
         {% endfor %}
         </tbody>
     </table>
+    
+    {% include 'FrontwiseCrudBundle:index:pagination.html.twig' with {route: 'museum'} %}
 
     <ul class="record_actions">
         <li>

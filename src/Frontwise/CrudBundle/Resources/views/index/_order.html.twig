@@ -1,5 +1,0 @@
-{% set active = orderBy|default == field %}
-<a href="{{ path(route, {orderBy: field, descending: not descending}|merge(routeParams|default({}))) }}"
-    class="order {{ active ? 'active' }} {{ active and descending ? 'descending' }}">
-    {{ label|default ?: field|capitalize }}
-</a>

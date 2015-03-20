@@ -1,17 +1,19 @@
-<ul class="record_actions">
-    <li>
-        <a class="btn btn-default" href="{{ "{{ path('" ~ route_name_prefix ~ "') }}" }}">
-            Back to the list
-        </a>
-    </li>
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-default" href="{{ "{{ path('" ~ route_name_prefix ~ "') }}" }}">
+                Back to list
+            </a>
+        </li>
 {% if ('edit' in actions) and (not hide_edit) %}
-    <li>
-        <a href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { 'id': entity."~ identifier ~" }) }}" }}">
-            Edit
-        </a>
-    </li>
+        <li class="index_action">
+            <a class="btn btn-primary" href="{{ "{{ path('" ~ route_name_prefix ~ "_edit', { 'id': " ~ varName ~ "."~ identifier ~" }) }}" }}">
+                Edit
+            </a>
+        </li>
 {% endif %}
 {% if ('delete' in actions) and (not hide_delete) %}
-    <li>{{ '{{ form(delete_form) }}' }}</li>
+        {{ '{% if delete_form is defined %}' }}
+            <li class="delete_action">{{ '{{ form(delete_form) }}' }}</li>
+        {{ '{% endif %}' }}
 {% endif %}
-</ul>
+    </ul>

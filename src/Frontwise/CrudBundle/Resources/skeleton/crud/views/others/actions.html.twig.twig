@@ -1,6 +1,6 @@
-{% set varName = (entity|slice(0,1)|lower) ~ (entity|slice(1)) %}
+{% set varName = entity|first|lower ~ entity|slice(1) %}
 
-                    <ul class="entity_actions">
+                    <ul class="actions">
 
                     {%- for action in record_actions %}
 

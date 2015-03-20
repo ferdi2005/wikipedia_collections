@@ -1,3 +1,4 @@
+{% set alias = varName|slice(0,1)|lower %}
 
     /**
 {% block phpdoc_method_header %}
@@ -6,31 +7,42 @@
      *
 {% block phpdoc_method_annotations %}
 {% if 'annotation' == format %}
-     * @Route("/", name="{{ route_name_prefix }}")
+     * @Route("/list/{page}/{orderBy}/{ascending}", name="{{ route_name_prefix }}", defaults={"page": 0, "orderBy": "{{ identifier|default('id') }}", "ascending": false})
      * @Method("GET")
      * @Template()
 {% endif %}
 {% endblock phpdoc_method_annotations %}
      */
 {% block method_definition %}
-    public function indexAction()
+    public function indexAction($page, $orderBy, $ascending)
 {% endblock method_definition %}
     {
 {% block method_body %}
         $em = $this->getDoctrine()->getManager();
-
-        ${{varName}}s = $em->getRepository('{{ bundle }}:{{ entity }}')->findAll();
+        
+        ${{ varName }}sPerPage = 10;
+        ${{ varName }}s = $em->getRepository('{{ bundle }}:{{ entity }}')->createQueryBuilder('{{ alias }}')
+            ->orderBy('{{ alias }}.'.$orderBy, $ascending ? 'asc' : 'desc')
+            ->setMaxResults(${{ varName }}sPerPage)->setFirstResult($page * ${{ varName }}sPerPage)
+            ->getQuery()->getResult()
+        ;
+        $num{{ entity }}s = $em->createQueryBuilder()
+            ->select('count({{ alias }})')->from('{{ bundle }}:{{ entity }}', '{{ alias }}')
+            ->getQuery()->getSingleScalarResult()
+        ;
 {% endblock method_body %}
 
 {% block method_return %}
 {% if 'annotation' == format %}
         return array(
-            '{{varName}}s' => ${{varName}}s,
-        );
 {% else %}
         return $this->render('{{ bundle }}:{{ entity|replace({'\\': '/'}) }}:index.html.twig', array(
-            '{{varName}}s' => ${{varName}}s,
-        ));
 {% endif %}
+            '{{ varName }}s' => ${{ varName }}s,
+            'orderBy' => $orderBy,
+            'ascending' => (bool)$ascending,
+            'page' => $page,
+            'numPages' => ceil($num{{ entity }}s / ${{ varName }}sPerPage),
+        );
 {% endblock method_return %}
     }

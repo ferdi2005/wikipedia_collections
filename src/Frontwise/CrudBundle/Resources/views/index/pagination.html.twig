@@ -1,0 +1,23 @@
+{% set maxItems = 10 %}
+{% set startPage = page - maxItems/2 - max(0, (page + maxItems/2) - numPages) %}
+{% set endPage = page + maxItems/2 + (startPage < 0 ? startPage|abs - 1) %}
+
+{% if numPages > 1 %}
+    <ul class="pagination">
+        
+        {% for i in range(max(0, startPage), min(numPages - 1, endPage)) %}
+            <li class="{{ page == i ? 'active' : '' }}">
+                <a href="{{ path(route, routeParams|default({})|merge({page: i})) }}">
+                    {% if loop.first and i > 0 %}
+                        &hellip;
+                    {% elseif loop.last and i < numPages - 1 %}
+                        &hellip;
+                    {% else %}
+                        {{ i + 1 }}
+                    {% endif %}
+                </a>
+            </li>
+        {% endfor %}
+        
+    </ul>
+{% endif %}

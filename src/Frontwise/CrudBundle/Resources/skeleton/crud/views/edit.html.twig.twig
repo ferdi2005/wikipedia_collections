@@ -8,7 +8,7 @@
 
     {{ '{{ form(form) }}' }}
 
-    {% set hide_edit, hide_delete = true, false %}
-    {% include 'crud/views/others/record_actions.html.twig.twig' %}
+{% set hide_edit, hide_delete = true, false %}
+{% include 'crud/views/others/record_actions.html.twig.twig' %}
 {{ "{% endblock %}" }}
 {% endblock body %}

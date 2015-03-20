@@ -21,31 +21,31 @@ class MuseumController extends BaseController
     /**
      * Lists all Museum entities.
      *
-     * @Route("/list/{page}/{orderBy}/{descending}", name="museum", defaults={"page": 0, "orderBy": "id", "descending": false})
+     * @Route("/list/{page}/{orderBy}/{ascending}", name="museum", defaults={"page": 0, "orderBy": "id", "ascending": false})
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($page, $orderBy, $descending)
+    public function indexAction($page, $orderBy, $ascending)
     {
         $em = $this->getDoctrine()->getManager();
-
-        $entitiesPerPage = 10;
-        $museums = $em->getRepository('AppBundle:Museum')->createQueryBuilder('e')
-            ->orderBy('e.'.$orderBy, $descending ? 'desc' : 'asc')
-            ->setMaxResults($entitiesPerPage)->setFirstResult($page * $entitiesPerPage)
+        
+        $museumsPerPage = 10;
+        $museums = $em->getRepository('AppBundle:Museum')->createQueryBuilder('m')
+            ->orderBy('m.'.$orderBy, $ascending ? 'asc' : 'desc')
+            ->setMaxResults($museumsPerPage)->setFirstResult($page * $museumsPerPage)
             ->getQuery()->getResult()
         ;
-        $numEntities = $em->createQueryBuilder()
-            ->select('count(e)')->from('AppBundle:Museum', 'e')
+        $numMuseums = $em->createQueryBuilder()
+            ->select('count(m)')->from('AppBundle:Museum', 'm')
             ->getQuery()->getSingleScalarResult()
         ;
 
         return array(
             'museums' => $museums,
             'orderBy' => $orderBy,
-            'descending' => (bool)$descending,
+            'ascending' => (bool)$ascending,
             'page' => $page,
-            'numPages' => ceil($numEntities / $entitiesPerPage)
+            'numPages' => ceil($numMuseums / $museumsPerPage),
         );
     }
 
@@ -64,7 +64,7 @@ class MuseumController extends BaseController
             'action' => $this->generateUrl('museum_create'),
             'method' => 'POST',
         ));
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', ['label' => 'Create', 'attr' => ['class' => 'btn-primary']]);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -72,7 +72,7 @@ class MuseumController extends BaseController
             $em->persist($museum);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('museum_show', array('id' => $museum->getId())));            
+            return $this->redirect($this->generateUrl('museum'));
         }
 
         return array(
@@ -133,7 +133,7 @@ class MuseumController extends BaseController
             'action' => $this->generateUrl('museum_update', array('id' => $museum->getId())),
             'method' => 'PUT',
         ));
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', ['label' => 'Update', 'attr' => ['class' => 'btn-primary']]);
 
         $deleteForm = $this->createDeleteForm($id);
         
@@ -198,7 +198,7 @@ class MuseumController extends BaseController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('museum_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', 'submit', ['label' => 'Delete', 'attr' => ['class' => 'btn-danger']])
             ->getForm()
         ;
     }

@@ -23,7 +23,7 @@
             'action' => $this->generateUrl('{{ route_name_prefix }}_create'),
             'method' => 'POST',
         ));
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', ['label' => 'Create', 'attr' => ['class' => 'btn-primary']]);
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -31,12 +31,7 @@
             $em->persist(${{varName}});
             $em->flush();
 
-            {% if 'show' in actions -%}
-                return $this->redirect($this->generateUrl('{{ route_name_prefix }}_show', array('id' => ${{varName}}->getId())));
-            {%- else -%}
-                return $this->redirect($this->generateUrl('{{ route_name_prefix }}'));
-            {%- endif %}
-            
+            return $this->redirect($this->generateUrl('{{ route_name_prefix }}'));
         }
 {% endblock method_body %}
 

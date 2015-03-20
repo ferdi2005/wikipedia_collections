@@ -25,7 +25,7 @@
             'action' => $this->generateUrl('{{ route_name_prefix }}_update', array('id' => ${{varName}}->getId())),
             'method' => 'PUT',
         ));
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', ['label' => 'Update', 'attr' => ['class' => 'btn-primary']]);
 {% if 'delete' in actions %}
 
         $deleteForm = $this->createDeleteForm($id);
