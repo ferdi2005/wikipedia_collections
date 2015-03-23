@@ -1,3 +1,5 @@
+@import "import.less";
+
 .articleContent {
     
     @gutter: 60px;
@@ -77,9 +79,20 @@
     }
     .thumb {
         .greenBox();
+        a {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+        img {
+            display: block !important;
+            margin: 0;
+            padding: 0;
+        }
         
         .thumbcaption {
             .caption();
+            padding: 5px;
         }
     }
     

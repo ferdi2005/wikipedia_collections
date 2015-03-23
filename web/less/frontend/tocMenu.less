@@ -1,13 +1,21 @@
+@import "import.less";
+
 .tocMenu {
+    @width: 380px;
+    
     position: fixed;
     top: 40px;
-    width: 380px;
-    left: 0px;
+    width: @width;
+    left: -@width;
     bottom: 0px;
     background: black;
     color: white;
     padding-left: 50px;
     overflow: auto;
+    
+    background-size: 100% 100%, 100% auto;
+    background-repeat: repeat, no-repeat;
+    background-position: left top, center top;
     
     #toctitle {
         font-family: 'Lora', serif;
@@ -39,6 +47,10 @@
         list-style: none;
         margin: 0;
         padding: 0 0 0 1.8rem;
+        
+        a.active {
+            color: red;
+        }
         
         a {
             color: white;

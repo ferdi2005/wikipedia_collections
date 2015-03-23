@@ -10,7 +10,8 @@ $(function() {
     var settings = {
         language: 'en',
     };
-    var menu = new TocMenu($('.tocMenu'));
+    var menu = new TocMenu();
+    menu.show();
     
     init();
     
@@ -51,6 +52,13 @@ $(function() {
                 setTimeout(document.location.reload, 5000);
             }
         });
+
+        // Set viewport meta tag
+        $(window).on('resize', setMetaTag);
+        setMetaTag();
+        function setMetaTag() {
+            $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1');
+        }
     }
     
     function render(article) {
