@@ -29,7 +29,7 @@ function TocMenu() {
     function onScroll() {
         var center = window.scrollY + windowHeight/2;
         // Find closest header above center
-        var i = items.length - 1
+        var i = items.length - 1;
         for (; i >= 0; i--) {
             if (items[i].pos.top < center) { break; }
         }

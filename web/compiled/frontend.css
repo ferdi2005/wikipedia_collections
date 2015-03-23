@@ -179,9 +179,6 @@ body {
   margin: 0;
   padding: 0 0 0 1.8rem;
 }
-.tocMenu ul a.active {
-  color: red;
-}
 .tocMenu ul a {
   color: white;
   font-size: 1.8rem;
@@ -189,6 +186,11 @@ body {
   text-decoration: none;
   padding: 5px 0;
   display: block;
+  border-right: 4px solid transparent;
+}
+.tocMenu ul a.active {
+  color: #289f6d;
+  border-right-color: #289f6d;
 }
 .tocMenu ul ul a {
   font-size: 1.6rem;
