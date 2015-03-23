@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link href='http://fonts.googleapis.com/css?family=Lora:400,700|PT+Sans:400,700,400italic,700italic&subset=cyrillic,cyrillic-ext,latin,latin-ext' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="compiled/frontend.css" type="text/css" />
+        
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script type="text/javascript" src="vendor/twig.min.js"></script>
+        <script type="text/javascript" src="compiled/frontend.js"></script>
+        
+        <script type="template/twig" id="articleBar-tpl">
+            {% for i in range(0, articles.length-1, 2) %}
+                <div class="twoWrap">
+                    {% for j in 0..1 %}
+                        {% set article = articles[i+j] %}
+                        <div class="article" style="background-image: url('{{ article.image }}');">
+                            <h4>{{ article.humanTitle }}</h4>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </script>
+    </head>
+    <body>
+        <div class="topBar">
+            <img src="img/logo.png" class="Wikipedia Collections" height="40px">
+        </div>
+        
+        <div class="articleBarWrap">
+            <div class="articleBar"></div>
+        </div>
+        
+        <div class="articleContent"></div>
+        
+        <div class="tocMenu">
+            
+        </div>
+    </body>
+</html>
