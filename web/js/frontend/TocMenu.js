@@ -109,16 +109,34 @@ function TocMenu() {
     
     function show() {
         visible = true;
-        $('body').addClass('menuOpen');
-        // $menu.velocity('stop').velocity({translateX: $menu.outerWidth()});
-        // $content.velocity('stop').velocity({translateX: $menu.outerWidth(), translateZ: 0.001});
+        $('body').addClass('tocMenuOpen');
+        var top = $content.position().top - $topBar.height();
+        $window.off('scroll', onScroll);
+        // $("html").delay(400).velocity("scroll", { 
+        //     offset: (window.scrollY - top) * 0.5 + top,
+        //     mobileHA: false,
+        // }, {
+        //     complete: function() {
+        //         $window.on('scroll', onScroll);
+        //     },
+        //     easing: 'linear',
+        // });
     }
     
     function hide() {
         visible = false;
-        $('body').removeClass('menuOpen');
-        // $menu.velocity('stop').velocity({translateX: 0});
-        // $content.velocity('stop').velocity({translateX: 0});
+        $('body').removeClass('tocMenuOpen');
+        var top = $content.position().top - $topBar.height();
+        $window.off('scroll', onScroll);
+        // $("html").velocity("scroll", { 
+        //     offset: (window.scrollY - top) * 2 + top,
+        //     mobileHA: false,
+        // }, {
+        //     complete: function() {
+        //         $window.on('scroll', onScroll);
+        //     },
+        //     easing: 'linear',
+        // });
     }
     
     return {

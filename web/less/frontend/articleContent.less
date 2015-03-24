@@ -4,10 +4,12 @@
     
     @gutter: 60px;
     margin-bottom: 100vh;
-    transition: 0.4s transform;
+    transition: linear 0.4s transform;
+    transform-origin: right top;
     
-    .menuOpen & {
-        transform: translate3d(@tocMenuWidth, 0, 0);
+    .tocMenuOpen & {
+        // transform: translateX(@tocMenuWidth);
+        transform: scale(0.5);
     }
     
     .greenBox() {

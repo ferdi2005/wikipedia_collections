@@ -16,10 +16,10 @@
     background-size: 100% 100%, 100% auto;
     background-repeat: repeat, no-repeat;
     background-position: left top, center top;
-    transition: 0.4s transform;
+    transition: linear 0.4s transform;
     
-    .menuOpen & {
-        transform: translate3d(@width, 0, 0);
+    .tocMenuOpen & {
+        transform: translateX(@width);
     }
     
     #toctitle {

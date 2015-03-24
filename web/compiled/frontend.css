@@ -56,16 +56,18 @@ body {
 /* Colors */
 .articleContent {
   margin-bottom: 100vh;
-  transition: 0.4s -webkit-transform;
-  transition: 0.4s transform;
+  transition: linear 0.4s -webkit-transform;
+  transition: linear 0.4s transform;
+  -webkit-transform-origin: right top;
+          transform-origin: right top;
   font-family: "PT Sans", sans-serif;
   font-size: 1.85rem;
   padding: 30px 60px 60px 60px;
   overflow: auto;
 }
-.menuOpen .articleContent {
-  -webkit-transform: translate3d(380px, 0, 0);
-          transform: translate3d(380px, 0, 0);
+.tocMenuOpen .articleContent {
+  -webkit-transform: scale(0.5);
+          transform: scale(0.5);
 }
 .articleContent p {
   line-height: 3.0rem;
@@ -158,12 +160,12 @@ body {
   background-size: 100% 100%, 100% auto;
   background-repeat: repeat, no-repeat;
   background-position: left top, center top;
-  transition: 0.4s -webkit-transform;
-  transition: 0.4s transform;
+  transition: linear 0.4s -webkit-transform;
+  transition: linear 0.4s transform;
 }
-.menuOpen .tocMenu {
-  -webkit-transform: translate3d(380px, 0, 0);
-          transform: translate3d(380px, 0, 0);
+.tocMenuOpen .tocMenu {
+  -webkit-transform: translateX(380px);
+          transform: translateX(380px);
 }
 .tocMenu #toctitle {
   font-family: 'Lora', serif;
