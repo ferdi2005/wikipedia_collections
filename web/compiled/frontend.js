@@ -10183,6 +10183,7 @@ function TocMenu() {
     var $menu = $('.tocMenu');
     var $topBar = $('.topBar');
     var $menuButton = $topBar.find('.menuButton');
+    var $carousel = $topBar.find('.carousel');
     var $window = $(window);
     var $document = $(document);
     var windowHeight = $window.height();
@@ -10209,12 +10210,14 @@ function TocMenu() {
                     carousel.settings.enabled = true;
                 },
             });
-            hide();
         });
         
         $menuButton.velocity({rotateX: -91}, {duration: 0});
-        $menuButton.on('click', function() {
+        $menuButton.add($carousel).on('click', function() {
             if (visible) { hide(); } else { show(); }
+        });
+        $content.on('click', function() {
+            if (visible) { hide(); }
         });
         
         $window.on('resize', function() {
@@ -10285,12 +10288,18 @@ function TocMenu() {
     
     function show() {
         visible = true;
-        $menu.velocity('stop').velocity({translateX: $menu.outerWidth(), translateZ: 0.001});
+        $menu.velocity('stop').velocity({translateX: $menu.outerWidth()});
+        $content.velocity('stop').velocity({scale: 0.5}, {complete: findHeaderPositions});
+        var top = $content.position().top - $topBar.height();
+        window.scrollTo(window.scrollX, (window.scrollY - top) * 0.5 + top);
     }
     
     function hide() {
         visible = false;
-        $menu.velocity('stop').velocity({translateX: 0, translateZ: 0.0001});
+        $menu.velocity('stop').velocity({translateX: 0});
+        $content.velocity('stop').velocity({scale: 1}, {complete: findHeaderPositions});
+        var top = $content.position().top - $topBar.height();
+        window.scrollTo(window.scrollX, (window.scrollY - top) * 2 + top);
     }
     
     return {
