@@ -10288,18 +10288,16 @@ function TocMenu() {
     
     function show() {
         visible = true;
-        $menu.velocity('stop').velocity({translateX: $menu.outerWidth()});
-        $content.velocity('stop').velocity({scale: 0.5}, {complete: findHeaderPositions});
-        var top = $content.position().top - $topBar.height();
-        window.scrollTo(window.scrollX, (window.scrollY - top) * 0.5 + top);
+        $('body').addClass('menuOpen');
+        // $menu.velocity('stop').velocity({translateX: $menu.outerWidth()});
+        // $content.velocity('stop').velocity({translateX: $menu.outerWidth(), translateZ: 0.001});
     }
     
     function hide() {
         visible = false;
-        $menu.velocity('stop').velocity({translateX: 0});
-        $content.velocity('stop').velocity({scale: 1}, {complete: findHeaderPositions});
-        var top = $content.position().top - $topBar.height();
-        window.scrollTo(window.scrollX, (window.scrollY - top) * 2 + top);
+        $('body').removeClass('menuOpen');
+        // $menu.velocity('stop').velocity({translateX: 0});
+        // $content.velocity('stop').velocity({translateX: 0});
     }
     
     return {

@@ -56,12 +56,16 @@ body {
 /* Colors */
 .articleContent {
   margin-bottom: 100vh;
-  -webkit-transform-origin: top right;
-          transform-origin: top right;
+  transition: 0.4s -webkit-transform;
+  transition: 0.4s transform;
   font-family: "PT Sans", sans-serif;
   font-size: 1.85rem;
   padding: 30px 60px 60px 60px;
   overflow: auto;
+}
+.menuOpen .articleContent {
+  -webkit-transform: translate3d(380px, 0, 0);
+          transform: translate3d(380px, 0, 0);
 }
 .articleContent p {
   line-height: 3.0rem;
@@ -154,6 +158,12 @@ body {
   background-size: 100% 100%, 100% auto;
   background-repeat: repeat, no-repeat;
   background-position: left top, center top;
+  transition: 0.4s -webkit-transform;
+  transition: 0.4s transform;
+}
+.menuOpen .tocMenu {
+  -webkit-transform: translate3d(380px, 0, 0);
+          transform: translate3d(380px, 0, 0);
 }
 .tocMenu #toctitle {
   font-family: 'Lora', serif;
