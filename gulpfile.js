@@ -34,6 +34,22 @@ gulp.task('less_backend', function() {
   ;
 });
 
+gulp.task('js_frontend', function() {
+  gulp.src([
+      'web/vendor/jquery/dist/jquery.js',
+      'web/vendor/twig.min.js',
+      'web/vendor/velocity.min.js',
+      'web/vendor/jquery.waitforimages.min.js',
+      'web/js/frontend/**/*.js',
+    ])
+    .pipe(sourcemaps.init())
+      .pipe(concat('frontend.js'))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('web/compiled'))
+    .pipe(livereload())
+  ;
+});
+
 gulp.task('js_backend', function() {
   gulp.src([
       'web/vendor/jquery/dist/jquery.js',
@@ -66,6 +82,6 @@ gulp.task('watch', function() {
     gulp.watch('gulpfile.js', process.exit);
 });
 
-gulp.task('js', ['js_backend']);
+gulp.task('js', ['js_backend', 'js_frontend']);
 gulp.task('less', ['less_frontend', 'less_backend']);
 gulp.task('default', ['less', 'js']);
