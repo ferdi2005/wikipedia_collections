@@ -16,6 +16,20 @@ class MuseumType extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('articles', 'collection', array(
+                'label' => 'Wikipedia artikelen',
+                'attr' => ['class' => 'articles'],
+                'type' => new ArticleType(),
+                'options'  => [
+                    'attr' => ['class' => 'article'],
+                    'cascade_validation' => true,
+                ],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
+                'cascade_validation' => true,
+            ))
         ;
     }
     

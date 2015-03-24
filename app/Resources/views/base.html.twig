@@ -4,13 +4,11 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            <link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/dist/css/bootstrap.css') }}" />
             <link rel="stylesheet" type="text/css" href="{{ asset('compiled/frontend.css') }}" />
-            <link rel="stylesheet" type="text/css" href="{{ asset('css/crud.css') }}" />
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
+    <body class="{% block bodyClass %}{% endblock %}">
         {% block body %}
             {% block content %}{% endblock %}
         {% endblock %}

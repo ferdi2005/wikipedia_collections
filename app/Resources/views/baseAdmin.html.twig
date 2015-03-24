@@ -1,5 +1,13 @@
 {% extends '::base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('compiled/backend.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('compiled/backend.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     <div class="container">
         {% block content %}{% endblock %}

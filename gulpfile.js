@@ -7,7 +7,7 @@ var plumber = require('gulp-plumber');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('less_frontend', function() {
-  gulp.src(['web/less/**/*.less'])
+  gulp.src(['web/less/frontend/**/*.less'])
     .pipe(plumber())
     .pipe(sourcemaps.init())
       .pipe(less())
@@ -18,10 +18,29 @@ gulp.task('less_frontend', function() {
   ;
 });
 
-gulp.task('js', function() {
-  gulp.src(['web/js/**/*.js'])
+gulp.task('less_backend', function() {
+  gulp.src([
+      'web/vendor/bootstrap/dist/css/bootstrap.css',
+      'web/css/crud.css',
+      'web/less/backend/**/*.less',
+    ])
+    .pipe(plumber())
     .pipe(sourcemaps.init())
-      .pipe(concat('frontend.js'))
+      .pipe(less())
+      .pipe(concat('backend.css'))
+      .pipe(autoprefixer({ browsers: ['> 5%'] }))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('web/compiled'))
+  ;
+});
+
+gulp.task('js_backend', function() {
+  gulp.src([
+      'web/vendor/jquery/dist/jquery.js',
+      'web/js/backend/**/*.js',
+    ])
+    .pipe(sourcemaps.init())
+      .pipe(concat('backend.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('web/compiled'))
     .pipe(livereload())
@@ -47,5 +66,6 @@ gulp.task('watch', function() {
     gulp.watch('gulpfile.js', process.exit);
 });
 
-gulp.task('less', ['less_frontend']);
-gulp.task('default', ['less_frontend', 'js']);
+gulp.task('js', ['js_backend']);
+gulp.task('less', ['less_frontend', 'less_backend']);
+gulp.task('default', ['less', 'js']);
