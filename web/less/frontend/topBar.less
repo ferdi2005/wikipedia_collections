@@ -1,12 +1,78 @@
+@import "import.less";
+
 body {
     padding-top: 40px;
 }
 .topBar {
-    height: 40px;
+    @height: 40px;
+    @carouselWidth: 300px;
+    
+    height: @height;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 100;
     background: white;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    
+    perspective: 800px;
+    perspective-origin: @carouselWidth/2 50%;
+    
+    .carousel {
+        @width: @carouselWidth;
+        
+        width: @width;
+        height: @height;
+        position: relative;
+        transform-style: preserve-3d;
+        transform-origin: 50% 50% 0;
+        transform: translateZ(-@height/2);
+        
+        .side {
+            position: absolute;
+            width: @width;
+            height: @height;
+            backface-visibility: hidden;
+            
+            &.front {
+                transform: translateZ(@height/2)
+            }
+            &.top {
+                transform: translateY(-@height/2) rotateX(90deg);
+            }
+            &.bottom {
+                transform: translateY(@height/2) rotateX(-90deg);
+            }
+            &.back {
+                transform: translateZ(-@height/2) rotateX(-180deg);
+            }
+            
+            .header {
+                color: @marker;
+                line-height: @height;
+                padding-left: 50px;
+                font-size: 1.8rem;
+                font-weight: bold;
+                // Ellipsis 
+                display: block;
+                width: 100%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+    
+    .menuButton {
+        width: @height;
+        height: @height;
+        position: absolute;
+        transform-origin: 50% 50% -(@height / 2);
+        backface-visibility: hidden;
+        top: 0;
+        
+        background: black center center no-repeat url('../img/menu.svg');
+        background-size: 30px auto;
+        cursor: pointer;
+    }
 }

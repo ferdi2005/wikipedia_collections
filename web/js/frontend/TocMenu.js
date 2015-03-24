@@ -3,41 +3,66 @@ function TocMenu() {
     var $content = $('.articleContent');
     var $menu = $('.tocMenu');
     var $topBar = $('.topBar');
+    var $menuButton = $topBar.find('.menuButton');
     var $window = $(window);
+    var $document = $(document);
     var windowHeight = $window.height();
+    var documentHeight = $document.height();
     var items = [];
     var data;
     var curIndex = -1;
+    var carousel = new TocCarousel();
+    var visible = false;
     
     init();
     
     function init() {
         $menu.on('click', 'a', function(e) {
             e.preventDefault();
-            var pos = $content.find($(this).attr('href')).position();
-            $("html").velocity("scroll", { offset: (pos.top - $topBar.height()) + 'px', mobileHA: false });
+            var a = $(this);
+            var pos = $content.find(a.attr('href')).position();
+            carousel.showIndex(a.data('index'), items);
+            carousel.settings.enabled = false;
+            $("html").velocity("scroll", { 
+                offset: (pos.top - $topBar.height()) + 'px', 
+                mobileHA: false,
+                complete: function() {
+                    carousel.settings.enabled = true;
+                },
+            });
             hide();
+        });
+        
+        $menuButton.velocity({rotateX: -91}, {duration: 0});
+        $menuButton.on('click', function() {
+            if (visible) { hide(); } else { show(); }
         });
         
         $window.on('resize', function() {
             windowHeight = $window.height();
+            findHeaderPositions();
         });
         
         $window.on('scroll', onScroll);
     }
     
     function onScroll() {
-        var center = window.scrollY + windowHeight/2;
-        // Find closest header above center
+        var line = window.scrollY + 150;
+        // DEBUG: $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
+        
+        // Find closest header above line
         var i = items.length - 1;
         for (; i >= 0; i--) {
-            if (items[i].pos.top < center) { break; }
+            if (items[i].pos.top < line) { break; }
         }
-        console.log(i);
         if (i != curIndex) {
             $menu.find('.active').removeClass('active');
-            items[i].elem.addClass('active');
+            if (i >= 0) {
+                items[i].elem.addClass('active');
+            }
             curIndex = i;
+            
+            carousel.showIndex(curIndex, items);
         }
     }
     
@@ -56,6 +81,7 @@ function TocMenu() {
         
         toc.find('ul li a').each(function(i) {
             var a = $(this);
+            a.data('index', i);
             items.push({
                 text: a.text(),
                 position: {left: 0, top: 0},
@@ -64,22 +90,28 @@ function TocMenu() {
             });
         });
         
+        carousel.showIndex(-1, items);
         findHeaderPositions();
         $content.waitForImages(findHeaderPositions);
+        onScroll();
     }
     
     function findHeaderPositions() {
         items.forEach(function(item) {
             item.pos = $content.find(item.href).position();
         });
+        
+        documentHeight = $document.height();
     }
     
     function show() {
-        $menu.velocity({translateX: $menu.outerWidth(), translateZ: 0});
+        visible = true;
+        $menu.velocity('stop').velocity({translateX: $menu.outerWidth(), translateZ: 0.001});
     }
     
     function hide() {
-        $menu.velocity({translateX: 0, translateZ: 0});
+        visible = false;
+        $menu.velocity('stop').velocity({translateX: 0, translateZ: 0.0001});
     }
     
     return {
@@ -87,5 +119,72 @@ function TocMenu() {
         findHeaderPositions: findHeaderPositions,
         show: show,
         hide: hide,
+    };
+}
+
+function TocCarousel() {
+    var $topBar = $('.topBar');
+    var $carousel = $topBar.find('.carousel');
+    var $sides = $carousel.find('.side');
+    var $menuButton = $topBar.find('.menuButton');
+    
+    var curIndex = -1;
+    var targetIndex = -1;
+    var curSideIndex = 1;
+    var rotation = 0;
+    var items = [];
+    var settings = {
+        enabled: true,
+    };
+    var animating = false;
+    var carouselHeight = 40;
+    
+    function showIndex(index, newItems) {
+        if (!settings.enabled) { return; }
+        targetIndex = index;
+        items = newItems;
+        animate();
+    }
+    
+    function animate() {
+        if (curIndex == targetIndex) { return; }
+        if (animating) { return; }
+        
+        var newSideIndex;
+        var addRotation;
+        var label;
+        
+        if (targetIndex > curIndex) {
+            newSideIndex = (curSideIndex + 1) % 4;
+            addRotation = 90;
+        } else {
+            newSideIndex = curSideIndex - 1;
+            if (newSideIndex < 0) { newSideIndex += 4; }
+            addRotation = -90;
+        }
+        
+        if (targetIndex == -1) {
+            label = '<img src="img/logo.png" alt="Wikipedia Collections" height="40px">';
+            $menuButton.velocity({rotateX: -91, scale: 0.6}, {duration: 200});
+        } else {
+            label = '<span class="header">' + items[targetIndex].text + '</span>';
+            $menuButton.velocity({rotateX: 0, scale: 1}, {duration: 200});
+        }
+        
+        $sides.eq(newSideIndex).html(label);
+        curSideIndex = newSideIndex;
+        curIndex = targetIndex;
+        rotation += addRotation;
+        
+        animating = true;
+        $carousel.velocity({translateZ: -carouselHeight/2, rotateX: rotation}, {duration: 200, complete: function() {
+            animating = false;
+            animate();
+        }});
+    }
+    
+    return {
+        showIndex: showIndex,
+        settings: settings,
     };
 }

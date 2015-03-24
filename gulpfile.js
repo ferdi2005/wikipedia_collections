@@ -40,13 +40,13 @@ gulp.task('js_frontend', function() {
       'web/vendor/twig.min.js',
       'web/vendor/velocity.min.js',
       'web/vendor/jquery.waitforimages.min.js',
+      'web/vendor/fastclick.js',
       'web/js/frontend/**/*.js',
     ])
     .pipe(sourcemaps.init())
       .pipe(concat('frontend.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('web/compiled'))
-    .pipe(livereload())
   ;
 });
 
@@ -59,14 +59,14 @@ gulp.task('js_backend', function() {
       .pipe(concat('backend.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('web/compiled'))
-    .pipe(livereload())
   ;
 });
 
 gulp.task('watch', function() {
     livereload.listen();
 
-    gulp.watch('web/less/**/*.less', ['less']);
+    gulp.watch('web/less/frontend/**/*.less', ['less_frontend']);
+    gulp.watch('web/less/backend/**/*.less', ['less_backend']);
     gulp.watch('web/js/**/*.js', ['js']);
 
     gulp.watch([

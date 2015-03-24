@@ -11,11 +11,11 @@ $(function() {
         language: 'en',
     };
     var menu = new TocMenu();
-    menu.show();
     
     init();
     
     function init() {
+        // Download article list
         $.ajax({
             url: "js/frontend/data.json",
             success: function (data) {
@@ -59,6 +59,8 @@ $(function() {
         function setMetaTag() {
             $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1');
         }
+        
+        FastClick.attach(document.body);
     }
     
     function render(article) {
