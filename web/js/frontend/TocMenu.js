@@ -109,34 +109,40 @@ function TocMenu() {
     
     function show() {
         visible = true;
-        $('body').addClass('tocMenuOpen');
-        var top = $content.position().top - $topBar.height();
-        $window.off('scroll', onScroll);
-        // $("html").delay(400).velocity("scroll", { 
-        //     offset: (window.scrollY - top) * 0.5 + top,
-        //     mobileHA: false,
-        // }, {
-        //     complete: function() {
-        //         $window.on('scroll', onScroll);
-        //     },
-        //     easing: 'linear',
-        // });
+        
+        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
+        $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        requestAnimationFrame(function() {
+            $content.velocity({ scale: 0.5, translateZ: 0 }, {
+                complete: function() {
+                    $content.css('transform-origin', 'right top');
+                    window.scrollTo(window.scrollX, window.scrollY - 0.5 * offsetContent);
+                    findHeaderPositions();
+                }
+            });
+            $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
+        })
     }
     
     function hide() {
         visible = false;
-        $('body').removeClass('tocMenuOpen');
-        var top = $content.position().top - $topBar.height();
-        $window.off('scroll', onScroll);
-        // $("html").velocity("scroll", { 
-        //     offset: (window.scrollY - top) * 2 + top,
-        //     mobileHA: false,
-        // }, {
-        //     complete: function() {
-        //         $window.on('scroll', onScroll);
-        //     },
-        //     easing: 'linear',
-        // });
+        
+        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
+        $content.css('transform-origin', 'right ' + (2 * offsetContent) + 'px');
+        
+        // var $test = $('<div/>').css({width: 100, height: 100, background: 'red', position: 'absolute', left: '50%', top: 100}).appendTo($content);
+        // $test.css({ top: (offsetContent) });
+        
+        window.scrollTo(window.scrollX, window.scrollY + offsetContent);
+        
+        requestAnimationFrame(function() {
+            $content.velocity({ scale: 1, translateZ: 0 }, {
+                complete: function() {
+                    findHeaderPositions();
+                }
+            });
+            $menu.velocity({ translateX: -1, translateZ: 0 });
+        })
     }
     
     return {
