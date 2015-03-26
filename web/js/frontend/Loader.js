@@ -15,7 +15,7 @@ function Loader(menu) {
         $content.velocity({ opacity: 0 });
         
         loadArticle(article, function(html) {
-            $article = $(html);
+            var $article = $(html);
             $content.empty().append($article).velocity({ opacity: 1 });
             cleanArticle($content);
             addExtras(article, $content);

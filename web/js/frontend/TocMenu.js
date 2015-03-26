@@ -26,7 +26,7 @@ function TocMenu() {
             var pos = $content.find(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
             carousel.enabled = false;
-            $("html").velocity("scroll", { 
+            $('html').velocity('scroll', { 
                 offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
                 complete: function() {

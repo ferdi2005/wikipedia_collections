@@ -68,7 +68,8 @@ gulp.task('watch', function() {
 
     gulp.watch('web/less/frontend/**/*.less', ['less_frontend']);
     gulp.watch('web/less/backend/**/*.less', ['less_backend']);
-    gulp.watch('web/js/**/*.js', ['js']);
+    gulp.watch('web/js/backend/**/*.js', ['js_backend']);
+    gulp.watch('web/js/frontend/**/*.js', ['js_frontend']);
 
     gulp.watch([
       'src/**/*',

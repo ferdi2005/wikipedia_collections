@@ -1,7 +1,5 @@
 
 $(function() {
-    var $wrap = $('.articleBarWrap');
-    var $bar = $wrap.find('.articleBar');
     var $content = $('.articleContent');
 
     var self = this;    
@@ -13,6 +11,8 @@ $(function() {
     var articleControls = new ArticleControls();
     var articleBar = new ArticleBar();
     var loader = new Loader(menu);
+    var idling = false;
+    var idleTimeout;
     
     init();
     
@@ -21,7 +21,6 @@ $(function() {
         $.ajax({
             url: Routing.generate('museum_articles'),
             success: function (data) {
-                console.log(data);
                 museum = data;
                 
                 // Test: duplicate articles
@@ -31,7 +30,9 @@ $(function() {
                     });
                 }
                 
-                articleBar.init(loader, museum)
+                articleBar.init(loader, museum);
+                
+                setTimeout(startIdle, 2000);
             },
             error: function(a,b,c) {
                 console.log('Error getting data', a,b,c);
@@ -48,5 +49,25 @@ $(function() {
         }
         
         FastClick.attach(document.body);
+        
+        $(document).on('touchstart keydown', stopIdle);
+    }
+    
+    function startIdle() {
+        if (!idling) {
+            console.log('start-idle');
+            $(document).trigger('start-idle');
+            idling = true;
+        }
+    }
+    
+    function stopIdle() {
+        if (idling) {
+            console.log('stop-idle');
+            $(document).trigger('stop-idle');
+            idling = false;
+        }
+        clearTimeout(idleTimeout);
+        idleTimeout = setTimeout(startIdle, 2 * 60 * 1000);
     }
 });

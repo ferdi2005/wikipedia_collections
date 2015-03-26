@@ -10077,7 +10077,7 @@ this.context[key]=value;context[key]=value;return{chain:continue_chain,context:c
 
 function ArticleControls() {
     
-    $content = $('.articleContent');
+    var $content = $('.articleContent');
     
     init();
     
@@ -10097,11 +10097,18 @@ function ArticleControls() {
     }
 }
 function ArticleBar() {
-    var $bar = $('.articleBar');
+    var $wrap = $('.articleBarWrap');
+    var wrapElem = $wrap.get(0);
+    var $bar = $wrap.find('.articleBar');
+    var $articles;
     
     var blockWidth = 256;
     var blockHeight = 216;
     var museum;
+    var idling = true;
+    var idleRight = true;
+    var scrollLeft = 0;
+    var timeout;
     
     function init(loader, _museum) {
         museum = _museum;
@@ -10110,9 +10117,10 @@ function ArticleBar() {
         // Render article bar
         var tpl = twig({ data: $('#articleBar-tpl').html() });
         $bar.html(tpl.render(museum));
+        $articles = $bar.find('.article');
         
         // Link model museum
-        $bar.find('.article').each(function(index) {
+        $articles.each(function(index) {
             $(this).data('article', museum.articles[index]);
         });
         
@@ -10123,7 +10131,40 @@ function ArticleBar() {
             $article.trigger('article-selected', $article.data('article'));
         });
         
-        $bar.find('.article').eq(0).click();
+        $articles.eq(0).click();
+        
+        $(document).on('start-idle', function() {
+            idling = true;
+            idle();
+        });
+        
+        $(document).on('stop-idle', function() {
+            $wrap.stop();
+            idling = false;
+        });
+    }
+    
+    function idle() {
+        if (!idling) { return; }
+        
+        // Select article at random, scroll to it, click it.
+        var $article = $articles.eq(Math.round( Math.random() * $articles.length ));
+        var scrollLeft = wrapElem.scrollLeft + $article.position().left  + $article.width()/2 - $(window).width()/2;
+        scrollLeft = Math.max(0, scrollLeft);
+        $wrap
+            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 1.5 })
+            .promise().done(function() {
+                if (!idling) { return; }
+                
+                $article.trigger('click');
+                
+                clearTimeout(timeout);
+                timeout = setTimeout(idle, 5000);
+            })
+        ;
+        
+        // requestAnimationFrame(idle);
+        // // setTimeout(idle, 500);
     }
     
     this.init = init;
@@ -10145,7 +10186,7 @@ function Loader(menu) {
         $content.velocity({ opacity: 0 });
         
         loadArticle(article, function(html) {
-            $article = $(html);
+            var $article = $(html);
             $content.empty().append($article).velocity({ opacity: 1 });
             cleanArticle($content);
             addExtras(article, $content);
@@ -10205,8 +10246,6 @@ function Loader(menu) {
 }
 
 $(function() {
-    var $wrap = $('.articleBarWrap');
-    var $bar = $wrap.find('.articleBar');
     var $content = $('.articleContent');
 
     var self = this;    
@@ -10218,6 +10257,8 @@ $(function() {
     var articleControls = new ArticleControls();
     var articleBar = new ArticleBar();
     var loader = new Loader(menu);
+    var idling = false;
+    var idleTimeout;
     
     init();
     
@@ -10226,7 +10267,6 @@ $(function() {
         $.ajax({
             url: Routing.generate('museum_articles'),
             success: function (data) {
-                console.log(data);
                 museum = data;
                 
                 // Test: duplicate articles
@@ -10236,7 +10276,9 @@ $(function() {
                     });
                 }
                 
-                articleBar.init(loader, museum)
+                articleBar.init(loader, museum);
+                
+                setTimeout(startIdle, 2000);
             },
             error: function(a,b,c) {
                 console.log('Error getting data', a,b,c);
@@ -10253,6 +10295,26 @@ $(function() {
         }
         
         FastClick.attach(document.body);
+        
+        $(document).on('touchstart keydown', stopIdle);
+    }
+    
+    function startIdle() {
+        if (!idling) {
+            console.log('start-idle');
+            $(document).trigger('start-idle');
+            idling = true;
+        }
+    }
+    
+    function stopIdle() {
+        if (idling) {
+            console.log('stop-idle');
+            $(document).trigger('stop-idle');
+            idling = false;
+        }
+        clearTimeout(idleTimeout);
+        idleTimeout = setTimeout(startIdle, 2 * 60 * 1000);
     }
 });
 
@@ -10293,7 +10355,7 @@ function TocMenu() {
             var pos = $content.find(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
             carousel.enabled = false;
-            $("html").velocity("scroll", { 
+            $('html').velocity('scroll', { 
                 offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
                 complete: function() {

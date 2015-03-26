@@ -1,6 +1,6 @@
 function ArticleControls() {
     
-    $content = $('.articleContent');
+    var $content = $('.articleContent');
     
     init();
     

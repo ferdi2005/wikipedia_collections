@@ -80,7 +80,7 @@ body {
 
 /* Colors */
 .articleContent {
-  margin-bottom: 100vh;
+  margin-bottom: 90vh;
   -webkit-transform: translate3d(0, 0, 0);
           transform: translate3d(0, 0, 0);
   font-family: "PT Sans", sans-serif;
