@@ -3,6 +3,7 @@ function TocMenu() {
     var $content = $('.articleContent');
     var $menu = $('.tocMenu');
     var $topBar = $('.topBar');
+    var topBarHeight = $topBar.height();
     var $menuButton = $topBar.find('.menuButton');
     var $carousel = $topBar.find('.carousel');
     var $window = $(window);
@@ -14,7 +15,8 @@ function TocMenu() {
     var curIndex = -1;
     var carousel = new TocCarousel();
     var visible = false;
-    
+    var contentScale = 0.5;
+        
     init();
     
     function init() {
@@ -23,12 +25,12 @@ function TocMenu() {
             var a = $(this);
             var pos = $content.find(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
-            carousel.settings.enabled = false;
+            carousel.enabled = false;
             $("html").velocity("scroll", { 
-                offset: (pos.top - $topBar.height()) + 'px', 
+                offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
                 complete: function() {
-                    carousel.settings.enabled = true;
+                    carousel.enabled = true;
                 },
             });
         });
@@ -46,12 +48,16 @@ function TocMenu() {
             findHeaderPositions();
         });
         
+        $document.on('content-resized', function() {
+            findHeaderPositions();
+        });
+        
         $window.on('scroll', onScroll);
     }
     
     function onScroll() {
-        var line = window.scrollY + 150;
-        // DEBUG: $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
+        var line = window.scrollY + topBarHeight + (visible ? contentScale : 1 ) * 100;
+        //DEBUG $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
         
         // Find closest header above line
         var i = items.length - 1;
@@ -110,14 +116,16 @@ function TocMenu() {
     function show() {
         visible = true;
         
-        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
         requestAnimationFrame(function() {
-            $content.velocity({ scale: 0.5, translateZ: 0 }, {
+            $content.velocity({ scale: contentScale, translateZ: 0 }, {
                 complete: function() {
                     $content.css('transform-origin', 'right top');
-                    window.scrollTo(window.scrollX, window.scrollY - 0.5 * offsetContent);
-                    findHeaderPositions();
+                    requestAnimationFrame(function() {
+                        window.scrollTo(window.scrollX, window.scrollY - (1 - contentScale) * offsetContent);
+                        findHeaderPositions();
+                    });
                 }
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
@@ -127,15 +135,12 @@ function TocMenu() {
     function hide() {
         visible = false;
         
-        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
-        $content.css('transform-origin', 'right ' + (2 * offsetContent) + 'px');
-        
-        // var $test = $('<div/>').css({width: 100, height: 100, background: 'red', position: 'absolute', left: '50%', top: 100}).appendTo($content);
-        // $test.css({ top: (offsetContent) });
-        
-        window.scrollTo(window.scrollX, window.scrollY + offsetContent);
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
         
         requestAnimationFrame(function() {
+            window.scrollTo(window.scrollX, window.scrollY - offsetContent + (1/contentScale) * offsetContent);
+            
             $content.velocity({ scale: 1, translateZ: 0 }, {
                 complete: function() {
                     findHeaderPositions();
@@ -159,19 +164,18 @@ function TocCarousel() {
     var $sides = $carousel.find('.side');
     var $menuButton = $topBar.find('.menuButton');
     
+    var self = this;
+    self.enabled = true;
     var curIndex = -1;
     var targetIndex = -1;
     var curSideIndex = 1;
     var rotation = 0;
     var items = [];
-    var settings = {
-        enabled: true,
-    };
     var animating = false;
     var carouselHeight = 40;
     
     function showIndex(index, newItems) {
-        if (!settings.enabled) { return; }
+        if (!self.enabled) { return; }
         targetIndex = index;
         items = newItems;
         animate();
@@ -195,7 +199,7 @@ function TocCarousel() {
         }
         
         if (targetIndex == -1) {
-            label = '<img src="img/logo.png" alt="Wikipedia Collections" height="40px">';
+            label = '<img src="' + Routing.getWebPath() + '/img/logo.png" alt="Wikipedia Collections" height="40px">';
             $menuButton.velocity({rotateX: -91, scale: 0.6}, {duration: 200});
         } else {
             label = '<span class="header">' + items[targetIndex].text + '</span>';
@@ -214,8 +218,7 @@ function TocCarousel() {
         }});
     }
     
-    return {
-        showIndex: showIndex,
-        settings: settings,
-    };
+    
+    self.showIndex = showIndex;
+    return self;
 }

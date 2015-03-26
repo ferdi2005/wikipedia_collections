@@ -27,6 +27,7 @@ body {
   font-family: 'Lora', serif;
   font-weight: bold;
   color: white;
+  background-color: black;
 }
 .articleBarWrap .articleBar {
   overflow: hidden;
@@ -42,15 +43,39 @@ body {
   height: 216px;
   float: left;
   position: relative;
+  overflow: hidden;
+  border-bottom: 0px solid #289f6d;
+  opacity: 0.6;
+}
+.articleBarWrap .articleBar .article .image {
+  background-size: cover;
+  width: 100%;
+  height: 100%;
 }
 .articleBarWrap .articleBar .article h4 {
   font-size: 1.8rem;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  margin: 20px 5px;
+  padding: 20px;
+  margin: 0;
   text-align: center;
   position: absolute;
   width: 100%;
   bottom: 0;
+}
+.articleBarWrap .articleBar .article,
+.articleBarWrap .articleBar .article > * {
+  transition: 0.2s all;
+}
+.articleBarWrap .articleBar .article.active {
+  opacity: 1;
+}
+.articleBarWrap .articleBar .article.active .image {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+.articleBarWrap .articleBar .article.active h4 {
+  -webkit-transform: scale(1.3);
+          transform: scale(1.3);
 }
 
 /* Colors */
@@ -60,7 +85,7 @@ body {
           transform: translate3d(0, 0, 0);
   font-family: "PT Sans", sans-serif;
   font-size: 1.85rem;
-  padding: 30px 60px 60px 60px;
+  padding: 0 60px 60px 60px;
   overflow: auto;
 }
 .articleContent p {
@@ -136,6 +161,39 @@ body {
   font-weight: normal;
   font-size: 1.2rem !important;
   padding: 5px;
+}
+
+/* Colors */
+.articleContent .articleHeader {
+  margin: 0 -60px;
+  position: relative;
+  max-height: 400px;
+  overflow: hidden;
+}
+.articleContent .articleHeader img {
+  width: 100%;
+  vertical-align: bottom;
+  display: inline-block;
+}
+.articleContent .articleHeader h1 {
+  position: absolute;
+  margin-left: 60px;
+  margin-right: 60px;
+  bottom: 0;
+  color: white;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+  font-family: 'Lora', serif;
+  font-size: 4.0rem;
+}
+.articleContent .articleHeader button.showFullscreen {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 38px;
+  height: 38px;
+  background: url('../img/fullscreen.svg');
+  background-size: 100% 100%;
+  border: 0;
 }
 
 /* Colors */

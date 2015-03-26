@@ -7,6 +7,7 @@
     font-family: 'Lora', serif;
     font-weight: bold;
     color: white;
+    background-color: black;
     
     .articleBar {
         overflow: hidden;
@@ -23,16 +24,45 @@
             height: @blockHeight;
             float: left;
             position: relative;
+            overflow: hidden;
+            border-bottom: 0px solid @marker;
+            opacity: 0.6;
+            
+            
+            .image {
+                background-size: cover;
+                width: 100%;
+                height: 100%;
+            }
             
             h4 {
                 font-size: 1.8rem;
                 text-shadow: 0 0 5px rgba(0,0,0,0.5);
-                margin: 20px 5px;
+                padding: 20px;
+                margin: 0;
                 text-align: center;
                 position: absolute;
                 width: 100%;
                 bottom: 0;
             }
+            
+            &,
+            & > * {
+                transition: 0.2s all;
+            }
+            
+            &.active {
+                opacity: 1;
+                
+                .image {
+                    transform: scale(1.1);
+                }
+                
+                h4 {
+                    transform: scale(1.3);
+                }
+            }
         }
     }
+    
 }

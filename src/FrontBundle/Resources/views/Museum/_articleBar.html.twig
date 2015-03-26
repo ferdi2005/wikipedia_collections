@@ -1,0 +1,11 @@
+{% for i in range(0, articles.length-1, 2) %}
+    <div class="twoWrap">
+        {% for j in 0..1 %}
+            {% set article = articles[i+j] %}
+            <div class="article">
+                <div class="image" style="background-image: url('{{ article.image }}');"></div>
+                <h4>{{ article.humanTitle }}</h4>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}

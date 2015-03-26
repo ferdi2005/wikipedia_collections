@@ -1,3 +1,15 @@
+/**
+ * Portions of this code are from the Google Closure Library,
+ * received from the Closure Authors under the Apache 2.0 license.
+ *
+ * All other code is (C) FriendsOfSymfony and subject to the MIT license.
+ */
+(function() {var f=!1,i,k=this;function l(a,c){var b=a.split("."),d=k;!(b[0]in d)&&d.execScript&&d.execScript("var "+b[0]);for(var e;b.length&&(e=b.shift());)!b.length&&void 0!==c?d[e]=c:d=d[e]?d[e]:d[e]={}};var m=Array.prototype,n=m.forEach?function(a,c,b){m.forEach.call(a,c,b)}:function(a,c,b){for(var d=a.length,e="string"==typeof a?a.split(""):a,g=0;g<d;g++)g in e&&c.call(b,e[g],g,a)};function q(a,c){this.c={};this.a=[];var b=arguments.length;if(1<b){if(b%2)throw Error("Uneven number of arguments");for(var d=0;d<b;d+=2)this.set(arguments[d],arguments[d+1])}else if(a){var e;if(a instanceof q){r(a);d=a.a.concat();r(a);e=[];for(b=0;b<a.a.length;b++)e.push(a.c[a.a[b]])}else{var b=[],g=0;for(d in a)b[g++]=d;d=b;b=[];g=0;for(e in a)b[g++]=a[e];e=b}for(b=0;b<d.length;b++)this.set(d[b],e[b])}}q.prototype.f=0;q.prototype.p=0;
+function r(a){if(a.f!=a.a.length){for(var c=0,b=0;c<a.a.length;){var d=a.a[c];t(a.c,d)&&(a.a[b++]=d);c++}a.a.length=b}if(a.f!=a.a.length){for(var e={},b=c=0;c<a.a.length;)d=a.a[c],t(e,d)||(a.a[b++]=d,e[d]=1),c++;a.a.length=b}}q.prototype.get=function(a,c){return t(this.c,a)?this.c[a]:c};q.prototype.set=function(a,c){t(this.c,a)||(this.f++,this.a.push(a),this.p++);this.c[a]=c};function t(a,c){return Object.prototype.hasOwnProperty.call(a,c)};var u,v,w,x;function y(){return k.navigator?k.navigator.userAgent:null}x=w=v=u=f;var C;if(C=y()){var D=k.navigator;u=0==C.indexOf("Opera");v=!u&&-1!=C.indexOf("MSIE");w=!u&&-1!=C.indexOf("WebKit");x=!u&&!w&&"Gecko"==D.product}var E=v,F=x,G=w;var I;if(u&&k.opera){var J=k.opera.version;"function"==typeof J&&J()}else F?I=/rv\:([^\);]+)(\)|;)/:E?I=/MSIE\s+([^\);]+)(\)|;)/:G&&(I=/WebKit\/(\S+)/),I&&I.exec(y());function K(a,c){this.b=a||{e:"",prefix:"",host:"",scheme:""};this.h(c||{})}K.g=function(){return K.j?K.j:K.j=new K};i=K.prototype;i.h=function(a){this.d=new q(a)};i.o=function(){return this.d};i.k=function(a){this.b.e=a};i.n=function(){return this.b.e};i.l=function(a){this.b.prefix=a};
+function L(a,c,b,d){var e,g=RegExp(/\[\]$/);if(b instanceof Array)n(b,function(b,e){g.test(c)?d(c,b):L(a,c+"["+("object"===typeof b?e:"")+"]",b,d)});else if("object"===typeof b)for(e in b)L(a,c+"["+e+"]",b[e],d);else d(c,b)}i.i=function(a){var c=this.b.prefix+a;if(t(this.d.c,c))a=c;else if(!t(this.d.c,a))throw Error('The route "'+a+'" does not exist.');return this.d.get(a)};
+i.m=function(a,c,b){var d=this.i(a),e=c||{},g={},z;for(z in e)g[z]=e[z];var h="",s=!0,j="";n(d.tokens,function(b){if("text"===b[0])h=b[1]+h,s=f;else if("variable"===b[0]){var c=b[3]in d.defaults;if(f===s||!c||b[3]in e&&e[b[3]]!=d.defaults[b[3]]){if(b[3]in e){var c=e[b[3]],p=b[3];p in g&&delete g[p]}else if(c)c=d.defaults[b[3]];else{if(s)return;throw Error('The route "'+a+'" requires the parameter "'+b[3]+'".');}if(!(!0===c||f===c||""===c)||!s)p=encodeURIComponent(c).replace(/%2F/g,"/"),"null"===p&&
+null===c&&(p=""),h=b[1]+p+h;s=f}else c&&(b=b[3],b in g&&delete g[b])}else throw Error('The token type "'+b[0]+'" is not supported.');});""===h&&(h="/");n(d.hosttokens,function(a){var b;if("text"===a[0])j=a[1]+j;else if("variable"===a[0]){if(a[3]in e){b=e[a[3]];var c=a[3];c in g&&delete g[c]}else a[3]in d.defaults&&(b=d.defaults[a[3]]);j=a[1]+b+j}});h=this.b.e+h;"_scheme"in d.requirements&&this.b.scheme!=d.requirements._scheme?h=d.requirements._scheme+"://"+(j||this.b.host)+h:j&&this.b.host!==j?h=
+this.b.scheme+"://"+j+h:!0===b&&(h=this.b.scheme+"://"+this.b.host+h);var c=0,A;for(A in g)c++;if(0<c){var B,H=[];A=function(a,b){b="function"===typeof b?b():b;H.push(encodeURIComponent(a)+"="+encodeURIComponent(null===b?"":b))};for(B in g)L(this,B,g[B],A);h=h+"?"+H.join("&").replace(/%20/g,"+")}return h};l("fos.Router",K);l("fos.Router.setData",function(a){var c=K.g();c.k(a.base_url);c.h(a.routes);"prefix"in a&&c.l(a.prefix);c.b.host=a.host;c.b.scheme=a.scheme});K.getInstance=K.g;K.prototype.setRoutes=K.prototype.h;K.prototype.getRoutes=K.prototype.o;K.prototype.setBaseUrl=K.prototype.k;K.prototype.getBaseUrl=K.prototype.n;K.prototype.generate=K.prototype.m;K.prototype.setPrefix=K.prototype.l;K.prototype.getRoute=K.prototype.i;window.Routing=K.g();})();
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -10063,84 +10075,98 @@ this.context[key]=value;context[key]=value;return{chain:continue_chain,context:c
 	}
 }());
 
-
-$(function() {
-    var $wrap = $('.articleBarWrap');
-    var $bar = $wrap.find('.articleBar');
-    var $content = $('.articleContent');
+function ArticleControls() {
     
-    var blockWidth = 256;
-    var blockHeight = 216;
-    var museum;
-    var settings = {
-        language: 'en',
-    };
-    var menu = new TocMenu();
+    $content = $('.articleContent');
     
     init();
     
     function init() {
-        // Download article list
-        $.ajax({
-            url: "js/frontend/data.json",
-            success: function (data) {
-                museum = data;
-                
-                // Test: duplicate articles
-                for (var i = 0; i < 4; i++) {
-                    data.articles.forEach(function(article) {
-                        data.articles.push(article);
-                    });
-                }
-                
-                $bar.width(Math.ceil(data.articles.length/2) * blockWidth);
-                console.log($bar.get(0));
-                
-                // Render article bar
-                var tpl = twig({ data: $('#articleBar-tpl').html() });
-                $bar.html(tpl.render(data));
-                
-                // Link model data
-                $bar.find('.article').each(function(index) {
-                    $(this).data('article', museum.articles[index]);
-                });
-                
-                $bar.on('click', '.article', function() {
-                    render($(this).data('article'));
-                });
-                
-                render(museum.articles[0]);
-            },
-            error: function(a,b,c) {
-                console.log('Error getting data', a,b,c);
-                $bar.html('Er is iets mis gegaan bij het downloaden van de lijst met artikelen, we proberen het over 5 seconden opnieuw...');
-                setTimeout(document.location.reload, 5000);
-            }
+        $content.on('click', '.articleHeader .showFullscreen', function() {
+            var $articleHeader = $(this).closest('.articleHeader');
+            var $img = $articleHeader.find('img');
+            
+            var height = $articleHeader.is('.fullscreen') ? 400 : $img.height();
+            $articleHeader
+                .toggleClass('fullscreen')
+                .velocity({ maxHeight: height }, function() {
+                    $img.trigger('content-resized');
+                })
+            ;
         });
-
-        // Set viewport meta tag
-        $(window).on('resize', setMetaTag);
-        setMetaTag();
-        function setMetaTag() {
-            $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1');
-        }
+    }
+}
+function ArticleBar() {
+    var $bar = $('.articleBar');
+    
+    var blockWidth = 256;
+    var blockHeight = 216;
+    var museum;
+    
+    function init(loader, _museum) {
+        museum = _museum;
+        $bar.width(Math.ceil(museum.articles.length/2) * blockWidth);
         
-        FastClick.attach(document.body);
+        // Render article bar
+        var tpl = twig({ data: $('#articleBar-tpl').html() });
+        $bar.html(tpl.render(museum));
+        
+        // Link model museum
+        $bar.find('.article').each(function(index) {
+            $(this).data('article', museum.articles[index]);
+        });
+        
+        $bar.on('click', '.article', function() {
+            var $article = $(this);
+            $bar.find('.active').removeClass('active');
+            $article.addClass('active');
+            $article.trigger('article-selected', $article.data('article'));
+        });
+        
+        $bar.find('.article').eq(0).click();
+    }
+    
+    this.init = init;
+}
+function Loader(menu) {
+    var $wrap = $('.articleBarWrap');
+    var $bar = $wrap.find('.articleBar');
+    var $content = $('.articleContent');
+    
+    init();
+    
+    function init() {
+        $(document).on('article-selected', function(e, article) {
+            render(article);
+        });
     }
     
     function render(article) {
+        $content.velocity({ opacity: 0 });
+        
         loadArticle(article, function(html) {
             $article = $(html);
-            $content.empty().append($article);
+            $content.empty().append($article).velocity({ opacity: 1 });
             cleanArticle($content);
+            addExtras(article, $content);
             menu.extractToc(article, $content);
         });
     }
     
     function cleanArticle($article) {
-        /* Set extra classes based on inline style */
+        /* Infobox: Set extra classes based on inline style */
         $article.find('.infobox th[style~="background-color:"]').addClass('header');
         $article.find('.infobox td[style~="font-size:"]').addClass('subscript');
+        /* Remove "External links" section */
+        var index = $article.find('#External_links').closest('h2').index();
+        $article.children().slice(index).remove();
+        $('#toc').find('a[href="#External_links"]').closest('li').remove()
+    }
+    
+    function addExtras(article, $article) {
+        /* Article header */
+        var tpl = twig({ data: $('#articleHeader-tpl').html() });
+        $article.prepend(tpl.render({article: article}));
     }
     
     function loadArticle(article, callback) {
@@ -10163,7 +10189,6 @@ $(function() {
             },
             success: function(data) {
                 $.each(data.query.pages, function(pageId, page) {
-                    console.log(page);
                     result = page.revisions[0]['*'];
                 });
                 callback(result);
@@ -10175,13 +10200,77 @@ $(function() {
         });
         
     }
+    
+    this.render = render;
+}
+
+$(function() {
+    var $wrap = $('.articleBarWrap');
+    var $bar = $wrap.find('.articleBar');
+    var $content = $('.articleContent');
+
+    var self = this;    
+    var museum;
+    var settings = {
+        language: 'en',
+    };
+    var menu = new TocMenu();
+    var articleControls = new ArticleControls();
+    var articleBar = new ArticleBar();
+    var loader = new Loader(menu);
+    
+    init();
+    
+    function init() {
+        // Download article list
+        $.ajax({
+            url: Routing.generate('museum_articles'),
+            success: function (data) {
+                console.log(data);
+                museum = data;
+                
+                // Test: duplicate articles
+                for (var i = 0; i < 4; i++) {
+                    data.articles.forEach(function(article) {
+                        data.articles.push(article);
+                    });
+                }
+                
+                articleBar.init(loader, museum)
+            },
+            error: function(a,b,c) {
+                console.log('Error getting data', a,b,c);
+                $('body').empty().html('Er is iets mis gegaan bij het downloaden van de lijst met artikelen, we proberen het over 5 seconden opnieuw...');
+                setTimeout(function() { document.location.reload(); }, 5000);
+            }
+        });
+
+        // Set viewport meta tag
+        $(window).on('resize', setMetaTag);
+        setMetaTag();
+        function setMetaTag() {
+            $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1');
+        }
+        
+        FastClick.attach(document.body);
+    }
 });
 
+Routing.getWebPath = function() {
+    var url = Routing.getBaseUrl();
+    if (url.indexOf('.php') !== -1) {
+        parts = url.split('/');
+        parts.pop();
+        url = parts.join('/');
+    }
+    return url;
+}
 function TocMenu() {
     
     var $content = $('.articleContent');
     var $menu = $('.tocMenu');
     var $topBar = $('.topBar');
+    var topBarHeight = $topBar.height();
     var $menuButton = $topBar.find('.menuButton');
     var $carousel = $topBar.find('.carousel');
     var $window = $(window);
@@ -10193,7 +10282,8 @@ function TocMenu() {
     var curIndex = -1;
     var carousel = new TocCarousel();
     var visible = false;
-    
+    var contentScale = 0.5;
+        
     init();
     
     function init() {
@@ -10202,12 +10292,12 @@ function TocMenu() {
             var a = $(this);
             var pos = $content.find(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
-            carousel.settings.enabled = false;
+            carousel.enabled = false;
             $("html").velocity("scroll", { 
-                offset: (pos.top - $topBar.height()) + 'px', 
+                offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
                 complete: function() {
-                    carousel.settings.enabled = true;
+                    carousel.enabled = true;
                 },
             });
         });
@@ -10225,12 +10315,16 @@ function TocMenu() {
             findHeaderPositions();
         });
         
+        $document.on('content-resized', function() {
+            findHeaderPositions();
+        });
+        
         $window.on('scroll', onScroll);
     }
     
     function onScroll() {
-        var line = window.scrollY + 150;
-        // DEBUG: $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
+        var line = window.scrollY + topBarHeight + (visible ? contentScale : 1 ) * 100;
+        //DEBUG $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
         
         // Find closest header above line
         var i = items.length - 1;
@@ -10289,14 +10383,16 @@ function TocMenu() {
     function show() {
         visible = true;
         
-        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
         requestAnimationFrame(function() {
-            $content.velocity({ scale: 0.5, translateZ: 0 }, {
+            $content.velocity({ scale: contentScale, translateZ: 0 }, {
                 complete: function() {
                     $content.css('transform-origin', 'right top');
-                    window.scrollTo(window.scrollX, window.scrollY - 0.5 * offsetContent);
-                    findHeaderPositions();
+                    requestAnimationFrame(function() {
+                        window.scrollTo(window.scrollX, window.scrollY - (1 - contentScale) * offsetContent);
+                        findHeaderPositions();
+                    });
                 }
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
@@ -10306,15 +10402,12 @@ function TocMenu() {
     function hide() {
         visible = false;
         
-        var offsetContent = window.scrollY - $content.position().top + $topBar.height();
-        $content.css('transform-origin', 'right ' + (2 * offsetContent) + 'px');
-        
-        // var $test = $('<div/>').css({width: 100, height: 100, background: 'red', position: 'absolute', left: '50%', top: 100}).appendTo($content);
-        // $test.css({ top: (offsetContent) });
-        
-        window.scrollTo(window.scrollX, window.scrollY + offsetContent);
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
         
         requestAnimationFrame(function() {
+            window.scrollTo(window.scrollX, window.scrollY - offsetContent + (1/contentScale) * offsetContent);
+            
             $content.velocity({ scale: 1, translateZ: 0 }, {
                 complete: function() {
                     findHeaderPositions();
@@ -10338,19 +10431,18 @@ function TocCarousel() {
     var $sides = $carousel.find('.side');
     var $menuButton = $topBar.find('.menuButton');
     
+    var self = this;
+    self.enabled = true;
     var curIndex = -1;
     var targetIndex = -1;
     var curSideIndex = 1;
     var rotation = 0;
     var items = [];
-    var settings = {
-        enabled: true,
-    };
     var animating = false;
     var carouselHeight = 40;
     
     function showIndex(index, newItems) {
-        if (!settings.enabled) { return; }
+        if (!self.enabled) { return; }
         targetIndex = index;
         items = newItems;
         animate();
@@ -10374,7 +10466,7 @@ function TocCarousel() {
         }
         
         if (targetIndex == -1) {
-            label = '<img src="img/logo.png" alt="Wikipedia Collections" height="40px">';
+            label = '<img src="' + Routing.getWebPath() + '/img/logo.png" alt="Wikipedia Collections" height="40px">';
             $menuButton.velocity({rotateX: -91, scale: 0.6}, {duration: 200});
         } else {
             label = '<span class="header">' + items[targetIndex].text + '</span>';
@@ -10393,9 +10485,9 @@ function TocCarousel() {
         }});
     }
     
-    return {
-        showIndex: showIndex,
-        settings: settings,
-    };
+    
+    self.showIndex = showIndex;
+    return self;
 }
+
 //# sourceMappingURL=frontend.js.map

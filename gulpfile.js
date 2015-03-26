@@ -36,6 +36,7 @@ gulp.task('less_backend', function() {
 
 gulp.task('js_frontend', function() {
   gulp.src([
+      'web/bundles/fosjsrouting/js/router.js',
       'web/vendor/jquery/dist/jquery.js',
       'web/vendor/twig.min.js',
       'web/vendor/velocity.min.js',

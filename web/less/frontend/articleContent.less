@@ -2,17 +2,9 @@
 
 .articleContent {
     
-    @gutter: 60px;
+    @gutter: @articleGutter;
     margin-bottom: 100vh;
     transform: translate3d(0,0,0);
-    
-    // transition: linear 0.4s transform;
-    // transform-origin: right top;
-    
-    // .tocMenuOpen & {
-    //     // transform: translateX(@tocMenuWidth);
-    //     transform: scale(0.5);
-    // }
     
     .greenBox() {
         background: #f4f4f4;
@@ -27,7 +19,7 @@
     
     font-family: "PT Sans", sans-serif;
     font-size: 1.85rem;
-    padding: @gutter/2 @gutter @gutter @gutter;
+    padding: 0 @gutter @gutter @gutter;
     overflow: auto;
     
     p {
