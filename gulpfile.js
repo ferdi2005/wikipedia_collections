@@ -20,7 +20,6 @@ gulp.task('less_frontend', function() {
 
 gulp.task('less_backend', function() {
   gulp.src([
-      'web/vendor/bootstrap/dist/css/bootstrap.css',
       'web/css/crud.css',
       'web/less/backend/**/*.less',
     ])
@@ -39,6 +38,7 @@ gulp.task('js_frontend', function() {
       'web/bundles/fosjsrouting/js/router.js',
       'web/vendor/jquery/dist/jquery.js',
       'web/vendor/twig.min.js',
+      'web/vendor/jquery.twig.js',
       'web/vendor/velocity.min.js',
       'web/vendor/jquery.waitforimages.min.js',
       'web/vendor/fastclick.js',
@@ -54,6 +54,8 @@ gulp.task('js_frontend', function() {
 gulp.task('js_backend', function() {
   gulp.src([
       'web/vendor/jquery/dist/jquery.js',
+      'web/vendor/twig.min.js',
+      'web/vendor/jquery.twig.js',
       'web/js/backend/**/*.js',
     ])
     .pipe(sourcemaps.init())

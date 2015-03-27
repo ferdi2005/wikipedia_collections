@@ -1,0 +1,13 @@
+<div class="result articlePreview">
+    <div class="actions">
+        <button class="btn btn-primary add">Voeg toe</button>
+    </div>
+    <span class="title">
+        <i class="glyphicon glyphicon-new-window"></i> 
+        <a href="http://{{ language }}.wikipedia.org/wiki/{{ result.title }}" target="_blank">
+            {{ result.titlesnippet ? result.titlesnippet : result.title }}
+        </a>
+    </span>
+    
+    <div class="snippet">{{ result.snippet }}</div>
+</div>

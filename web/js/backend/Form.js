@@ -9,7 +9,7 @@ var Form = {
         protoString = Form.insertNames(protoString, names);
         
         // Append to target list
-        target.append('<div>' + protoString + '</div>');
+        return $('<div>' + protoString + '</div>').appendTo(target);
     },
     
     insertNames: function(protoString, names) {

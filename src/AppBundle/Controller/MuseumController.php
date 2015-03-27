@@ -137,8 +137,16 @@ class MuseumController extends BaseController
 
         $deleteForm = $this->createDeleteForm($id);
         
+        $origArticles = clone $museum->getArticles();
+        
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $em->flush();
+            
+            $origArticles
+                ->filter(function($a) use ($museum) { return !$museum->getArticles()->contains($a); })
+                ->map(function ($a) use ($em) { $em->remove($a); })
+            ;
             $em->flush();
 
             return $this->redirect($this->generateUrl('museum_edit', array('id' => $id)));

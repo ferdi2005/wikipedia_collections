@@ -34,7 +34,8 @@ class Museum
     
     /**
      * @var Article
-     * @ORM\OneToMany(targetEntity="Article", mappedBy="museum")
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="museum", cascade={"persist", "remove"})
+     * @ORM\OrderBy({ "position" = "asc" })
      * @Assert\Valid
      */
     private $articles;
@@ -43,6 +44,10 @@ class Museum
     
     public function __construct() {
         $this->articles = new ArrayCollection();
+    }
+    
+    public function __toString() {
+        return $this->name;
     }
     
     /* ============== Accessors ============== */
@@ -78,5 +83,44 @@ class Museum
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Add articles
+     *
+     * @param \AppBundle\Entity\Article $articles
+     * @return Museum
+     */
+    public function addArticle(\AppBundle\Entity\Article $articles)
+    {
+        if ($articles) {
+            $articles->setMuseum($this);
+        }
+        $this->articles[] = $articles;
+
+        return $this;
+    }
+
+    /**
+     * Remove articles
+     *
+     * @param \AppBundle\Entity\Article $articles
+     */
+    public function removeArticle(\AppBundle\Entity\Article $articles)
+    {
+        if ($articles) {
+            $articles->setMuseum(null);
+        }
+        $this->articles->removeElement($articles);
+    }
+
+    /**
+     * Get articles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getArticles()
+    {
+        return $this->articles;
     }
 }

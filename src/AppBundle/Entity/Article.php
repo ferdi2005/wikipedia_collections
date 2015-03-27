@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JsonSerializable;
 
 /**
  * Article
@@ -11,12 +12,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Article
+class Article implements JsonSerializable
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -24,28 +24,25 @@ class Article
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=1023)
+     * @ORM\Column(type="string", length=1023)
      */
     private $title;
 
     /**
      * @var integer
-     *
-     * @ORM\Column(name="pageId", type="bigint")
+     * @ORM\Column(type="bigint")
      */
     private $pageId;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="language", type="string", length=31)
+     * @ORM\Column(type="string", length=31)
      */
     private $language;
     
     /**
      * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
+     * @ORM\Column(type="integer")
      */
     private $position;
     
@@ -55,9 +52,46 @@ class Article
      */
     private $museum;
     
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=1023, nullable=true)
+     */
+    private $imageTitle;
+    
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=2047, nullable=true)
+     */
+    private $smallImage;
+    
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=2047, nullable=true)
+     */
+    private $largeImage;
+    
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     */
+    private $plainContent;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'pageId' => $this->pageId,
+            'language' => $this->language,
+            'position' => $this->position,
+            'imageTitle' => $this->imageTitle,
+            'smallImage' => $this->smallImage,
+            'largeImage' => $this->largeImage,
+        ];
     }
     
     /* ============== Accessors ============== */
@@ -185,5 +219,97 @@ class Article
     public function getMuseum()
     {
         return $this->museum;
+    }
+
+    /**
+     * Set smallImage
+     *
+     * @param string $smallImage
+     * @return Article
+     */
+    public function setSmallImage($smallImage)
+    {
+        $this->smallImage = $smallImage;
+
+        return $this;
+    }
+
+    /**
+     * Get smallImage
+     *
+     * @return string 
+     */
+    public function getSmallImage()
+    {
+        return $this->smallImage;
+    }
+
+    /**
+     * Set largeImage
+     *
+     * @param string $largeImage
+     * @return Article
+     */
+    public function setLargeImage($largeImage)
+    {
+        $this->largeImage = $largeImage;
+
+        return $this;
+    }
+
+    /**
+     * Get largeImage
+     *
+     * @return string 
+     */
+    public function getLargeImage()
+    {
+        return $this->largeImage;
+    }
+
+    /**
+     * Set plainContent
+     *
+     * @param string $plainContent
+     * @return Article
+     */
+    public function setPlainContent($plainContent)
+    {
+        $this->plainContent = $plainContent;
+
+        return $this;
+    }
+
+    /**
+     * Get plainContent
+     *
+     * @return string 
+     */
+    public function getPlainContent()
+    {
+        return $this->plainContent;
+    }
+
+    /**
+     * Set imageTitle
+     *
+     * @param string $imageTitle
+     * @return Article
+     */
+    public function setImageTitle($imageTitle)
+    {
+        $this->imageTitle = $imageTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get imageTitle
+     *
+     * @return string 
+     */
+    public function getImageTitle()
+    {
+        return $this->imageTitle;
     }
 }

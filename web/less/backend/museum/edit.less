@@ -1,0 +1,84 @@
+.museumEdit {
+    .searchBar {
+        background: #D5E0F5;
+        padding: 5px 0 15px;
+        border-radius: 4px;
+        margin: 20px 0;
+        
+        .searchResults {
+            margin: 20px 0 0;
+            
+        }
+    }
+    
+    .article {
+        margin-left: 20px;
+    }
+    
+    .articlePreview {
+        @height: 52px;
+         
+        clear: both;
+        padding: 5px 10px;
+        overflow: auto;
+        line-height: 30px;
+        border-radius: 4px;
+        line-height: @height;
+        
+        &:nth-child(2n-1) {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .title {
+            i {
+                font-size: 13px;
+            }
+            a {
+                color: black;
+                font-size: 16px;
+                
+                .searchmatch {
+                    font-weight: bold;
+                }
+                
+                &:hover {
+                    color: blue;
+                    text-decoration: underline;
+                }
+            }
+        }
+        
+        .ordering {
+            display: inline-block;
+            margin: 0 10px;
+        }
+        
+        img {
+            display: inline-block;
+            margin: 0 10px;
+            max-height: @height;
+        }
+        
+        .actions {
+            float: right;
+        }
+        
+        .snippet {
+            font-size: 12px;
+            line-height: 15px;
+            margin: 5px 0;
+            color: #777777;
+        }
+        .snippet:after {
+            content: '...';
+        }
+    }
+    
+    .articlePreviews {
+        .articlePreview {
+            &:nth-child(2n-1) {
+                background-color: rgba(0,0,0,0.1);
+            }
+        }
+    }
+}

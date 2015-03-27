@@ -40,9 +40,6 @@ function Loader(menu) {
     }
     
     function loadArticle(article, callback) {
-        var url = 'http://' + article.language + '.wikipedia.org' +
-            '/w/api.php?action=query&prop=revisions&format=json&rvprop=content&rvparse=&titles=' + article.title;
-        
         var result = null;
         $.ajax({
             url: 'https://' + article.language + '.wikipedia.org/w/api.php',
@@ -68,7 +65,6 @@ function Loader(menu) {
                 callback(null);
             }
         });
-        
     }
     
     this.render = render;

@@ -35,6 +35,7 @@ class Museum
     /**
      * @var Article
      * @ORM\OneToMany(targetEntity="Article", mappedBy="museum", cascade={"persist", "remove"})
+     * @ORM\OrderBy({ "position" = "asc" })
      * @Assert\Valid
      */
     private $articles;
@@ -92,6 +93,9 @@ class Museum
      */
     public function addArticle(\AppBundle\Entity\Article $articles)
     {
+        if ($articles) {
+            $articles->setMuseum($this);
+        }
         $this->articles[] = $articles;
 
         return $this;
@@ -104,6 +108,9 @@ class Museum
      */
     public function removeArticle(\AppBundle\Entity\Article $articles)
     {
+        if ($articles) {
+            $articles->setMuseum(null);
+        }
         $this->articles->removeElement($articles);
     }
 

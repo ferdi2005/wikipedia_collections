@@ -1,9 +1,49 @@
 {% extends '::baseAdmin.html.twig' %}
 
+{% block bodyClass %}museumEdit{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="template/twig" id="searchResult-tpl" data-twig-id="AppBundle:Museum:_searchResult.html.twig">
+        {{ source('AppBundle:Museum:_searchResult.html.twig') }}
+    </script>
+    
+    <script type="template/twig" id="articlePreview-tpl", data-twig-id="AppBundle:Article:_preview.html.twig">
+        {{ source('AppBundle:Article:_preview.html.twig') }}
+    </script>
+    
+    <script>
+        window.articles = {{ museum.articles.toArray|json_encode|raw}};
+    </script>
+{% endblock %}
+
 {% block content -%}
     <h1>Museum edit</h1>
 
     {{ form(form) }}
+    
+    <div class="row searchBar">
+        <div class="col-sm-12">
+            <label for="search" class="control-label">Zoek artikelen om toe te voegen</label>
+        </div>
+        <div class="col-sm-3">
+            <select name="" id="searchLang" class="form-control"></select>
+        </div>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input id="search" type="text" class="form-control" placeholder="Zoek op naam artikel">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button">Zoek</button>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="searchResults"></div>
+        </div>
+    </div>
+    
+    <div class="articlePreviews"></div>
 
     <ul class="record_actions">
         <li>

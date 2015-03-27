@@ -1,0 +1,27 @@
+<div class="articlePreview">
+    <div class="ordering">
+        <div class="btn-group">
+            <a class="btn btn-default up" title="Verplaats omhoog">
+                <i class="glyphicon glyphicon-arrow-up"></i>
+            </a>
+            <a class="btn btn-default down" title="Verplaats omlaag">
+                <i class="glyphicon glyphicon-arrow-down"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <a class="btn btn-default">Kies afbeelding</a>
+        <a class="btn btn-danger remove">Verwijder</a>
+    </div>
+    
+    {% if article.smallImage %}
+        <img src="{{ article.smallImage }}">
+    {% endif %}
+    <span class="title">
+        <i class="glyphicon glyphicon-new-window"></i> 
+        <a href="http://{{ language }}.wikipedia.org/wiki/{{ article.title }}" target="_blank">
+            {{ article.titlesnippet ? article.titlesnippet : article.title }}
+        </a>
+    </span>
+</div>
