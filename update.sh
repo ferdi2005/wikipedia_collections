@@ -1,6 +1,6 @@
 #!/bin/bash
 
-svn update
+git pull
 ./cache_clear.sh
 #./assetic_dump.sh
 ./permissions_fix.sh
