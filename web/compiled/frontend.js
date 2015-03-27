@@ -10290,7 +10290,7 @@ $(function() {
         
         articleBar.init(loader, museum);
         
-        // setTimeout(startIdle, 2000);
+        setTimeout(startIdle, 2000);
 
         // Set viewport meta tag
         $(window).on('resize', setMetaTag);
