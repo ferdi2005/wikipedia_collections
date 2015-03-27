@@ -3,7 +3,9 @@ function TocMenu() {
     var $content = $('.articleContent');
     var $menu = $('.tocMenu');
     var $topBar = $('.topBar');
+    var topBarHeight = $topBar.height();
     var $menuButton = $topBar.find('.menuButton');
+    var $carousel = $topBar.find('.carousel');
     var $window = $(window);
     var $document = $(document);
     var windowHeight = $window.height();
@@ -13,29 +15,32 @@ function TocMenu() {
     var curIndex = -1;
     var carousel = new TocCarousel();
     var visible = false;
-    
+    var contentScale = 0.5;
+        
     init();
     
     function init() {
         $menu.on('click', 'a', function(e) {
             e.preventDefault();
             var a = $(this);
-            var pos = $content.find(a.attr('href')).position();
+            var pos = findHeader(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
-            carousel.settings.enabled = false;
-            $("html").velocity("scroll", { 
-                offset: (pos.top - $topBar.height()) + 'px', 
+            carousel.enabled = false;
+            $('html').velocity('scroll', { 
+                offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
                 complete: function() {
-                    carousel.settings.enabled = true;
+                    carousel.enabled = true;
                 },
             });
-            hide();
         });
         
         $menuButton.velocity({rotateX: -91}, {duration: 0});
-        $menuButton.on('click', function() {
+        $menuButton.add($carousel).on('click', function() {
             if (visible) { hide(); } else { show(); }
+        });
+        $content.on('click', function() {
+            if (visible) { hide(); }
         });
         
         $window.on('resize', function() {
@@ -43,17 +48,21 @@ function TocMenu() {
             findHeaderPositions();
         });
         
+        $document.on('content-resized', function() {
+            findHeaderPositions();
+        });
+        
         $window.on('scroll', onScroll);
     }
     
     function onScroll() {
-        var line = window.scrollY + 150;
-        // DEBUG: $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
+        var line = window.scrollY + topBarHeight + (visible ? contentScale : 1 ) * 100;
+        //DEBUG $('.line').css({position: 'absolute', borderTop: '1px solid red', width: '100%', top: line});
         
         // Find closest header above line
         var i = items.length - 1;
         for (; i >= 0; i--) {
-            if (items[i].pos.top < line) { break; }
+            if (items[i].pos && items[i].pos.top < line) { break; }
         }
         if (i != curIndex) {
             $menu.find('.active').removeClass('active');
@@ -98,20 +107,65 @@ function TocMenu() {
     
     function findHeaderPositions() {
         items.forEach(function(item) {
-            item.pos = $content.find(item.href).position();
+            var target = findHeader(item.href);
+            if (target.length) {
+                item.pos = target.position();
+            }
         });
         
         documentHeight = $document.height();
     }
     
+    function findHeader(id) {
+        var target = $();
+        
+        // jQuery fails for strange id's, prefer  native function
+        if (id[0] === '#') {
+            target = $(document.getElementById(id.substr(1)));
+        }
+        
+        if (target.length === 0) {
+            target = $content.find(id);
+        }
+        
+        return target;
+    }
+    
     function show() {
         visible = true;
-        $menu.velocity('stop').velocity({translateX: $menu.outerWidth(), translateZ: 0.001});
+        
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        requestAnimationFrame(function() {
+            $content.velocity({ scale: contentScale, translateZ: 0 }, {
+                complete: function() {
+                    $content.css('transform-origin', 'right top');
+                    requestAnimationFrame(function() {
+                        window.scrollTo(window.scrollX, window.scrollY - (1 - contentScale) * offsetContent);
+                        findHeaderPositions();
+                    });
+                }
+            });
+            $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
+        })
     }
     
     function hide() {
         visible = false;
-        $menu.velocity('stop').velocity({translateX: 0, translateZ: 0.0001});
+        
+        var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
+        
+        requestAnimationFrame(function() {
+            window.scrollTo(window.scrollX, window.scrollY - offsetContent + (1/contentScale) * offsetContent);
+            
+            $content.velocity({ scale: 1, translateZ: 0 }, {
+                complete: function() {
+                    findHeaderPositions();
+                }
+            });
+            $menu.velocity({ translateX: -1, translateZ: 0 });
+        })
     }
     
     return {
@@ -128,19 +182,18 @@ function TocCarousel() {
     var $sides = $carousel.find('.side');
     var $menuButton = $topBar.find('.menuButton');
     
+    var self = this;
+    self.enabled = true;
     var curIndex = -1;
     var targetIndex = -1;
     var curSideIndex = 1;
     var rotation = 0;
     var items = [];
-    var settings = {
-        enabled: true,
-    };
     var animating = false;
     var carouselHeight = 40;
     
     function showIndex(index, newItems) {
-        if (!settings.enabled) { return; }
+        if (!self.enabled) { return; }
         targetIndex = index;
         items = newItems;
         animate();
@@ -164,7 +217,7 @@ function TocCarousel() {
         }
         
         if (targetIndex == -1) {
-            label = '<img src="img/logo.png" alt="Wikipedia Collections" height="40px">';
+            label = '<img src="' + Routing.getWebPath() + '/img/logo.png" alt="Wikipedia Collections" height="40px">';
             $menuButton.velocity({rotateX: -91, scale: 0.6}, {duration: 200});
         } else {
             label = '<span class="header">' + items[targetIndex].text + '</span>';
@@ -183,8 +236,7 @@ function TocCarousel() {
         }});
     }
     
-    return {
-        showIndex: showIndex,
-        settings: settings,
-    };
+    
+    self.showIndex = showIndex;
+    return self;
 }

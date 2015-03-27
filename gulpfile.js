@@ -20,7 +20,6 @@ gulp.task('less_frontend', function() {
 
 gulp.task('less_backend', function() {
   gulp.src([
-      'web/vendor/bootstrap/dist/css/bootstrap.css',
       'web/css/crud.css',
       'web/less/backend/**/*.less',
     ])
@@ -36,8 +35,10 @@ gulp.task('less_backend', function() {
 
 gulp.task('js_frontend', function() {
   gulp.src([
+      'web/bundles/fosjsrouting/js/router.js',
       'web/vendor/jquery/dist/jquery.js',
       'web/vendor/twig.min.js',
+      'web/vendor/jquery.twig.js',
       'web/vendor/velocity.min.js',
       'web/vendor/jquery.waitforimages.min.js',
       'web/vendor/fastclick.js',
@@ -53,7 +54,10 @@ gulp.task('js_frontend', function() {
 gulp.task('js_backend', function() {
   gulp.src([
       'web/vendor/jquery/dist/jquery.js',
-      'web/js/backend/**/*.js',
+      'web/vendor/twig.min.js',
+      'web/vendor/jquery.twig.js',
+      'web/vendor/jquery.fwmodal.js',
+      'web/js/backend/*.js',
     ])
     .pipe(sourcemaps.init())
       .pipe(concat('backend.js'))
@@ -67,7 +71,8 @@ gulp.task('watch', function() {
 
     gulp.watch('web/less/frontend/**/*.less', ['less_frontend']);
     gulp.watch('web/less/backend/**/*.less', ['less_backend']);
-    gulp.watch('web/js/**/*.js', ['js']);
+    gulp.watch('web/js/backend/**/*.js', ['js_backend']);
+    gulp.watch('web/js/frontend/**/*.js', ['js_frontend']);
 
     gulp.watch([
       'src/**/*',
@@ -76,6 +81,7 @@ gulp.task('watch', function() {
       'web/compiled/**/*.css',
       'web/css/**/*.css',
       'web/compiled/**/*.js',
+      'web/js/backend/museum/*.js',
       'web/img/**/*',
     ], livereload.reload);
     

@@ -94,28 +94,6 @@ class MuseumController extends BaseController
     }
 
     /**
-     * Finds and displays a Museum entity.
-     *
-     * @Route("/{id}", name="museum_show")
-     * @Method("GET")
-     * @Template()
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $museum = $em->getRepository('AppBundle:Museum')->find($id);
-        $this->checkExists($museum);
-
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'museum'      => $museum,
-            'delete_form' => $deleteForm->createView(),
-        );
-    }
-
-    /**
      * Displays a form to edit an existing Museum entity.
      *
      * @Route("/{id}/edit", name="museum_edit")
@@ -137,8 +115,16 @@ class MuseumController extends BaseController
 
         $deleteForm = $this->createDeleteForm($id);
         
+        $origArticles = clone $museum->getArticles();
+        
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $em->flush();
+            
+            $origArticles
+                ->filter(function($a) use ($museum) { return !$museum->getArticles()->contains($a); })
+                ->map(function ($a) use ($em) { $em->remove($a); })
+            ;
             $em->flush();
 
             return $this->redirect($this->generateUrl('museum_edit', array('id' => $id)));

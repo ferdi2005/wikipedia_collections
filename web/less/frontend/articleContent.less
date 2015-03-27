@@ -2,8 +2,9 @@
 
 .articleContent {
     
-    @gutter: 60px;
-    margin-bottom: 100vh;
+    @gutter: @articleGutter;
+    margin-bottom: 90vh;
+    transform: translate3d(0,0,0);
     
     .greenBox() {
         background: #f4f4f4;
@@ -18,7 +19,7 @@
     
     font-family: "PT Sans", sans-serif;
     font-size: 1.85rem;
-    padding: @gutter/2 @gutter @gutter @gutter;
+    padding: 0 @gutter @gutter @gutter;
     overflow: auto;
     
     p {

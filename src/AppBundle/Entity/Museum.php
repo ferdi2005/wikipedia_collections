@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use JsonSerializable;
 
 /**
  * Museum
@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Table()
  * @ORM\Entity
  */
-class Museum
+class Museum implements JsonSerializable
 {
     /**
      * @var integer
@@ -35,6 +35,7 @@ class Museum
     /**
      * @var Article
      * @ORM\OneToMany(targetEntity="Article", mappedBy="museum", cascade={"persist", "remove"})
+     * @ORM\OrderBy({ "position" = "asc" })
      * @Assert\Valid
      */
     private $articles;
@@ -47,6 +48,14 @@ class Museum
     
     public function __toString() {
         return $this->name;
+    }
+    
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'articles' => $this->articles->toArray(),
+        ];
     }
     
     /* ============== Accessors ============== */
@@ -92,6 +101,9 @@ class Museum
      */
     public function addArticle(\AppBundle\Entity\Article $articles)
     {
+        if ($articles) {
+            $articles->setMuseum($this);
+        }
         $this->articles[] = $articles;
 
         return $this;
@@ -104,6 +116,9 @@ class Museum
      */
     public function removeArticle(\AppBundle\Entity\Article $articles)
     {
+        if ($articles) {
+            $articles->setMuseum(null);
+        }
         $this->articles->removeElement($articles);
     }
 

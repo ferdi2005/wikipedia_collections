@@ -1,39 +1,41 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Wikipedia Collections</title>
+    
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta id="viewport" name="viewport" content="width=768, initial-scale=1">
     
         <link href='http://fonts.googleapis.com/css?family=Lora:400,700|PT+Sans:400,700,400italic,700italic&subset=cyrillic,cyrillic-ext,latin,latin-ext' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="compiled/frontend.css" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('compiled/frontend.css') }}" type="text/css" />
         
-        <script type="text/javascript" src="compiled/frontend.js"></script>
+        <script>
+            window.museum = {{ museum|json_encode|raw }};
+        </script>
+        <script type="text/javascript" src="{{ asset('compiled/frontend.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         
         <script type="template/twig" id="articleBar-tpl">
-            {% for i in range(0, articles.length-1, 2) %}
-                <div class="twoWrap">
-                    {% for j in 0..1 %}
-                        {% set article = articles[i+j] %}
-                        <div class="article" style="background-image: url('{{ article.image }}');">
-                            <h4>{{ article.humanTitle }}</h4>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+            {{ source('FrontBundle:Museum:_articleBar.html.twig') }}
         </script>
-    </head>
+        
+        <script type="template/twig" id="articleHeader-tpl">
+            {{ source('FrontBundle:Museum:_articleHeader.html.twig') }}
+        </script>
+        
     <body>
         <div class="topBar">
             <div class="carousel">
                 <div class="side top">Top</div>
                 
                 <div class="side front">
-                    <img src="img/logo.png" alt="Wikipedia Collections" height="40px">
+                    <img src="{{ asset('img/logo.png') }}" alt="Wikipedia Collections" height="40px">
                 </div>
                 
                 <div class="side bottom">Bottom</div>
                 
                 <div class="side back">Back</div>
-                
             </div>
             <div class="menuButton"></div>
         </div>
