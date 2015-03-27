@@ -10,6 +10,9 @@
         <link href='http://fonts.googleapis.com/css?family=Lora:400,700|PT+Sans:400,700,400italic,700italic&subset=cyrillic,cyrillic-ext,latin,latin-ext' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{{ asset('compiled/frontend.css') }}" type="text/css" />
         
+        <script>
+            window.museum = {{ museum|json_encode|raw }};
+        </script>
         <script type="text/javascript" src="{{ asset('compiled/frontend.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
         

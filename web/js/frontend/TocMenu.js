@@ -23,7 +23,7 @@ function TocMenu() {
         $menu.on('click', 'a', function(e) {
             e.preventDefault();
             var a = $(this);
-            var pos = $content.find(a.attr('href')).position();
+            var pos = findHeader(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
             carousel.enabled = false;
             $('html').velocity('scroll', { 
@@ -62,7 +62,7 @@ function TocMenu() {
         // Find closest header above line
         var i = items.length - 1;
         for (; i >= 0; i--) {
-            if (items[i].pos.top < line) { break; }
+            if (items[i].pos && items[i].pos.top < line) { break; }
         }
         if (i != curIndex) {
             $menu.find('.active').removeClass('active');
@@ -107,10 +107,28 @@ function TocMenu() {
     
     function findHeaderPositions() {
         items.forEach(function(item) {
-            item.pos = $content.find(item.href).position();
+            var target = findHeader(item.href);
+            if (target.length) {
+                item.pos = target.position();
+            }
         });
         
         documentHeight = $document.height();
+    }
+    
+    function findHeader(id) {
+        var target = $();
+        
+        // jQuery fails for strange id's, prefer  native function
+        if (id[0] === '#') {
+            target = $(document.getElementById(id.substr(1)));
+        }
+        
+        if (target.length === 0) {
+            target = $content.find(id);
+        }
+        
+        return target;
     }
     
     function show() {

@@ -9241,6 +9241,101 @@ this.context[key]=value;context[key]=value;return{chain:continue_chain,context:c
     };
 })( jQuery );
 /**
+ * Animate in modal window
+ * v 1.2
+ */
+(function( $ ){
+
+  $.fn.fwModal = function(options) {
+
+		var $self = this;
+		var offset = $self.offsetParent().offset();
+		
+		if (options !== undefined) {
+			$self.data('options', options);
+		} else {
+			options = $self.data('options');
+		}
+
+		var settings = $.extend( {
+			duration			: 'fast',			// Milliseconds scroll animation takes
+			top					: undefined,		// Final top position for the modal, calculated automatically when undefined
+			left				: undefined,		// Final left position for the modal, calculated automatically when undefined
+			clickToClose		: true,				// Allow clicking the backdrop to close modal
+			closed				: function() {},	// Callback when the modal has closed
+			complete			: function() {}		// Callback that is called when the modal is completely shown
+		}, (options ? options : {}));
+
+		if ($self.is(':hidden')) {
+			init();
+		} else {
+			remove();
+		}
+
+		function init() {
+
+			var calculatedLeft = $(window).width() / 2 - $self.outerWidth() / 2;
+			var left = settings.left !== undefined ? settings.left : calculatedLeft;
+
+			$self.css({
+				position: 'absolute',
+				left: left - offset.left,
+				top: $(window).scrollTop() - $self.outerHeight() - offset.top,
+				zIndex: 1000,
+				display: 'block'
+			});
+
+			$backdrop = $('<div class="backdrop shield" />');
+			$backdrop.css({
+				position: 'fixed',
+				left: 0,
+				right: 0,
+				top: 0,
+				bottom: 0,
+				zIndex: 999,
+				opacity: 0
+			});
+			$backdrop.insertBefore($self);
+			$self.data('fw-modal-backdrop', $backdrop);
+			if (settings.clickToClose) {
+				$backdrop.click(remove);
+			}
+
+			$backdrop.animate({opacity: 1}, settings.duration, function() {
+
+				var calculatedTop = Math.max(0, $(window).height() / 2 - $self.outerHeight() / 2);
+				var top = settings.top !== undefined ? settings.top : calculatedTop;
+
+				$self.animate({
+					top: ($(window).scrollTop() + top) - offset.top
+				}, settings.duration, settings.complete);
+			});
+		}
+
+		function remove() {
+			$backdrop = $self.data('fw-modal-backdrop');
+			
+			$self.animate(
+				{ top: $(window).scrollTop() - $self.outerHeight() - offset.top },
+				settings.duration,
+				function() {
+					$self.hide();
+					settings.closed();
+				}
+			);
+
+			if ($backdrop) {
+				$backdrop.animate({ opacity: 0 }, settings.duration, function() {
+					$backdrop.remove();
+				});
+			}
+		}
+
+	return $self;
+	
+  };
+})( jQuery );
+/**
  * Symfony form helper functions.
  */
 var Form = {
@@ -9289,7 +9384,46 @@ var Form = {
     },
     
 };
+function wikiImagePicker(language, title, callback) {
+    var modal = $('<div class="fwModal wikiImagePicker" />').appendTo('body').hide().fwModal({
+        closed: function() {
+            modal.remove();
+        }
+    });
+    
+    modal.on('click', 'img', function() {
+        var $img = $(this);
+        var img = $img.data('img');
+        modal.fwModal();
+        callback(img);
+    });
+    
+    wikipedia.getImages(language, title, function(language, images) {
+        wikipedia.getThumbs(images.map(function(i) { return i.cleanedTitle; }), function(imgs) {
+            $.each(imgs, function(_, img) {
+                if (!img.image_small) { return; }
+                
+                $img = $('<img />')
+                    .attr('src', img.image_small)
+                    .data('img', img)
+                    .appendTo(modal)
+                ;
+            });
+        });
+        // callback(result);
+    }, function() {
+        modal.fwModal();
+        alert('Er is iets fout gegaan bij het ophalen van de afbeeldingenlijst');
+        callback(null);
+    });
+}
 function Wikipedia() {
+    
+    /* Public API: */
+    this.search = search;
+    this.getArticle = getArticle;
+    this.getImages = getImages;
+    this.getThumbs = getThumbs;
     
     function search(language, query, success, error) {
         executeQuery(language, {
@@ -9337,9 +9471,57 @@ function Wikipedia() {
             action: 'query',
             prop: 'images',
             format: 'json',
+            imlimit: 200,
             titles: title,
-        }, success, error);
+        }, function(language, data) {
+            var page = data.query.pages[Object.keys(data.query.pages)[0]];
+            var images = page.images;
+            images.forEach(function(img) {
+                img.cleanedTitle = img.title;
+                var index = img.title.indexOf(':');
+                if (index !== -1) {
+                    img.cleanedTitle = 'File' + img.title.substr(index);
+                }
+            })
+            success(language, images);
+        }, error);
     }
+    
+    function getThumbs(titles, callback) {
+        var count = 0;
+        var result = {};
+        
+        [
+            {size: 'small', pithumbsize: '512x512'}, 
+            {size: 'large', pithumbsize: '2048x2048'}, 
+        ].forEach(function(params) {
+            executeQuery('commons', {
+                action: 'query',
+                prop: 'pageimages',
+                format: 'json',
+                piprop: 'thumbnail',
+                pilimit: 200,
+                pithumbsize: params.pithumbsize,
+                titles: titles.join('|'),
+            }, function(language, data) {
+                count++;
+                
+                $.each(data.query.pages, function(i, page) {
+                    if (!result[page.title]) {
+                        result[page.title] = { title: page.title };
+                    }
+                    result[page.title]['image_' + params.size] = page.thumbnail.source;
+                });
+                
+                if (count == 2) { callback(result); }
+            }, function() {
+                count++;
+                
+                if (count == 2) { callback(result); }
+            });
+        })
+    }
+    
     
     function executeQuery(language, data, success, error) {
         data['continue'] = data['continue'] || '';
@@ -9355,150 +9537,7 @@ function Wikipedia() {
             error: error
         });
     }
-    
-    this.search = search;
-    this.getArticle = getArticle;
 }
 
 window.wikipedia = new Wikipedia();
-$(function() {
-    var $form = $('form');
-    var $submitBtn = $form.find('button[type=submit]');
-    var $articles = $('.articles');
-    var $previews = $('.articlePreviews');
-    var $searchBar = $('.searchBar');
-    var $search = $searchBar.find('#search');
-    var $searchLang = $searchBar.find('#searchLang');
-    var $searchBtn = $searchBar.find('button');
-    var $searchResults = $searchBar.find('.searchResults').hide();
-    var searchTimeout;
-    
-    var languages = [
-        { code: 'nl', label: 'Nederlands' },
-        { code: 'en', label: 'Engels' },
-        { code: 'de', label: 'Duits' },
-    ];
-    
-    // $articles.hide();
-    
-    init();
-    
-    function init() {
-        $searchBar.insertAfter($articles);
-        $previews.insertAfter($articles);
-        
-        languages.forEach(function(lang) {
-            $('<option />').attr('value', lang.code).text(lang.label + 'e Wikipedia').appendTo($searchLang);
-        });
-        
-        $searchBtn.on('click', search);
-        $search.on('keyup', function() {
-            if ($search.val().length > 4) {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(search, 400);
-            } else {
-                $searchResults.hide();
-            }
-        });
-        
-        $previews.on('click', '.btn.remove', function() {
-            var preview = $(this).closest('.articlePreview');
-            var form = preview.data('form');
-            window.articles.splice(form.index());
-            form.remove();
-            preview.remove();
-            updatePositions();
-        });
-        
-        $previews.on('click', '.btn.up', function() {
-            var preview = $(this).closest('.articlePreview');
-            preview.insertBefore(preview.prev());
-            updatePositions();
-        });
-        
-        $previews.on('click', '.btn.down', function() {
-            var preview = $(this).closest('.articlePreview');
-            console.log(preview);
-            preview.insertAfter(preview.next());
-            updatePositions();
-        });
-        
-        showArticles();
-        updatePositions();
-        
-        if (localStorage.debug) { 
-            // $search.val('Schoonhoven').trigger('keyup'); 
-            // addArticle('nl', 'Schoonhoven');
-        }
-    }
-    
-    function updatePositions() {
-        $previews.children().each(function(i) {
-            $(this).data('form').find('[id$=position]').val(i + 1);
-        });
-    }
-    
-    function search() {
-        wikipedia.search($searchLang.val(), $search.val(), 
-            showSearchResult,
-            function() {
-                alert('Er is een fout opgetreden bij het doorzoeken van wikipedia.');
-            }
-        );
-    }
-    
-    function showSearchResult(language, data) {
-        $searchResults.empty().show();
-        data.query.search.forEach(function(result) {
-            var $result = $('#searchResult-tpl').twig({language: language, result: result}).appendTo($searchResults);
-            $result.find('button.add').on('click', function(e) {
-                e.preventDefault();
-                $searchResults.hide().empty();
-                addArticle(language, result.title);
-            });
-        });
-    }
-    
-    function addArticle(language, title) {
-        $submitBtn.attr('disabled', 'disabled');
-        $article = Form.clonePrototype($articles, $articles);
-        
-        wikipedia.getArticle(language, title, 
-            function(language, article) {
-                $submitBtn.removeAttr('disabled');
-                
-                $article.find('[id$=plainContent]').val(article.plainContent);
-                $article.find('[id$=pageId]').val(article.pageId);
-                $article.find('[id$=title]').val(article.title);
-                $article.find('[id$=language]').val(article.language);
-                
-                window.articles.push(article);
-                showArticle(article);
-                
-                updatePositions();
-            }, 
-            function() {
-                $submitBtn.removeAttr('disabled');
-                $article.remove();
-                alert('Er is een fout opgetreden bij het toevoegen van het artikel.');
-            }
-        );
-    }
-    
-    function showArticles() {
-        $articles.children().each(function() {
-            var $form = $(this);
-            showArticle(window.articles[$form.index()]);
-        });
-    }
-    
-    function showArticle(article) {
-        $('#articlePreview-tpl')
-            .twig({ article: article })
-            .appendTo($previews)
-            .data('form', $form)
-        ;
-    }
-    
-})
 //# sourceMappingURL=backend.js.map

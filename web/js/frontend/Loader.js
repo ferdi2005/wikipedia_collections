@@ -28,9 +28,11 @@ function Loader(menu) {
         $article.find('.infobox th[style~="background-color:"]').addClass('header');
         $article.find('.infobox td[style~="font-size:"]').addClass('subscript');
         /* Remove "External links" section */
-        var index = $article.find('#External_links').closest('h2').index();
-        $article.children().slice(index).remove();
-        $('#toc').find('a[href="#External_links"]').closest('li').remove()
+        ['#External_links', '#Externe_links'].forEach(function(externalLinks) {
+            var index = $article.find(externalLinks).closest('h2').index();
+            $article.children().slice(index).remove();
+            $('#toc').find('a[href="' + externalLinks + '"]').closest('li').remove()
+        });
     }
     
     function addExtras(article, $article) {

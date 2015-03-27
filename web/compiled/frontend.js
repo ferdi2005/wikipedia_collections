@@ -10224,9 +10224,11 @@ function Loader(menu) {
         $article.find('.infobox th[style~="background-color:"]').addClass('header');
         $article.find('.infobox td[style~="font-size:"]').addClass('subscript');
         /* Remove "External links" section */
-        var index = $article.find('#External_links').closest('h2').index();
-        $article.children().slice(index).remove();
-        $('#toc').find('a[href="#External_links"]').closest('li').remove()
+        ['#External_links', '#Externe_links'].forEach(function(externalLinks) {
+            var index = $article.find(externalLinks).closest('h2').index();
+            $article.children().slice(index).remove();
+            $('#toc').find('a[href="' + externalLinks + '"]').closest('li').remove()
+        });
     }
     
     function addExtras(article, $article) {
@@ -10284,29 +10286,11 @@ $(function() {
     init();
     
     function init() {
-        // Download article list
-        $.ajax({
-            url: Routing.generate('museum_articles'),
-            success: function (data) {
-                museum = data;
-                
-                // Test: duplicate articles
-                for (var i = 0; i < 4; i++) {
-                    data.articles.forEach(function(article) {
-                        data.articles.push(article);
-                    });
-                }
-                
-                articleBar.init(loader, museum);
-                
-                setTimeout(startIdle, 2000);
-            },
-            error: function(a,b,c) {
-                console.log('Error getting data', a,b,c);
-                $('body').empty().html('Er is iets mis gegaan bij het downloaden van de lijst met artikelen, we proberen het over 5 seconden opnieuw...');
-                setTimeout(function() { document.location.reload(); }, 5000);
-            }
-        });
+        museum = window.museum;
+        
+        articleBar.init(loader, museum);
+        
+        // setTimeout(startIdle, 2000);
 
         // Set viewport meta tag
         $(window).on('resize', setMetaTag);
@@ -10373,7 +10357,7 @@ function TocMenu() {
         $menu.on('click', 'a', function(e) {
             e.preventDefault();
             var a = $(this);
-            var pos = $content.find(a.attr('href')).position();
+            var pos = findHeader(a.attr('href')).position();
             carousel.showIndex(a.data('index'), items);
             carousel.enabled = false;
             $('html').velocity('scroll', { 
@@ -10412,7 +10396,7 @@ function TocMenu() {
         // Find closest header above line
         var i = items.length - 1;
         for (; i >= 0; i--) {
-            if (items[i].pos.top < line) { break; }
+            if (items[i].pos && items[i].pos.top < line) { break; }
         }
         if (i != curIndex) {
             $menu.find('.active').removeClass('active');
@@ -10457,10 +10441,28 @@ function TocMenu() {
     
     function findHeaderPositions() {
         items.forEach(function(item) {
-            item.pos = $content.find(item.href).position();
+            var target = findHeader(item.href);
+            if (target.length) {
+                item.pos = target.position();
+            }
         });
         
         documentHeight = $document.height();
+    }
+    
+    function findHeader(id) {
+        var target = $();
+        
+        // jQuery fails for strange id's, prefer  native function
+        if (id[0] === '#') {
+            target = $(document.getElementById(id.substr(1)));
+        }
+        
+        if (target.length === 0) {
+            target = $content.find(id);
+        }
+        
+        return target;
     }
     
     function show() {

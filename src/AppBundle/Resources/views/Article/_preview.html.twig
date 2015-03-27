@@ -11,13 +11,11 @@
     </div>
     
     <div class="actions">
-        <a class="btn btn-default">Kies afbeelding</a>
+        <a class="btn btn-default pickImage">Kies afbeelding</a>
         <a class="btn btn-danger remove">Verwijder</a>
     </div>
     
-    {% if article.smallImage %}
-        <img src="{{ article.smallImage }}">
-    {% endif %}
+    <img src="{{ article.smallImage }}">
     <span class="title">
         <i class="glyphicon glyphicon-new-window"></i> 
         <a href="http://{{ language }}.wikipedia.org/wiki/{{ article.title }}" target="_blank">

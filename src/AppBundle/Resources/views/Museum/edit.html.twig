@@ -4,6 +4,8 @@
     
 {% block javascripts %}
     {{ parent() }}
+    <script src="{{ asset('js/backend/museum/edit.js') }}"></script>
+    <script src="{{ asset('js/backend/wikiImagePicker.js') }}"></script>
     
     <script type="template/twig" id="searchResult-tpl" data-twig-id="AppBundle:Museum:_searchResult.html.twig">
         {{ source('AppBundle:Museum:_searchResult.html.twig') }}

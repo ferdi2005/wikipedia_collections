@@ -56,7 +56,8 @@ gulp.task('js_backend', function() {
       'web/vendor/jquery/dist/jquery.js',
       'web/vendor/twig.min.js',
       'web/vendor/jquery.twig.js',
-      'web/js/backend/**/*.js',
+      'web/vendor/jquery.fwmodal.js',
+      'web/js/backend/*.js',
     ])
     .pipe(sourcemaps.init())
       .pipe(concat('backend.js'))
@@ -80,6 +81,7 @@ gulp.task('watch', function() {
       'web/compiled/**/*.css',
       'web/css/**/*.css',
       'web/compiled/**/*.js',
+      'web/js/backend/museum/*.js',
       'web/img/**/*',
     ], livereload.reload);
     

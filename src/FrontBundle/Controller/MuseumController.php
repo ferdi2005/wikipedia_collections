@@ -10,22 +10,21 @@ use AppBundle\Controller\BaseController;
 
 class MuseumController extends BaseController
 {
-    /**
-     * @Route("/museum")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        return [];
-    }
+    
     
     /**
-     * @Route("/museum/articles", name="museum_articles", options={"expose" = true})
+     * @Route("/museum/{id}/{name}", defaults={"name"=""}, name="museum_show")
+     * @Template()
      */
-    public function articlesAction()
+    public function showAction($id)
     {
-        $string = file_get_contents($this->get('kernel')->getRootDir() . '/../web/js/frontend/data.json');
-        $json = json_decode($string, true);
-        return $this->createJsonResponse($json);
+        $em = $this->getDoctrine()->getManager();
+        $museum = $em->getRepository('AppBundle:Museum')->find($id);
+        $this->checkExists($museum);
+        
+        return [
+            'museum' => $museum,
+        ];
     }
+    
 }

@@ -1,5 +1,11 @@
 function Wikipedia() {
     
+    /* Public API: */
+    this.search = search;
+    this.getArticle = getArticle;
+    this.getImages = getImages;
+    this.getThumbs = getThumbs;
+    
     function search(language, query, success, error) {
         executeQuery(language, {
             action: 'query',
@@ -46,9 +52,57 @@ function Wikipedia() {
             action: 'query',
             prop: 'images',
             format: 'json',
+            imlimit: 200,
             titles: title,
-        }, success, error);
+        }, function(language, data) {
+            var page = data.query.pages[Object.keys(data.query.pages)[0]];
+            var images = page.images;
+            images.forEach(function(img) {
+                img.cleanedTitle = img.title;
+                var index = img.title.indexOf(':');
+                if (index !== -1) {
+                    img.cleanedTitle = 'File' + img.title.substr(index);
+                }
+            })
+            success(language, images);
+        }, error);
     }
+    
+    function getThumbs(titles, callback) {
+        var count = 0;
+        var result = {};
+        
+        [
+            {size: 'small', pithumbsize: '512x512'}, 
+            {size: 'large', pithumbsize: '2048x2048'}, 
+        ].forEach(function(params) {
+            executeQuery('commons', {
+                action: 'query',
+                prop: 'pageimages',
+                format: 'json',
+                piprop: 'thumbnail',
+                pilimit: 200,
+                pithumbsize: params.pithumbsize,
+                titles: titles.join('|'),
+            }, function(language, data) {
+                count++;
+                
+                $.each(data.query.pages, function(i, page) {
+                    if (!result[page.title]) {
+                        result[page.title] = { title: page.title };
+                    }
+                    result[page.title]['image_' + params.size] = page.thumbnail.source;
+                });
+                
+                if (count == 2) { callback(result); }
+            }, function() {
+                count++;
+                
+                if (count == 2) { callback(result); }
+            });
+        })
+    }
+    
     
     function executeQuery(language, data, success, error) {
         data['continue'] = data['continue'] || '';
@@ -64,9 +118,6 @@ function Wikipedia() {
             error: error
         });
     }
-    
-    this.search = search;
-    this.getArticle = getArticle;
 }
 
 window.wikipedia = new Wikipedia();

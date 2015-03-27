@@ -16,7 +16,7 @@ $(function() {
         { code: 'de', label: 'Duits' },
     ];
     
-    // $articles.hide();
+    $articles.hide();
     
     init();
     
@@ -40,7 +40,7 @@ $(function() {
         
         $previews.on('click', '.btn.remove', function() {
             var preview = $(this).closest('.articlePreview');
-            var form = preview.data('form');
+            var form = preview.data('articleForm');
             window.articles.splice(form.index());
             form.remove();
             preview.remove();
@@ -60,18 +60,39 @@ $(function() {
             updatePositions();
         });
         
+        $previews.on('click', '.btn.pickImage', function() {
+            var preview = $(this).closest('.articlePreview');
+            var img = preview.find('img');
+            var article = preview.data('article');
+            
+            var $articleForm = preview.data('articleForm');
+            var imageTitle = $articleForm.find('[id$=imageTitle]');
+            var smallImage = $articleForm.find('[id$=smallImage]');
+            var largeImage = $articleForm.find('[id$=largeImage]');
+            
+            wikiImagePicker(article.language, article.title, function(imgData) {
+                if (imgData) {
+                    img.attr('src', imgData.image_small);
+                    imageTitle.val(imgData.title);
+                    smallImage.val(imgData.image_small);
+                    largeImage.val(imgData.image_large);
+                }
+            });
+        });
+        
         showArticles();
         updatePositions();
         
         if (localStorage.debug) { 
             // $search.val('Schoonhoven').trigger('keyup'); 
             // addArticle('nl', 'Schoonhoven');
+            // $previews.find('.pickImage').eq(0).trigger('click');
         }
     }
     
     function updatePositions() {
         $previews.children().each(function(i) {
-            $(this).data('form').find('[id$=position]').val(i + 1);
+            $(this).data('articleForm').find('[id$=position]').val(i + 1);
         });
     }
     
@@ -98,7 +119,7 @@ $(function() {
     
     function addArticle(language, title) {
         $submitBtn.attr('disabled', 'disabled');
-        $article = Form.clonePrototype($articles, $articles);
+        var $article = Form.clonePrototype($articles, $articles);
         
         wikipedia.getArticle(language, title, 
             function(language, article) {
@@ -110,7 +131,7 @@ $(function() {
                 $article.find('[id$=language]').val(article.language);
                 
                 window.articles.push(article);
-                showArticle(article);
+                showArticle(article, $article);
                 
                 updatePositions();
             }, 
@@ -124,16 +145,17 @@ $(function() {
     
     function showArticles() {
         $articles.children().each(function() {
-            var $form = $(this);
-            showArticle(window.articles[$form.index()]);
+            var $articleForm = $(this);
+            showArticle(window.articles[$articleForm.index()], $articleForm);
         });
     }
     
-    function showArticle(article) {
+    function showArticle(article, $articleForm) {
         $('#articlePreview-tpl')
             .twig({ article: article })
             .appendTo($previews)
-            .data('form', $form)
+            .data('article', article)
+            .data('articleForm', $articleForm)
         ;
     }
     
