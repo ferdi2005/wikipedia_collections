@@ -16,29 +16,12 @@ function Loader(menu) {
         
         loadArticle(article, function(html) {
             var $article = $(html);
-            $content.empty().append($article).velocity({ opacity: 1 });
+            $content.empty().append($article);
             cleanArticle($content);
             addExtras(article, $content);
+            $content.velocity({ opacity: 1 });
             menu.extractToc(article, $content);
         });
-    }
-    
-    function cleanArticle($article) {
-        /* Infobox: Set extra classes based on inline style */
-        $article.find('.infobox th[style~="background-color:"]').addClass('header');
-        $article.find('.infobox td[style~="font-size:"]').addClass('subscript');
-        /* Remove "External links" section */
-        ['#External_links', '#Externe_links'].forEach(function(externalLinks) {
-            var index = $article.find(externalLinks).closest('h2').index();
-            $article.children().slice(index).remove();
-            $('#toc').find('a[href="' + externalLinks + '"]').closest('li').remove()
-        });
-    }
-    
-    function addExtras(article, $article) {
-        /* Article header */
-        var tpl = twig({ data: $('#articleHeader-tpl').html() });
-        $article.prepend(tpl.render({article: article}));
     }
     
     function loadArticle(article, callback) {
@@ -67,6 +50,75 @@ function Loader(menu) {
                 callback(null);
             }
         });
+    }
+    
+    function cleanArticle($article) {
+        /* Infobox: Set extra classes based on inline style */
+        $article.find('.infobox th[style*="background-color"]').addClass('header');
+        $article.find('.infobox td[style*="background-color"]').addClass('header');
+        $article.find('.infobox td[style*="font-size"]').addClass('subscript');
+        $article.find('.infobox img').each(function() {
+            var img = $(this);
+            if (img.attr('width') > 200) {
+                img.addClass('fullWidth');
+            }
+        });
+        
+        /* Remove "External links" section */
+        ['#External_links', '#Externe_links', '#Externe_link'].forEach(function(externalLinks) {
+            var a = $article.find(externalLinks);
+            if (!a.length) { return; }
+            var index = a.closest('h2').index();
+            $article.children().slice(index).remove();
+            $('#toc').find('a[href="' + externalLinks + '"]').closest('li').remove()
+        });
+        
+        /* Remove "part of a series" box */
+        ['deel van de serie over', 'Deel van de serie over'].forEach(function(text) {
+            $article
+                .find('table.toccolours')
+                .find('small:contains(' + text + ')')
+                .closest('table.toccolours')
+                .remove()
+            ;
+        });
+        
+        /* 
+            Make thumb box as wide as the image. 
+            Make large thumbs full screen width.
+        */
+        $article.find('.thumb img').each(function() {
+            var img = $(this);
+            var imgWidth = img.attr('width');
+            var target = img;
+            
+            if (!imgWidth) { return; }
+            if (img.closest('.gallery').length) { return; }
+            if (imgWidth > 450) {
+                img.closest('.thumb').addClass('fullScreen');
+                return;
+            }
+            
+            var count = 0;
+            do {
+                target = target.parent();
+                if (target.is('[style*=width]')) {
+                    target.css('width', imgWidth);
+                    return;
+                }
+                count++;
+            } while (!target.is('.thumb') && count < 10)
+        });
+        
+        /* Remove audio recording of article */
+        $article.find('audio').closest('.plainlinks').remove();
+            
+    }
+    
+    function addExtras(article, $article) {
+        /* Article header */
+        var tpl = twig({ data: $('#articleHeader-tpl').html() });
+        $article.prepend(tpl.render({article: article}));
     }
     
     this.render = render;

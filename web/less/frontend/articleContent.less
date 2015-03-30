@@ -3,7 +3,7 @@
 .articleContent {
     
     @gutter: @articleGutter;
-    margin-bottom: 90vh;
+    margin-bottom: 60vh;
     transform: translate3d(0,0,0);
     
     .greenBox() {
@@ -15,6 +15,7 @@
         text-align: center;
         font-weight: normal;
         font-size: 1.2rem !important;
+        line-height: 1.8rem;
     }
     
     font-family: "PT Sans", sans-serif;
@@ -27,14 +28,32 @@
     }
     
     a {
-        color: @marker;
+        color: inherit;
         text-decoration: none;
     }
     
+    /* Stuff that gets hidden */
     .hatnote,
-    .mw-editsection {
+    .mw-editsection,
+    .noprint,
+    .interProjectTemplate /* Zie ook de categorie... */,
+    .beginnetje {
         display: none;
     }
+    
+    table.editmode {
+        display: inline !important;
+        float: none;
+        clear: none;
+        > tbody,
+        > tbody > tr,
+        > tbody > tr > td,
+        > tbody > tr > th {
+            display: inline !important;
+        }
+    }
+    
+    /* infobox */
     
     .infobox {
         .greenBox();
@@ -53,6 +72,7 @@
         }
         
         th.header,
+        td.header,
         caption {
             font-size: 1.7rem;
             line-height: 2.1rem;
@@ -62,10 +82,10 @@
             .caption();
         }
         
-        img {
+        img.fullWidth {
             width: 360px;
             height: auto;
-            margin: -5px -20px;
+            margin: 0 -20px;
         }
         
         ul {
@@ -74,11 +94,24 @@
         }
     }
     
+    /* Thumbs & galleries*/
+    
     .tright {
         float: right;
-        clear: both;
+        clear: right;
+    }
+    .tleft {
+        float: left;
+        clear: left;
+    }
+    
+    > .tright,
+    > .tleft {
+        float: right;
+        clear: right;
         margin: 10px -@gutter 10px 20px;
     }
+    
     .thumb {
         .greenBox();
         a {
@@ -87,7 +120,7 @@
             padding: 0;
         }
         img {
-            display: block !important;
+            // display: block !important;
             margin: 0;
             padding: 0;
         }
@@ -95,6 +128,49 @@
         .thumbcaption {
             .caption();
             padding: 5px;
+        }
+    }
+    
+    .thumb.fullScreen {
+        width: calc(~"100% + " @gutter ~" + " @gutter);
+        margin: 10px -@gutter;
+        float: none;
+        clear: none;
+        > div {
+            width: 100% !important;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+    
+    .gallery.mw-gallery-traditional {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        
+        .gallerycaption {
+            display: block;
+            .caption();
+            font-weight: bold;
+            margin: 10px;
+        }
+        
+        li {
+            display: inline-block;
+            vertical-align: top;
+            
+            > div {
+                text-align: center;
+                img {
+                }
+            }
+        }
+        
+        .gallerytext,
+        .gallerytext p {
+            .caption();
         }
     }
     

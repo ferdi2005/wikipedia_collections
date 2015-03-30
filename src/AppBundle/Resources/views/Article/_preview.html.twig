@@ -18,7 +18,7 @@
     <img src="{{ article.smallImage }}">
     <span class="title">
         <i class="glyphicon glyphicon-new-window"></i> 
-        <a href="http://{{ language }}.wikipedia.org/wiki/{{ article.title }}" target="_blank">
+        <a href="http://{{ article.language }}.wikipedia.org/wiki/{{ article.title }}" target="_blank">
             {{ article.titlesnippet ? article.titlesnippet : article.title }}
         </a>
     </span>

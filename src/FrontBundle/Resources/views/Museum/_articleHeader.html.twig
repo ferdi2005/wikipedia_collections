@@ -1,5 +1,9 @@
-<div class="articleHeader">
-    <img src="{{ article.largeImage }}">
+{% if article.largeImage %}
+    <div class="articleHeader">
+        <img src="{{ article.largeImage }}">
+        <h1>{{ article.title }}</h1>
+        <button class="showFullscreen"></button>
+    </div>
+{% else %}
     <h1>{{ article.title }}</h1>
-    <button class="showFullscreen"></button>
-</div>
+{% endif %}

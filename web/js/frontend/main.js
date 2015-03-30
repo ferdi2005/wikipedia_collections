@@ -21,7 +21,7 @@ $(function() {
         
         articleBar.init(loader, museum);
         
-        setTimeout(startIdle, 2000);
+        // setTimeout(startIdle, 2000);
 
         // Set viewport meta tag
         $(window).on('resize', setMetaTag);
@@ -33,6 +33,8 @@ $(function() {
         FastClick.attach(document.body);
         
         $(document).on('touchstart keydown', stopIdle);
+        
+        $('.articleBar .article').eq(32).click();
     }
     
     function startIdle() {
@@ -51,5 +53,8 @@ $(function() {
         }
         clearTimeout(idleTimeout);
         idleTimeout = setTimeout(startIdle, 2 * 60 * 1000);
+        if (localStorage.debug) {
+            clearTimeout(idleTimeout);
+        }
     }
 });

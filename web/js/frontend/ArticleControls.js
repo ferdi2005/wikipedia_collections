@@ -17,5 +17,8 @@ function ArticleControls() {
                 })
             ;
         });
+        $content.on('click', 'a', function(e) {
+            e.preventDefault();
+        });
     }
 }

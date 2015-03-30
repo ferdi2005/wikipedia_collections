@@ -33,8 +33,6 @@ function ArticleBar() {
             $article.trigger('article-selected', $article.data('article'));
         });
         
-        $articles.eq(0).click();
-        
         $(document).on('start-idle', function() {
             idling = true;
             idle();
