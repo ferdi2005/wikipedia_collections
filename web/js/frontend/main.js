@@ -21,7 +21,9 @@ $(function() {
         
         articleBar.init(loader, museum);
         
-        // setTimeout(startIdle, 2000);
+        if (!localStorage.noIdle) {
+            idleTimeout = setTimeout(startIdle, 2000);
+        }
 
         // Set viewport meta tag
         $(window).on('resize', setMetaTag);
@@ -52,9 +54,8 @@ $(function() {
             idling = false;
         }
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdle, 2 * 60 * 1000);
-        if (localStorage.debug) {
-            clearTimeout(idleTimeout);
+        if (!localStorage.noIdle) {
+            idleTimeout = setTimeout(startIdle, 2 * 60 * 1000);
         }
     }
 });
