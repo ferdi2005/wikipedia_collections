@@ -10154,7 +10154,7 @@ function ArticleBar() {
         var scrollLeft = wrapElem.scrollLeft + $article.position().left  + $article.width()/2 - $(window).width()/2;
         scrollLeft = Math.max(0, scrollLeft);
         $wrap
-            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 1.5 })
+            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5 })
             .promise().done(function() {
                 if (!idling) { return; }
                 
@@ -10342,6 +10342,7 @@ $(function() {
     var menu = new TocMenu();
     var articleControls = new ArticleControls();
     var articleBar = new ArticleBar();
+    var textSize = new TextSize();
     var loader = new Loader(menu);
     var idling = false;
     var idleTimeout;
@@ -10400,6 +10401,49 @@ Routing.getWebPath = function() {
         url = parts.join('/');
     }
     return url;
+}
+function TextSize() {
+    var $topBar = $('.topBar');
+    var $button = $topBar.find('.textSizeButton');
+    var $overlay = $('.textSizeOverlay');
+    var $sizes = $overlay.find('.size');
+    var $closeButton = $overlay.find('.close');
+    var $html = $('html');
+    
+    var open = false;
+    var currentSize = 0;
+    var fontSizes = [10,14,18];
+    
+    init();
+    
+    function init() {
+        $overlay.hide();
+        
+        $button.on('click', toggle);
+        $closeButton.on('click', toggle);
+        $(document).on('click', function(e) {
+            if (!open) { return; }
+            if ($(e.target).closest('.textSizeButton, .textSizeOverlay').length === 0) {
+                toggle();
+            }
+        });
+        
+        $sizes.eq(currentSize).addClass('active');
+        $sizes.on('click', function() {
+            setSize($(this).index());
+        });
+    }
+    
+    function toggle() {
+        open = !open;
+        $overlay.toggle();
+    }
+    
+    function setSize(index) {
+        currentSize = index;
+        $sizes.removeClass('active').eq(currentSize).addClass('active');
+        $html.css('font-size', fontSizes[currentSize]);
+    }
 }
 function TocMenu() {
     
@@ -10538,7 +10582,9 @@ function TocMenu() {
         visible = true;
         
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        
         requestAnimationFrame(function() {
             $content.velocity({ scale: contentScale, translateZ: 0 }, {
                 complete: function() {
@@ -10550,13 +10596,14 @@ function TocMenu() {
                 }
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
-        })
+        });
     }
     
     function hide() {
         visible = false;
         
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
         
         requestAnimationFrame(function() {
@@ -10568,7 +10615,7 @@ function TocMenu() {
                 }
             });
             $menu.velocity({ translateX: -1, translateZ: 0 });
-        })
+        });
     }
     
     return {

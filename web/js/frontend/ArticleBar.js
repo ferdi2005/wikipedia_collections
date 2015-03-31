@@ -52,7 +52,7 @@ function ArticleBar() {
         var scrollLeft = wrapElem.scrollLeft + $article.position().left  + $article.width()/2 - $(window).width()/2;
         scrollLeft = Math.max(0, scrollLeft);
         $wrap
-            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 1.5 })
+            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5 })
             .promise().done(function() {
                 if (!idling) { return; }
                 

@@ -47,11 +47,15 @@ body {
                 transform: translateZ(-@height/2) rotateX(-180deg);
             }
             
+            img {
+                vertical-align: top;
+            }
+            
             .header {
                 color: @marker;
                 line-height: @height;
                 padding-left: 50px;
-                font-size: 1.8rem;
+                font-size: 18px;
                 font-weight: bold;
                 // Ellipsis ...
                 display: block;
@@ -74,5 +78,77 @@ body {
         background: black center center no-repeat url('../img/menu.svg');
         background-size: 30px auto;
         cursor: pointer;
+    }
+    
+    .textSizeButton {
+        width: @height;
+        height: @height;
+        float: right;
+        background: black center center no-repeat url('../img/text_size.svg');
+    }
+    
+    .textSizeOverlay {
+        position: fixed;
+        top: @height;
+        right: 0;
+        background: black;
+        color: white;
+        width: 300px;
+        padding-bottom: 40px;
+        
+        .close {
+            position: absolute;
+            top: 0; 
+            right: 0;
+        }
+        
+        h5 {
+            color: #c0c0c0;
+            font-family: "Lora", sans-serif;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 5px;
+            margin: 10px;
+        }
+        
+        .size {
+            border-left: 5px solid transparent;
+            line-height: 60px;
+            font-family: "PT Sans", sans-serif;
+            font-weight: bold;
+            
+            &.active {
+                border-color: @marker;
+            }
+            
+            .letter {
+                padding: 20px;
+            }
+            .size(@size) {
+                .letter {
+                    font-size: @size;
+                }
+                .label {
+                    font-size: @size - 4px;
+                }
+            }
+            &.normal {
+                .size(20px);
+            }
+            &.medium {
+                .size(25px);
+            }
+            &.large {
+                .size(30px);
+            }
+            
+            .label {
+                border-bottom: 1px solid rgba(255,255,255,0.4);
+                display: inline-block;
+                min-width: 200px;
+            }
+        }
     }
 }

@@ -2,10 +2,12 @@
     <div class="twoWrap">
         {% for j in 0..1 %}
             {% set article = articles[i+j] %}
-            <div class="article">
-                <div class="image" style="background-image: url('{{ article.smallImage }}');"></div>
-                <h4>{{ article.title }}</h4>
-            </div>
+            {% if article %}
+                <div class="article">
+                    <div class="image" style="background-image: url('{{ article.smallImage }}');"></div>
+                    <h4>{{ article.title }}</h4>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endfor %}

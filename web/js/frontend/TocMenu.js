@@ -135,7 +135,9 @@ function TocMenu() {
         visible = true;
         
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        
         requestAnimationFrame(function() {
             $content.velocity({ scale: contentScale, translateZ: 0 }, {
                 complete: function() {
@@ -147,13 +149,14 @@ function TocMenu() {
                 }
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
-        })
+        });
     }
     
     function hide() {
         visible = false;
         
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
+        offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
         
         requestAnimationFrame(function() {
@@ -165,7 +168,7 @@ function TocMenu() {
                 }
             });
             $menu.velocity({ translateX: -1, translateZ: 0 });
-        })
+        });
     }
     
     return {

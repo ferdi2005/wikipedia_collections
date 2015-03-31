@@ -10,6 +10,7 @@ $(function() {
     var menu = new TocMenu();
     var articleControls = new ArticleControls();
     var articleBar = new ArticleBar();
+    var textSize = new TextSize();
     var loader = new Loader(menu);
     var idling = false;
     var idleTimeout;

@@ -27,6 +27,21 @@
         
     <body>
         <div class="topBar">
+            {# Text size #}
+            <div class="textSizeButton"></div>
+            <div class="textSizeOverlay">
+                <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
+                <h5>Tekstgrootte</h5>
+                <div class="sizes">
+                    {% for size in ['normal', 'medium', 'large'] %}
+                        <div class="size {{ size }}">
+                            <span class="letter">A</span>
+                            <span class="label">{{ size }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
             <div class="carousel">
                 <div class="side top">Top</div>
                 
@@ -47,8 +62,7 @@
         
         <div class="articleContent"></div>
         
-        <div class="tocMenu">
-            
-        </div>
+        <div class="tocMenu"></div>
+        
     </body>
 </html>

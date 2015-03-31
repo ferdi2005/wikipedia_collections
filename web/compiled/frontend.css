@@ -236,8 +236,10 @@ body {
 .articleContent .articleHeader {
   margin: 0 -60px;
   position: relative;
+  min-height: 400px;
   max-height: 400px;
   overflow: hidden;
+  background-color: black;
 }
 .articleContent .articleHeader img {
   width: 100%;
@@ -382,11 +384,14 @@ body {
   -webkit-transform: translateZ(-20px) rotateX(-180deg);
           transform: translateZ(-20px) rotateX(-180deg);
 }
+.topBar .carousel .side img {
+  vertical-align: top;
+}
 .topBar .carousel .side .header {
   color: #289f6d;
   line-height: 40px;
   padding-left: 50px;
-  font-size: 1.8rem;
+  font-size: 18px;
   font-weight: bold;
   display: block;
   width: 100%;
@@ -406,6 +411,71 @@ body {
   background: black center center no-repeat url('../img/menu.svg');
   background-size: 30px auto;
   cursor: pointer;
+}
+.topBar .textSizeButton {
+  width: 40px;
+  height: 40px;
+  float: right;
+  background: black center center no-repeat url('../img/text_size.svg');
+}
+.topBar .textSizeOverlay {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  background: black;
+  color: white;
+  width: 300px;
+  padding-bottom: 40px;
+}
+.topBar .textSizeOverlay .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.topBar .textSizeOverlay h5 {
+  color: #c0c0c0;
+  font-family: "Lora", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 5px;
+  margin: 10px;
+}
+.topBar .textSizeOverlay .size {
+  border-left: 5px solid transparent;
+  line-height: 60px;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
+.topBar .textSizeOverlay .size.active {
+  border-color: #289f6d;
+}
+.topBar .textSizeOverlay .size .letter {
+  padding: 20px;
+}
+.topBar .textSizeOverlay .size.normal .letter {
+  font-size: 20px;
+}
+.topBar .textSizeOverlay .size.normal .label {
+  font-size: 16px;
+}
+.topBar .textSizeOverlay .size.medium .letter {
+  font-size: 25px;
+}
+.topBar .textSizeOverlay .size.medium .label {
+  font-size: 21px;
+}
+.topBar .textSizeOverlay .size.large .letter {
+  font-size: 30px;
+}
+.topBar .textSizeOverlay .size.large .label {
+  font-size: 26px;
+}
+.topBar .textSizeOverlay .size .label {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  min-width: 200px;
 }
 
 /*# sourceMappingURL=frontend.css.map */
