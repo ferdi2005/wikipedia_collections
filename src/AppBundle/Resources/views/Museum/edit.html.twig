@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content -%}
-    <h1>Museum edit</h1>
+    <h1>Bewerk museum "{{ museum.name }}"</h1>
 
     {{ form(form) }}
     
@@ -50,11 +50,14 @@
     <ul class="record_actions">
         <li>
             <a class="btn btn-default" href="{{ path('museum') }}">
-                Back to list
+                Terug naar museum overzicht
             </a>
         </li>
-        {% if delete_form is defined %}
-            <li class="delete_action">{{ form(delete_form) }}</li>
-        {% endif %}
+        <li>
+            <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}" target="_blank">
+                <i class="glyphicon glyphicon-new-window"></i>
+                Bekijk in app
+            </a>
+        </li>
     </ul>
 {% endblock %}

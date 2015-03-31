@@ -26,6 +26,14 @@
         </script>
         
     <body>
+        <div class="articleBarWrap">
+            <div class="articleBar"></div>
+        </div>
+        
+        <div class="articleContent"></div>
+        
+        <div class="tocMenu"></div>
+        
         <div class="topBar">
             {# Text size #}
             <div class="textSizeButton"></div>
@@ -56,13 +64,10 @@
             <div class="menuButton"></div>
         </div>
         
-        <div class="articleBarWrap">
-            <div class="articleBar"></div>
+        <div class="imageOverlay">
+            <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
+            <div class="spinner"></div>
         </div>
-        
-        <div class="articleContent"></div>
-        
-        <div class="tocMenu"></div>
         
     </body>
 </html>

@@ -15,7 +15,9 @@ class MuseumType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => 'Naam'
+            ])
             ->add('articles', 'collection', array(
                 'label' => 'Wikipedia artikelen',
                 'attr' => ['class' => 'articles'],

@@ -3,7 +3,7 @@
 {% block bodyClass %}museumIndex{% endblock %}
 
 {% block content -%}
-    <h1>Museum list</h1>
+    <h1>Museum overzicht</h1>
 
     <table class="records_list">
         <thead>
@@ -21,13 +21,13 @@
                 <td class="actions">
                     <ul class="actions">
                         <li>
-                            <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}" target="_blank">
-                                <i class="glyphicon glyphicon-new-window"></i>
-                                Bekijk museum
-                            </a>
+                            <a class="btn btn-primary" href="{{ path('museum_edit', { 'id': museum.id }) }}">Bewerk</a>
                         </li>
                         <li>
-                            <a class="btn btn-primary" href="{{ path('museum_edit', { 'id': museum.id }) }}">Edit</a>
+                            <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}" target="_blank">
+                                <i class="glyphicon glyphicon-new-window"></i>
+                                Bekijk in app
+                            </a>
                         </li>
                     </ul>
                 </td>
@@ -41,7 +41,7 @@
     <ul class="record_actions">
         <li>
             <a class="btn btn-primary" href="{{ path('museum_new') }}">
-                Create new
+                Nieuw museum
             </a>
         </li>
     </ul>

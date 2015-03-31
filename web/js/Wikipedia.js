@@ -4,7 +4,10 @@ function Wikipedia() {
     this.search = search;
     this.getArticle = getArticle;
     this.getImages = getImages;
+    this.getDefaultThumbs = getDefaultThumbs;
     this.getThumbs = getThumbs;
+    this.getTitleFromUrl = getTitleFromUrl;
+    this.cleanImageTitle = cleanImageTitle;
     
     function search(language, query, success, error) {
         executeQuery(language, {
@@ -58,23 +61,34 @@ function Wikipedia() {
             var page = data.query.pages[Object.keys(data.query.pages)[0]];
             var images = page.images;
             images.forEach(function(img) {
-                img.cleanedTitle = img.title;
-                var index = img.title.indexOf(':');
-                if (index !== -1) {
-                    img.cleanedTitle = 'File' + img.title.substr(index);
-                }
-            })
+                img.cleanedTitle = cleanImageTitle(img.title);
+            });
             success(language, images);
         }, error);
     }
     
-    function getThumbs(titles, callback) {
+    function getTitleFromUrl(url) {
+        return url.replace('/wiki/', '');
+    }
+    
+    /* Translate image page title to english to work on commons.wikipedia. */
+    function cleanImageTitle(title) {
+        var cleanedTitle = title;
+        var index = cleanedTitle.indexOf(':');
+        if (index !== -1) {
+            cleanedTitle = 'File' + cleanedTitle.substr(index);
+        }
+        return cleanedTitle;
+    }
+    
+    /* Get thumbs in two default sizes */
+    function getDefaultThumbs(titles, callback) {
         var count = 0;
         var result = {};
         
         [
             {size: 'small', pithumbsize: '512x512'}, 
-            {size: 'large', pithumbsize: '2048x2048'}, 
+            {size: 'large', pithumbsize: '1536x2048'}, 
         ].forEach(function(params) {
             executeQuery('commons', {
                 action: 'query',
@@ -100,9 +114,32 @@ function Wikipedia() {
                 
                 if (count == 2) { callback(result); }
             });
-        })
+        });
     }
     
+    function getThumbs(titles, thumbSize, success, error) {
+        titles = titles.map(cleanImageTitle);
+        executeQuery('commons', {
+            action: 'query',
+            prop: 'pageimages',
+            format: 'json',
+            piprop: 'thumbnail',
+            pilimit: 200,
+            pithumbsize: thumbSize,
+            titles: titles.join('|'),
+        }, function(language, data) {
+            var result = [];
+            
+            $.each(data.query.pages, function(i, page) {
+                result.push({ 
+                    title: page.title,
+                    image: page.thumbnail.source
+                });
+            });
+            
+            success(result);
+        }, error);
+    }
     
     function executeQuery(language, data, success, error) {
         data['continue'] = data['continue'] || '';

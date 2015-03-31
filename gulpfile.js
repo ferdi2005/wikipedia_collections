@@ -42,6 +42,7 @@ gulp.task('js_frontend', function() {
       'web/vendor/velocity.min.js',
       'web/vendor/jquery.waitforimages.min.js',
       'web/vendor/fastclick.js',
+      'web/js/Wikipedia.js',
       'web/js/frontend/**/*.js',
     ])
     .pipe(sourcemaps.init())
@@ -57,6 +58,7 @@ gulp.task('js_backend', function() {
       'web/vendor/twig.min.js',
       'web/vendor/jquery.twig.js',
       'web/vendor/jquery.fwmodal.js',
+      'web/js/Wikipedia.js',
       'web/js/backend/*.js',
     ])
     .pipe(sourcemaps.init())

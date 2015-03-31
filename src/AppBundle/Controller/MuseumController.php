@@ -111,7 +111,7 @@ class MuseumController extends BaseController
             'action' => $this->generateUrl('museum_update', array('id' => $museum->getId())),
             'method' => 'PUT',
         ));
-        $form->add('submit', 'submit', ['label' => 'Update', 'attr' => ['class' => 'btn-primary']]);
+        $form->add('submit', 'submit', ['label' => 'Wijzigingen opslaan', 'attr' => ['class' => 'btn-primary']]);
 
         $deleteForm = $this->createDeleteForm($id);
         

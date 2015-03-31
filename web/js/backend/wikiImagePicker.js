@@ -13,7 +13,7 @@ function wikiImagePicker(language, title, callback) {
     });
     
     wikipedia.getImages(language, title, function(language, images) {
-        wikipedia.getThumbs(images.map(function(i) { return i.cleanedTitle; }), function(imgs) {
+        wikipedia.getDefaultThumbs(images.map(function(i) { return i.cleanedTitle; }), function(imgs) {
             $.each(imgs, function(_, img) {
                 if (!img.image_small) { return; }
                 
