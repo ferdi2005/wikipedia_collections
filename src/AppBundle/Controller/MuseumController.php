@@ -96,7 +96,7 @@ class MuseumController extends BaseController
     /**
      * Displays a form to edit an existing Museum entity.
      *
-     * @Route("/{id}/edit", name="museum_edit")
+     * @Route("/{id}/edit", name="museum_edit", requirements={"id" = "\d+"})
      * @Method("GET")
      * @Template()
      */

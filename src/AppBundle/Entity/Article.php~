@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JsonSerializable;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Article
@@ -42,15 +43,9 @@ class Article implements JsonSerializable
     
     /**
      * @Gedmo\SortablePosition
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $position;
-    
-    /**
-     * @var Museum
-     * @ORM\ManyToOne(targetEntity="Museum", inversedBy="articles")
-     */
-    private $museum;
     
     /**
      * @var string
@@ -76,9 +71,28 @@ class Article implements JsonSerializable
      */
     private $plainContent;
     
+    /**
+     * @var Museum
+     * @ORM\ManyToOne(targetEntity="Museum", inversedBy="articles")
+     */
+    private $museum;
+    
+    /**
+     * @var Article
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="translationOf")
+     */
+    private $translations;
+    
+    /**
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="translations")
+     */
+    private $translationOf;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
+        $this->translations = new ArrayCollection();
     }
     
     public function jsonSerialize() {
@@ -91,7 +105,6 @@ class Article implements JsonSerializable
             'imageTitle' => $this->imageTitle,
             'smallImage' => $this->smallImage,
             'largeImage' => $this->largeImage,
-            'plainContent' => $this->plainContent,
         ];
     }
     
@@ -289,5 +302,28 @@ class Article implements JsonSerializable
     public function getPlainContent()
     {
         return $this->plainContent;
+    }
+
+    /**
+     * Set imageTitle
+     *
+     * @param string $imageTitle
+     * @return Article
+     */
+    public function setImageTitle($imageTitle)
+    {
+        $this->imageTitle = $imageTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get imageTitle
+     *
+     * @return string 
+     */
+    public function getImageTitle()
+    {
+        return $this->imageTitle;
     }
 }

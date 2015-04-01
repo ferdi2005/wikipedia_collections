@@ -10110,6 +10110,7 @@ function Wikipedia() {
     this.getThumbs = getThumbs;
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
+    this.getLangLinks = getLangLinks;
     
     function search(language, query, success, error) {
         executeQuery(language, {
@@ -10124,7 +10125,20 @@ function Wikipedia() {
         }, success, error);
     }
     
-    function getArticle(language, title, success, error) {
+    function getLangLinks(language, title, success, error) {
+        executeQuery(language, {
+            action: 'query',
+            prop: 'langlinks',
+            format: 'json',
+            titles: title,
+            lllimit: 200,
+        }, function(language, data) {
+            var page = data.query.pages[Object.keys(data.query.pages)[0]];
+            success(language, page.langlinks);
+        }, error);
+    }
+    
+    function getArticle(language, title, success, error, complete) {
         executeQuery(language, {
             action: 'query',
             prop: 'revisions',
@@ -10149,7 +10163,7 @@ function Wikipedia() {
             ;
             
             success(language, article);
-        }, error);
+        }, error, complete);
     }
     
     function getImages(language, title, success, error) {
@@ -10243,7 +10257,7 @@ function Wikipedia() {
         }, error);
     }
     
-    function executeQuery(language, data, success, error) {
+    function executeQuery(language, data, success, error, complete) {
         data['continue'] = data['continue'] || '';
         
         $.ajax({
@@ -10254,7 +10268,8 @@ function Wikipedia() {
             success: function(data) {
                 success(language, data);
             },
-            error: error
+            error: error,
+            complete: complete
         });
     }
 }

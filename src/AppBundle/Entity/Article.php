@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JsonSerializable;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Article
@@ -42,15 +43,9 @@ class Article implements JsonSerializable
     
     /**
      * @Gedmo\SortablePosition
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $position;
-    
-    /**
-     * @var Museum
-     * @ORM\ManyToOne(targetEntity="Museum", inversedBy="articles")
-     */
-    private $museum;
     
     /**
      * @var string
@@ -76,9 +71,28 @@ class Article implements JsonSerializable
      */
     private $plainContent;
     
+    /**
+     * @var Museum
+     * @ORM\ManyToOne(targetEntity="Museum", inversedBy="articles")
+     */
+    private $museum;
+    
+    /**
+     * @var Article
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="translationOf", cascade={"persist", "remove"})
+     */
+    private $translations;
+    
+    /**
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="translations")
+     */
+    private $translationOf;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
+        $this->translations = new ArrayCollection();
     }
     
     public function jsonSerialize() {
@@ -311,5 +325,67 @@ class Article implements JsonSerializable
     public function getImageTitle()
     {
         return $this->imageTitle;
+    }
+
+    /**
+     * Add translations
+     *
+     * @param \AppBundle\Entity\Article $translations
+     * @return Article
+     */
+    public function addTranslation(\AppBundle\Entity\Article $translations)
+    {
+        if ($translations) {
+            $translations->setTranslationOf($this);
+        }
+        $this->translations[] = $translations;
+
+        return $this;
+    }
+
+    /**
+     * Remove translations
+     *
+     * @param \AppBundle\Entity\Article $translations
+     */
+    public function removeTranslation(\AppBundle\Entity\Article $translations)
+    {
+        if ($translations) {
+            $translations->setTranslationOf(null);
+        }
+        $this->translations->removeElement($translations);
+    }
+
+    /**
+     * Get translations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTranslations()
+    {
+        return $this->translations;
+    }
+
+    /**
+     * Set translationOf
+     *
+     * @param \AppBundle\Entity\Article $translationOf
+     * @return Article
+     */
+    public function setTranslationOf(\AppBundle\Entity\Article $translationOf = null)
+    {
+        $this->translationOf = $translationOf;
+
+        return $this;
+    }
+
+    /**
+     * Get translationOf
+     *
+     * @return \AppBundle\Entity\Article 
+     */
+    public function getTranslationOf()
+    {
+        return $this->translationOf;
     }
 }

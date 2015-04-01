@@ -33,18 +33,19 @@ gulp.task('less_backend', function() {
   ;
 });
 
+var frontend_js_files = [
+  'web/bundles/fosjsrouting/js/router.js',
+  'web/vendor/jquery/dist/jquery.js',
+  'web/vendor/twig.min.js',
+  'web/vendor/jquery.twig.js',
+  'web/vendor/velocity.min.js',
+  'web/vendor/jquery.waitforimages.min.js',
+  'web/vendor/fastclick.js',
+  'web/js/Wikipedia.js',
+  'web/js/frontend/**/*.js',
+];
 gulp.task('js_frontend', function() {
-  gulp.src([
-      'web/bundles/fosjsrouting/js/router.js',
-      'web/vendor/jquery/dist/jquery.js',
-      'web/vendor/twig.min.js',
-      'web/vendor/jquery.twig.js',
-      'web/vendor/velocity.min.js',
-      'web/vendor/jquery.waitforimages.min.js',
-      'web/vendor/fastclick.js',
-      'web/js/Wikipedia.js',
-      'web/js/frontend/**/*.js',
-    ])
+  gulp.src(frontend_js_files)
     .pipe(sourcemaps.init())
       .pipe(concat('frontend.js'))
     .pipe(sourcemaps.write('.'))
@@ -52,15 +53,16 @@ gulp.task('js_frontend', function() {
   ;
 });
 
+var backend_js_files = [
+  'web/vendor/jquery/dist/jquery.js',
+  'web/vendor/twig.min.js',
+  'web/vendor/jquery.twig.js',
+  'web/vendor/jquery.fwmodal.js',
+  'web/js/Wikipedia.js',
+  'web/js/backend/*.js',
+];
 gulp.task('js_backend', function() {
-  gulp.src([
-      'web/vendor/jquery/dist/jquery.js',
-      'web/vendor/twig.min.js',
-      'web/vendor/jquery.twig.js',
-      'web/vendor/jquery.fwmodal.js',
-      'web/js/Wikipedia.js',
-      'web/js/backend/*.js',
-    ])
+  gulp.src(backend_js_files)
     .pipe(sourcemaps.init())
       .pipe(concat('backend.js'))
     .pipe(sourcemaps.write('.'))
@@ -73,8 +75,8 @@ gulp.task('watch', function() {
 
     gulp.watch('web/less/frontend/**/*.less', ['less_frontend']);
     gulp.watch('web/less/backend/**/*.less', ['less_backend']);
-    gulp.watch('web/js/backend/**/*.js', ['js_backend']);
-    gulp.watch('web/js/frontend/**/*.js', ['js_frontend']);
+    gulp.watch(backend_js_files, ['js_backend']);
+    gulp.watch(frontend_js_files, ['js_frontend']);
 
     gulp.watch([
       'src/**/*',

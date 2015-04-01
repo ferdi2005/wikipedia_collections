@@ -9345,6 +9345,7 @@ function Wikipedia() {
     this.getThumbs = getThumbs;
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
+    this.getLangLinks = getLangLinks;
     
     function search(language, query, success, error) {
         executeQuery(language, {
@@ -9359,7 +9360,20 @@ function Wikipedia() {
         }, success, error);
     }
     
-    function getArticle(language, title, success, error) {
+    function getLangLinks(language, title, success, error) {
+        executeQuery(language, {
+            action: 'query',
+            prop: 'langlinks',
+            format: 'json',
+            titles: title,
+            lllimit: 200,
+        }, function(language, data) {
+            var page = data.query.pages[Object.keys(data.query.pages)[0]];
+            success(language, page.langlinks);
+        }, error);
+    }
+    
+    function getArticle(language, title, success, error, complete) {
         executeQuery(language, {
             action: 'query',
             prop: 'revisions',
@@ -9384,7 +9398,7 @@ function Wikipedia() {
             ;
             
             success(language, article);
-        }, error);
+        }, error, complete);
     }
     
     function getImages(language, title, success, error) {
@@ -9478,7 +9492,7 @@ function Wikipedia() {
         }, error);
     }
     
-    function executeQuery(language, data, success, error) {
+    function executeQuery(language, data, success, error, complete) {
         data['continue'] = data['continue'] || '';
         
         $.ajax({
@@ -9489,7 +9503,8 @@ function Wikipedia() {
             success: function(data) {
                 success(language, data);
             },
-            error: error
+            error: error,
+            complete: complete
         });
     }
 }
@@ -9500,49 +9515,31 @@ window.wikipedia = new Wikipedia();
  */
 var Form = {
     clonePrototype: function (prototype, target, names) {
-        var target = $(target);
-        var protoString = $(prototype).data('prototype');
-        
-        protoString = Form.insertNames(protoString, names);
-        
-        // Append to target list
-        return $('<div>' + protoString + '</div>').appendTo(target);
-    },
-    
-    insertNames: function(protoString, names) {
         if (names == undefined) {
             names = [new Date().getTime()];
         }
-
-        // Search for combined __name__ instances, replace with provided names
-        var searchRegEx = '="(\\S+)';
-        var nameParts = [];
-        for(var i in names) {
-            nameParts.push('__name__')
-        }
-        searchRegEx += nameParts.join('(\\S+)');
-        searchRegEx += '(\\S+)"';
-        // console.log(searchRegEx);
-
-        var replaceString = '="$1';
-        for (var i = 0; i < names.length; i++) {
-            replaceString += names[i];
-            replaceString += '$' + (i+2);
-        }
-        replaceString += '"';
-        // console.log(replaceString);
-
-        protoString = protoString.replace(new RegExp(searchRegEx, 'g'), replaceString);
-
-        // Search for standalone __name__label__ instance, replace with last name
-        protoString = protoString.replace(/__name__label__/g, names[names.length - 1]);
-
-        // Search for standalone __name__ instance, replace with last name
-        protoString = protoString.replace(/__name__/g, names[names.length - 1]);
+        var target = $(target);
+        var protoString = $(prototype).data('prototype');
+        var $prototype = $('<div>' + protoString + '</div>');
         
-        return protoString;
+        $.each(['id', 'for', 'name'], function(_, attrName) {
+            $items = $prototype.find('[' + attrName + ']');
+            $items.each(function() {
+                var $item = $(this);
+                var val = $item.attr(attrName);
+                // Incrementally replace firs occurence of __name__
+                $.each(names, function(_, name) {
+                    val = val.replace(/__name__/, name);
+                });
+                $item.attr(attrName, val);
+            });
+        });
+        
+        $prototype.find('label:contains(\"__name__label__\")').text(names[names.length - 1]);
+        
+        // Append to target list
+        return $prototype.appendTo(target);
     },
-    
 };
 function wikiImagePicker(language, title, callback) {
     var modal = $('<div class="fwModal wikiImagePicker" />').appendTo('body').hide().fwModal({

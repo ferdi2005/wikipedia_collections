@@ -46,6 +46,8 @@
     </div>
     
     <div class="articlePreviews"></div>
+    
+    <div class="spinner" style="display: none">Bezig met ophalen vertalingen...</div>
 
     <ul class="record_actions">
         <li>
@@ -53,11 +55,13 @@
                 Terug naar museum overzicht
             </a>
         </li>
-        <li>
-            <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}" target="_blank">
-                <i class="glyphicon glyphicon-new-window"></i>
-                Bekijk in app
-            </a>
-        </li>
+        {% if museum.id %}
+            <li>
+                <a class="btn btn-default" href="{{ path('museum_show', { 'id': museum.id }) }}" target="_blank">
+                    <i class="glyphicon glyphicon-new-window"></i>
+                    Bekijk in app
+                </a>
+            </li>
+        {% endif %}
     </ul>
 {% endblock %}

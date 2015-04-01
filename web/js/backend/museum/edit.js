@@ -9,25 +9,25 @@ $(function() {
     var $searchBtn = $searchBar.find('button');
     var $searchResults = $searchBar.find('.searchResults').hide();
     var searchTimeout;
-    
+
     var languages = [
         { code: 'nl', label: 'Nederlands' },
         { code: 'en', label: 'Engels' },
         { code: 'de', label: 'Duits' },
     ];
-    
+
     $articles.hide();
-    
+
     init();
-    
+
     function init() {
         $searchBar.insertAfter($articles);
         $previews.insertAfter($articles);
-        
+
         languages.forEach(function(lang) {
             $('<option />').attr('value', lang.code).text(lang.label + 'e Wikipedia').appendTo($searchLang);
         });
-        
+
         $searchBtn.on('click', search);
         $search.on('keyup', function() {
             if ($search.val().length > 4) {
@@ -37,7 +37,7 @@ $(function() {
                 $searchResults.hide();
             }
         });
-        
+
         $previews.on('click', '.btn.remove', function() {
             var preview = $(this).closest('.articlePreview');
             var form = preview.data('articleForm');
@@ -46,30 +46,30 @@ $(function() {
             preview.remove();
             updatePositions();
         });
-        
+
         $previews.on('click', '.btn.up', function() {
             var preview = $(this).closest('.articlePreview');
             preview.insertBefore(preview.prev());
             updatePositions();
         });
-        
+
         $previews.on('click', '.btn.down', function() {
             var preview = $(this).closest('.articlePreview');
             console.log(preview);
             preview.insertAfter(preview.next());
             updatePositions();
         });
-        
+
         $previews.on('click', '.btn.pickImage', function() {
             var preview = $(this).closest('.articlePreview');
             var img = preview.find('img');
             var article = preview.data('article');
-            
+
             var $articleForm = preview.data('articleForm');
             var imageTitle = $articleForm.find('[id$=imageTitle]');
             var smallImage = $articleForm.find('[id$=smallImage]');
             var largeImage = $articleForm.find('[id$=largeImage]');
-            
+
             wikiImagePicker(article.language, article.title, function(imgData) {
                 if (imgData) {
                     img.attr('src', imgData.image_small);
@@ -79,32 +79,32 @@ $(function() {
                 }
             });
         });
-        
+
         showArticles();
         updatePositions();
-        
-        if (localStorage.debug) { 
-            // $search.val('Schoonhoven').trigger('keyup'); 
-            // addArticle('nl', 'Schoonhoven');
+
+        if (localStorage.debug) {
+            // $search.val('Schoonhoven').trigger('keyup');
+            // addArticle('nl', 'Doopvont');
             // $previews.find('.pickImage').eq(0).trigger('click');
         }
     }
-    
+
     function updatePositions() {
         $previews.children().each(function(i) {
             $(this).data('articleForm').find('[id$=position]').val(i + 1);
         });
     }
-    
+
     function search() {
-        wikipedia.search($searchLang.val(), $search.val(), 
+        wikipedia.search($searchLang.val(), $search.val(),
             showSearchResult,
             function() {
                 alert('Er is een fout opgetreden bij het doorzoeken van wikipedia.');
             }
         );
     }
-    
+
     function showSearchResult(language, data) {
         $searchResults.empty().show();
         data.query.search.forEach(function(result) {
@@ -116,25 +116,60 @@ $(function() {
             });
         });
     }
-    
+
     function addArticle(language, title) {
         $submitBtn.attr('disabled', 'disabled');
-        var $article = Form.clonePrototype($articles, $articles);
-        
-        wikipedia.getArticle(language, title, 
+        var articleTitle = Date.now();
+        var $article = Form.clonePrototype($articles, $articles, [articleTitle]);
+        var $translations = $article.find('.translations');
+
+        wikipedia.getArticle(language, title,
             function(language, article) {
-                $submitBtn.removeAttr('disabled');
-                
-                $article.find('[id$=plainContent]').val(article.plainContent);
-                $article.find('[id$=pageId]').val(article.pageId);
-                $article.find('[id$=title]').val(article.title);
-                $article.find('[id$=language]').val(article.language);
-                
+                fillForm($article, article);
+
                 window.articles.push(article);
                 showArticle(article, $article);
-                
+
                 updatePositions();
-            }, 
+
+                // Get translations
+                $('.spinner').show();
+                console.log(language,title);
+                wikipedia.getLangLinks(language, title, function(language, data) {
+                    if (!data) {
+                        // No translations
+                        $submitBtn.removeAttr('disabled');
+                        $('.spinner').hide();
+                    }
+                    var num = data.length;
+                    var completed = 0;
+                    $.each(data, function(i, langlink) {
+                        wikipedia.getArticle(
+                            langlink.lang,
+                            langlink['*'],
+                            function(language, translation) {
+                                var $translation = Form.clonePrototype($translations, $translations, [articleTitle, Date.now() + i]);
+                                fillForm($translation, translation);
+                            },
+                            function() {},
+                            function() {
+                                completed++;
+                                
+                                if (completed == num) {
+                                    console.log('All translations downloaded');
+                                    $submitBtn.removeAttr('disabled');
+                                    $('.spinner').hide();
+                                }
+                            }
+                        );
+                    })
+                }, function() {
+                    alert('Er is een fout opgetreden bij het downloaden van de vertalingen.');
+                    $submitBtn.removeAttr('disabled');
+                    $('.spinner').hide();
+                    $article.remove();
+                });
+            },
             function() {
                 $submitBtn.removeAttr('disabled');
                 $article.remove();
@@ -142,14 +177,21 @@ $(function() {
             }
         );
     }
-    
+
+    function fillForm($article, article) {
+        $article.find('[id$=plainContent]').val(article.plainContent);
+        $article.find('[id$=pageId]').val(article.pageId);
+        $article.find('[id$=title]').val(article.title);
+        $article.find('[id$=language]').val(article.language);
+    }
+
     function showArticles() {
         $articles.children().each(function() {
             var $articleForm = $(this);
             showArticle(window.articles[$articleForm.index()], $articleForm);
         });
     }
-    
+
     function showArticle(article, $articleForm) {
         $('#articlePreview-tpl')
             .twig({ article: article })
@@ -158,5 +200,5 @@ $(function() {
             .data('articleForm', $articleForm)
         ;
     }
-    
+
 })
