@@ -10,4 +10,4 @@
 /vendor/
 /web/bundles/
 /node_modules/
-/**/*.php~
+/src/**/*.php~
