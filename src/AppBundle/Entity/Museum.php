@@ -15,6 +15,16 @@ use JsonSerializable;
  */
 class Museum implements JsonSerializable
 {
+    public static $DEFAULT_LANGUAGES = [
+        'nl' => 'Nederlands',
+        'en' => 'English',
+        'sv' => 'Svenska',
+        'de' => 'Deutsch',
+        'fr' => 'Français',
+        'it' => 'Italiano',
+        'es' => 'Español',
+    ];
+    
     /**
      * @var integer
      *
@@ -40,6 +50,14 @@ class Museum implements JsonSerializable
      */
     private $articles;
     
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=31)
+     * @Assert\NotBlank
+     */
+    private $defaultLanguage;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
@@ -55,6 +73,7 @@ class Museum implements JsonSerializable
             'id' => $this->id,
             'name' => $this->name,
             'articles' => $this->articles->toArray(),
+            'defaultLanguage' => $this->defaultLanguage,
         ];
     }
     
@@ -130,5 +149,28 @@ class Museum implements JsonSerializable
     public function getArticles()
     {
         return $this->articles;
+    }
+
+    /**
+     * Set defaultLanguage
+     *
+     * @param string $defaultLanguage
+     * @return Museum
+     */
+    public function setDefaultLanguage($defaultLanguage)
+    {
+        $this->defaultLanguage = $defaultLanguage;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultLanguage
+     *
+     * @return string 
+     */
+    public function getDefaultLanguage()
+    {
+        return $this->defaultLanguage;
     }
 }

@@ -12,7 +12,11 @@
         <link rel="stylesheet" href="{{ asset('compiled/frontend.css') }}" type="text/css" />
         
         <script>
-            window.museum = {{ museum|json_encode|raw }};
+            window.app = {
+                museum: {{ museum|json_encode|raw }},
+                allLanguages: {{ allLanguages|json_encode|raw }},
+                defaultLanguages: {{ defaultLanguages|json_encode|raw }},
+            };
         </script>
         <script type="text/javascript" src="{{ asset('compiled/frontend.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
@@ -36,6 +40,22 @@
         
         <div class="topBar">
             {# Text size #}
+            <div class="languageButton"></div>
+            <div class="languageOverlay">
+                <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
+                <h5>Taal selectie</h5>
+                <div class="languages">
+                    {% for language, name in defaultLanguages %}
+                        <div class="language" data-language="{{ language }}">
+                            <img src="{{ asset('img/flags/' ~ language ~ '.png') }}" class="flag">
+                            <span class="label">{{ name }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <input type="text" class="search" placeholder="Doorzoek talen...">
+                <div class="searchResults"></div>
+            </div>
+            
             <div class="textSizeButton"></div>
             <div class="textSizeOverlay">
                 <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">

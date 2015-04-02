@@ -16,7 +16,7 @@ class GetTranslationsCommand extends ContainerAwareCommand {
     protected function configure()
     {
         $this
-            ->setName('wikipedia:download_translations')
+            ->setName('app:wiki:download_translations')
             ->setDescription('Download translations for an article, or all articles in a museum')
             ->addOption('articleId', 'a',  InputOption::VALUE_OPTIONAL)
             ->addOption('museumId', 'm',  InputOption::VALUE_OPTIONAL)
@@ -28,6 +28,7 @@ class GetTranslationsCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $em = $this->getContainer()->get('doctrine')->getManager();
+        $mr = $em->getRepository('AppBundle:Museum');
         
         $articleId = $input->getOption('articleId');
         $museumId = $input->getOption('museumId');
@@ -35,7 +36,7 @@ class GetTranslationsCommand extends ContainerAwareCommand {
         if ($articleId) {
             $this->downloadTranslations($articleId, $input, $output);
         } else if ($museumId) {
-            $museum = $em->getRepository('AppBundle:Museum')->find($museumId);
+            $museum = $mr->find($museumId);
             if (!$museum) {
                 return $output->writeln('museum not found: ' . $museumId);
             }
@@ -43,7 +44,12 @@ class GetTranslationsCommand extends ContainerAwareCommand {
                 $this->downloadTranslations($article->getId(), $input, $output);
             }
         } else {
-            $output->writeln('Please specify either an articleId or a museumId');
+            $museums = $mr->findAll();
+            foreach ($museums as $museum) {
+                foreach ($museum->getArticles() as $article) {
+                    $this->downloadTranslations($article->getId(), $input, $output);
+                }
+            }
         }
     }
     

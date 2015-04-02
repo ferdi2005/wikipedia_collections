@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use AppBundle\Entity\Museum;
 
 class MuseumType extends AbstractType
 {
@@ -17,6 +18,10 @@ class MuseumType extends AbstractType
         $builder
             ->add('name', null, [
                 'label' => 'Naam'
+            ])
+            ->add('defaultLanguage', 'choice', [
+                'label' => 'Standaard taal van app',
+                'choices' => Museum::$DEFAULT_LANGUAGES,
             ])
             ->add('articles', 'collection', array(
                 'label' => 'Wikipedia artikelen',

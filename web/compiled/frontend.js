@@ -10111,6 +10111,7 @@ function Wikipedia() {
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
     this.getLangLinks = getLangLinks;
+    this.allLanguages = window.app.allLanguages;
     
     function search(language, query, success, error) {
         executeQuery(language, {
@@ -10275,7 +10276,7 @@ function Wikipedia() {
 }
 
 window.wikipedia = new Wikipedia();
-function ArticleBar() {
+function ArticleBar(museum) {
     var $wrap = $('.articleBarWrap');
     var wrapElem = $wrap.get(0);
     var $bar = $wrap.find('.articleBar');
@@ -10289,20 +10290,9 @@ function ArticleBar() {
     var scrollLeft = 0;
     var timeout;
     
-    function init(loader, _museum) {
-        museum = _museum;
-        $bar.width(Math.ceil(museum.articles.length/2) * blockWidth);
-        
-        // Render article bar
-        var tpl = twig({ data: $('#articleBar-tpl').html() });
-        $bar.html(tpl.render(museum));
-        $articles = $bar.find('.article');
-        
-        // Link model museum
-        $articles.each(function(index) {
-            $(this).data('article', museum.articles[index]);
-        });
-        
+    attachHandlers();
+    
+    function attachHandlers() {
         $bar.on('click', '.article', function() {
             var $article = $(this);
             $bar.find('.active').removeClass('active');
@@ -10316,8 +10306,26 @@ function ArticleBar() {
         });
         
         $(document).on('stop-idle', function() {
-            $wrap.stop();
             idling = false;
+            $wrap.stop();
+        });
+        
+        $(document).on('language-selected', function(e, language) {
+            init(language)
+        });
+    }
+    
+    function init(language) {
+        var articles = museum.getArticles(language);
+        $bar.width(Math.ceil(articles.length/2) * blockWidth);
+        
+        // Render article bar
+        $bar.html($('#articleBar-tpl').twig({articles: articles, language: language}));
+        $articles = $bar.find('.article');
+        
+        // Link model museum
+        $articles.each(function(index) {
+            $(this).data('article', articles[index]);
         });
     }
     
@@ -10402,6 +10410,81 @@ function ArticleControls() {
             });
         });
     }
+}
+function LanguagePicker(museum) {
+    var $topBar = $('.topBar');
+    var $button = $topBar.find('.languageButton');
+    var $overlay = $('.languageOverlay');
+    var $closeButton = $overlay.find('.close');
+    var $languages = $overlay.find('.language');
+    var $search = $overlay.find('.search');
+    var $searchResults = $overlay.find('.searchResults');
+    
+    var open = false;
+    var currentLanguage = museum.defaultLanguage;
+    var currentArticle;
+    
+    init();
+    
+    function init() {
+        $overlay.hide();
+        
+        $button.on('click', toggle);
+        $closeButton.on('click', toggle);
+        $(document).on('touchstart', function(e) {
+            if (!open) { return; }
+            if ($(e.target).closest('.languageButton, .languageOverlay').length === 0) {
+                toggle();
+            }
+        });
+        
+        $languages.eq(currentLanguage).addClass('active');
+        $overlay.on('click', '.language', function() {
+            pickLanguage($(this).data('language'));
+            toggle();
+        });
+        
+        $(document).on('start-idle', function() {
+        });
+        
+        $(document).on('article-selected', function(e, article) {
+            currentArticle = article;
+        });
+        
+        $search.on('keyup', function() {
+            $searchResults.empty();
+            var val = $search.val();
+            if (!val) { return; }
+            var count = 0;
+            $.each(window.app.allLanguages, function(language, name) {
+                if (count > 10) { return; }
+                if (name.indexOf(val) != -1 || name.toLowerCase().indexOf(val.toLowerCase()) != -1) {
+                    var $language = $languages.eq(0)
+                        .clone()
+                        .data('language', language)
+                    ;
+                    $language.find('img').remove();
+                    $language.find('.label').text(name);
+                    $searchResults.append($language);
+                    count++;
+                }
+            });
+        });
+        
+        pickLanguage(currentLanguage);
+    }
+    
+    function toggle() {
+        open = !open;
+        $overlay.toggle();
+    }
+    
+    function pickLanguage(language) {
+        var prevArticle = currentArticle;
+        $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+        $overlay.trigger('language-selected', language);
+    }
+    
 }
 function Loader(menu) {
     var $wrap = $('.articleBarWrap');
@@ -10533,15 +10616,13 @@ $(function() {
     var $content = $('.articleContent');
 
     var self = this;    
-    var museum;
-    var settings = {
-        language: 'en',
-    };
+    var museum = Museum(window.app.museum);
     var menu = new TocMenu();
     var articleControls = new ArticleControls();
-    var articleBar = new ArticleBar();
+    var articleBar = new ArticleBar(window.app.museum);
     var textSize = new TextSize();
     var loader = new Loader(menu);
+    var languagePicker = new LanguagePicker(window.app.museum);
     var idling = false;
     var idleTimeout;
     var museumUpdatedAt;
@@ -10549,10 +10630,6 @@ $(function() {
     init();
     
     function init() {
-        museum = window.museum;
-        
-        articleBar.init(loader, museum);
-        
         if (!localStorage.noIdle) {
             idleTimeout = setTimeout(startIdle, 2000);
         }
@@ -10566,9 +10643,9 @@ $(function() {
         
         FastClick.attach(document.body);
         
-        $(document).on('click touchstart keydown', stopIdle);
+        $(document).on('touchstart keydown', stopIdle);
         
-        $('.articleBar .article').eq(32).click();
+        $('.articleBar .article').eq(0).click();
     }
     
     function startIdle() {
@@ -10582,7 +10659,6 @@ $(function() {
                 url: Routing.generate('museum_updated_at', {id: window.museum.id}),
                 cache: false,
                 success: function(updatedAt) {
-                    console.log(updatedAt);
                     if (museumUpdatedAt && museumUpdatedAt != updatedAt) {
                         console.log('New version detected, reloading');
                         document.location.reload();
@@ -10593,7 +10669,7 @@ $(function() {
         }
     }
     
-    function stopIdle() {
+    function stopIdle(e) {
         if (idling) {
             console.log('stop-idle');
             $(document).trigger('stop-idle');
@@ -10606,6 +10682,27 @@ $(function() {
     }
 });
 
+function Museum(museum) {
+    // Make {language: article map}
+    museum.articles.forEach(function(article) {
+        article.lang2article = {};
+        article.translations.forEach(function(translation) {
+            article.lang2article[translation.language] = translation;
+        });
+        article.lang2article[article.language] = article;
+    });
+    museum.getArticles = function(language) {
+        var result = [];
+        this.articles.forEach(function(article) {
+            var translation = article.lang2article[language];
+            if (translation) {
+                result.push(translation);
+            }
+        });
+        return result;
+    }
+    return museum;
+}
 Routing.getWebPath = function() {
     var url = Routing.getBaseUrl();
     if (url.indexOf('.php') !== -1) {
@@ -10634,7 +10731,7 @@ function TextSize() {
         
         $button.on('click', toggle);
         $closeButton.on('click', toggle);
-        $(document).on('click', function(e) {
+        $(document).on('touchstart', function(e) {
             if (!open) { return; }
             if ($(e.target).closest('.textSizeButton, .textSizeOverlay').length === 0) {
                 toggle();
@@ -10644,6 +10741,11 @@ function TextSize() {
         $sizes.eq(currentSize).addClass('active');
         $sizes.on('click', function() {
             setSize($(this).index());
+            toggle();
+        });
+        
+        $(document).on('start-idle', function() {
+            setSize(0);
         });
     }
     

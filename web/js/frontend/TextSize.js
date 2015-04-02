@@ -17,7 +17,7 @@ function TextSize() {
         
         $button.on('click', toggle);
         $closeButton.on('click', toggle);
-        $(document).on('click', function(e) {
+        $(document).on('touchstart', function(e) {
             if (!open) { return; }
             if ($(e.target).closest('.textSizeButton, .textSizeOverlay').length === 0) {
                 toggle();
@@ -27,6 +27,11 @@ function TextSize() {
         $sizes.eq(currentSize).addClass('active');
         $sizes.on('click', function() {
             setSize($(this).index());
+            toggle();
+        });
+        
+        $(document).on('start-idle', function() {
+            setSize(0);
         });
     }
     

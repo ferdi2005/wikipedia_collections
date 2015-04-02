@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Response;
 use AppBundle\Controller\BaseController;
+use AppBundle\Helper\Wikipedia;
+use AppBundle\Entity\Museum;
 
 class MuseumController extends BaseController
 {
@@ -24,6 +26,8 @@ class MuseumController extends BaseController
         
         return [
             'museum' => $museum,
+            'allLanguages' => Wikipedia::$ALL_LANGUAGES,
+            'defaultLanguages' => Museum::$DEFAULT_LANGUAGES,
         ];
     }
     

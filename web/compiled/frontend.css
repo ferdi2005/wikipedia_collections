@@ -45,12 +45,12 @@ body {
   position: relative;
   overflow: hidden;
   border-bottom: 0px solid #289f6d;
-  opacity: 0.6;
 }
 .articleBarWrap .articleBar .article .image {
   background-size: cover;
   width: 100%;
   height: 100%;
+  opacity: 0.4;
 }
 .articleBarWrap .articleBar .article h4 {
   font-size: 1.8rem;
@@ -61,21 +61,21 @@ body {
   position: absolute;
   width: 100%;
   bottom: 0;
+  opacity: 0.9;
 }
 .articleBarWrap .articleBar .article,
 .articleBarWrap .articleBar .article > * {
   transition: 0.2s all;
 }
-.articleBarWrap .articleBar .article.active {
-  opacity: 1;
-}
 .articleBarWrap .articleBar .article.active .image {
+  opacity: 1;
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
 }
 .articleBarWrap .articleBar .article.active h4 {
   -webkit-transform: scale(1.3);
           transform: scale(1.3);
+  opacity: 1;
 }
 
 /* Colors */
@@ -417,6 +417,7 @@ body {
           perspective: 800px;
   -webkit-perspective-origin: 150px 50%;
           perspective-origin: 150px 50%;
+  /* Topbar & overlay mixins */
 }
 .topBar .carousel {
   width: 300px;
@@ -484,7 +485,10 @@ body {
   width: 40px;
   height: 40px;
   float: right;
-  background: black center center no-repeat url('../img/text_size.svg');
+  background: black center center no-repeat;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  background-image: url('../img/text_size.svg');
+  background-size: 90% auto;
 }
 .topBar .textSizeOverlay {
   position: fixed;
@@ -494,11 +498,6 @@ body {
   color: white;
   width: 300px;
   padding-bottom: 40px;
-}
-.topBar .textSizeOverlay .close {
-  position: absolute;
-  top: 0;
-  right: 0;
 }
 .topBar .textSizeOverlay h5 {
   color: #c0c0c0;
@@ -510,11 +509,34 @@ body {
   letter-spacing: 5px;
   margin: 10px;
 }
+.topBar .textSizeOverlay .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.topBar .textSizeOverlay input.search {
+  margin: 20px;
+  width: calc(100% -  40px );
+  background: transparent 5px center no-repeat url('../img/search.svg');
+  color: white;
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 5px 40px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
 .topBar .textSizeOverlay .size {
   border-left: 5px solid transparent;
   line-height: 60px;
   font-family: "PT Sans", sans-serif;
   font-weight: bold;
+}
+.topBar .textSizeOverlay .size .label {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  min-width: 200px;
 }
 .topBar .textSizeOverlay .size.active {
   border-color: #289f6d;
@@ -540,10 +562,65 @@ body {
 .topBar .textSizeOverlay .size.large .label {
   font-size: 26px;
 }
-.topBar .textSizeOverlay .size .label {
+.topBar .languageButton {
+  width: 40px;
+  height: 40px;
+  float: right;
+  background: black center center no-repeat;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  background-size: 60% auto;
+}
+.topBar .languageOverlay {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  background: black;
+  color: white;
+  width: 300px;
+  padding-bottom: 40px;
+}
+.topBar .languageOverlay h5 {
+  color: #c0c0c0;
+  font-family: "Lora", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 5px;
+  margin: 10px;
+}
+.topBar .languageOverlay .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.topBar .languageOverlay input.search {
+  margin: 20px;
+  width: calc(100% -  40px );
+  background: transparent 5px center no-repeat url('../img/search.svg');
+  color: white;
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 5px 40px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
+.topBar .languageOverlay .language {
+  border-left: 5px solid transparent;
+  line-height: 60px;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
+.topBar .languageOverlay .language .label {
   border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   display: inline-block;
   min-width: 200px;
+}
+.topBar .languageOverlay .language img {
+  width: 30px;
+  margin: 0 20px;
 }
 
 /*# sourceMappingURL=frontend.css.map */

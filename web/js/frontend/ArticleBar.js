@@ -1,4 +1,4 @@
-function ArticleBar() {
+function ArticleBar(museum) {
     var $wrap = $('.articleBarWrap');
     var wrapElem = $wrap.get(0);
     var $bar = $wrap.find('.articleBar');
@@ -12,20 +12,9 @@ function ArticleBar() {
     var scrollLeft = 0;
     var timeout;
     
-    function init(loader, _museum) {
-        museum = _museum;
-        $bar.width(Math.ceil(museum.articles.length/2) * blockWidth);
-        
-        // Render article bar
-        var tpl = twig({ data: $('#articleBar-tpl').html() });
-        $bar.html(tpl.render(museum));
-        $articles = $bar.find('.article');
-        
-        // Link model museum
-        $articles.each(function(index) {
-            $(this).data('article', museum.articles[index]);
-        });
-        
+    attachHandlers();
+    
+    function attachHandlers() {
         $bar.on('click', '.article', function() {
             var $article = $(this);
             $bar.find('.active').removeClass('active');
@@ -39,8 +28,26 @@ function ArticleBar() {
         });
         
         $(document).on('stop-idle', function() {
-            $wrap.stop();
             idling = false;
+            $wrap.stop();
+        });
+        
+        $(document).on('language-selected', function(e, language) {
+            init(language)
+        });
+    }
+    
+    function init(language) {
+        var articles = museum.getArticles(language);
+        $bar.width(Math.ceil(articles.length/2) * blockWidth);
+        
+        // Render article bar
+        $bar.html($('#articleBar-tpl').twig({articles: articles, language: language}));
+        $articles = $bar.find('.article');
+        
+        // Link model museum
+        $articles.each(function(index) {
+            $(this).data('article', articles[index]);
         });
     }
     

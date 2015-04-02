@@ -3,15 +3,13 @@ $(function() {
     var $content = $('.articleContent');
 
     var self = this;    
-    var museum;
-    var settings = {
-        language: 'en',
-    };
+    var museum = Museum(window.app.museum);
     var menu = new TocMenu();
     var articleControls = new ArticleControls();
-    var articleBar = new ArticleBar();
+    var articleBar = new ArticleBar(window.app.museum);
     var textSize = new TextSize();
     var loader = new Loader(menu);
+    var languagePicker = new LanguagePicker(window.app.museum);
     var idling = false;
     var idleTimeout;
     var museumUpdatedAt;
@@ -19,10 +17,6 @@ $(function() {
     init();
     
     function init() {
-        museum = window.museum;
-        
-        articleBar.init(loader, museum);
-        
         if (!localStorage.noIdle) {
             idleTimeout = setTimeout(startIdle, 2000);
         }
@@ -36,9 +30,9 @@ $(function() {
         
         FastClick.attach(document.body);
         
-        $(document).on('click touchstart keydown', stopIdle);
+        $(document).on('touchstart keydown', stopIdle);
         
-        $('.articleBar .article').eq(32).click();
+        $('.articleBar .article').eq(0).click();
     }
     
     function startIdle() {
@@ -52,7 +46,6 @@ $(function() {
                 url: Routing.generate('museum_updated_at', {id: window.museum.id}),
                 cache: false,
                 success: function(updatedAt) {
-                    console.log(updatedAt);
                     if (museumUpdatedAt && museumUpdatedAt != updatedAt) {
                         console.log('New version detected, reloading');
                         document.location.reload();
@@ -63,7 +56,7 @@ $(function() {
         }
     }
     
-    function stopIdle() {
+    function stopIdle(e) {
         if (idling) {
             console.log('stop-idle');
             $(document).trigger('stop-idle');

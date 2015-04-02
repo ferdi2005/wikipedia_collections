@@ -79,14 +79,15 @@ body {
         cursor: pointer;
     }
     
-    .textSizeButton {
+    /* Topbar & overlay mixins */
+    .barButton() {
         width: @height;
         height: @height;
         float: right;
-        background: black center center no-repeat url('../img/text_size.svg');
+        background: black center center no-repeat;
+        border-left: 1px solid rgba(255,255,255,0.2);
     }
-    
-    .textSizeOverlay {
+    .overlay() {
         position: fixed;
         top: @height;
         right: 0;
@@ -94,12 +95,6 @@ body {
         color: white;
         width: 300px;
         padding-bottom: 40px;
-        
-        .close {
-            position: absolute;
-            top: 0; 
-            right: 0;
-        }
         
         h5 {
             color: #c0c0c0;
@@ -112,11 +107,50 @@ body {
             margin: 10px;
         }
         
-        .size {
-            border-left: 5px solid transparent;
-            line-height: 60px;
+        .close {
+            position: absolute;
+            top: 0; 
+            right: 0;
+        }
+        
+        input.search {
+            @margin: 20px;
+            margin: @margin;
+            width: ~"calc(100% - " 2 * @margin  ~")";
+            background: transparent 5px center no-repeat url('../img/search.svg');
+            color: white;
+            border: 1px solid white;
+            border-radius: 100px;
+            padding: 5px 40px;
+            text-align: center;
+            font-size: 1.4rem;
             font-family: "PT Sans", sans-serif;
             font-weight: bold;
+        }
+    }
+    .overlayItem() {
+        border-left: 5px solid transparent;
+        line-height: 60px;
+        font-family: "PT Sans", sans-serif;
+        font-weight: bold;
+        
+        .label {
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            display: inline-block;
+            min-width: 200px;
+        }
+    }
+    
+    .textSizeButton {
+        .barButton();
+        background-image: url('../img/text_size.svg');
+        background-size: 90% auto;
+    }
+    .textSizeOverlay {
+        .overlay();
+        
+        .size {
+            .overlayItem();
             
             &.active {
                 border-color: @marker;
@@ -142,11 +176,23 @@ body {
             &.large {
                 .size(30px);
             }
+        }
+    }
+    
+    
+    .languageButton {
+        .barButton();
+        background-size: 60% auto;
+    }
+    .languageOverlay {
+        .overlay();
+        
+        .language {
+            .overlayItem();
             
-            .label {
-                border-bottom: 1px solid rgba(255,255,255,0.4);
-                display: inline-block;
-                min-width: 200px;
+            img {
+                width: 30px;
+                margin: 0 20px;
             }
         }
     }

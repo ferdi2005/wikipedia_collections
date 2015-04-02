@@ -96,17 +96,23 @@ class Article implements JsonSerializable
     }
     
     public function jsonSerialize() {
-        return [
+        $result = [
             'id' => $this->id,
             'title' => $this->title,
             'pageId' => $this->pageId,
             'language' => $this->language,
             'position' => $this->position,
+            'translations' => $this->translations->toArray(),
             'imageTitle' => $this->imageTitle,
             'smallImage' => $this->smallImage,
             'largeImage' => $this->largeImage,
-            'translations' => $this->translations->toArray(),
         ];
+        if ($this->translationOf) {
+            $result['imageTitle'] = $this->translationOf->getImageTitle();
+            $result['smallImage'] = $this->translationOf->getSmallImage();
+            $result['largeImage'] = $this->translationOf->getLargeImage();
+        }
+        return $result;
     }
     
     public function setFromData($data) {
