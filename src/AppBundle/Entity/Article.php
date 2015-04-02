@@ -105,7 +105,17 @@ class Article implements JsonSerializable
             'imageTitle' => $this->imageTitle,
             'smallImage' => $this->smallImage,
             'largeImage' => $this->largeImage,
+            'translations' => $this->translations->toArray(),
         ];
+    }
+    
+    public function setFromData($data) {
+        $this->setPageId($data['pageid']);
+        $this->setTitle($data['title']);
+        $this->setPlainContent(
+            strip_tags($data['revisions'][0]['*'])
+        );
+        return $this;
     }
     
     /* ============== Accessors ============== */

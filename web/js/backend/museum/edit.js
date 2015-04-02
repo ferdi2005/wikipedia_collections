@@ -118,11 +118,12 @@ $(function() {
     }
 
     function addArticle(language, title) {
-        $submitBtn.attr('disabled', 'disabled');
         var articleTitle = Date.now();
         var $article = Form.clonePrototype($articles, $articles, [articleTitle]);
         var $translations = $article.find('.translations');
 
+        $submitBtn.attr('disabled', 'disabled');
+        
         wikipedia.getArticle(language, title,
             function(language, article) {
                 fillForm($article, article);
@@ -131,44 +132,8 @@ $(function() {
                 showArticle(article, $article);
 
                 updatePositions();
-
-                // Get translations
-                $('.spinner').show();
-                console.log(language,title);
-                wikipedia.getLangLinks(language, title, function(language, data) {
-                    if (!data) {
-                        // No translations
-                        $submitBtn.removeAttr('disabled');
-                        $('.spinner').hide();
-                    }
-                    var num = data.length;
-                    var completed = 0;
-                    $.each(data, function(i, langlink) {
-                        wikipedia.getArticle(
-                            langlink.lang,
-                            langlink['*'],
-                            function(language, translation) {
-                                var $translation = Form.clonePrototype($translations, $translations, [articleTitle, Date.now() + i]);
-                                fillForm($translation, translation);
-                            },
-                            function() {},
-                            function() {
-                                completed++;
-                                
-                                if (completed == num) {
-                                    console.log('All translations downloaded');
-                                    $submitBtn.removeAttr('disabled');
-                                    $('.spinner').hide();
-                                }
-                            }
-                        );
-                    })
-                }, function() {
-                    alert('Er is een fout opgetreden bij het downloaden van de vertalingen.');
-                    $submitBtn.removeAttr('disabled');
-                    $('.spinner').hide();
-                    $article.remove();
-                });
+                
+                $submitBtn.removeAttr('disabled');
             },
             function() {
                 $submitBtn.removeAttr('disabled');

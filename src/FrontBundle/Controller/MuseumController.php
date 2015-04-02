@@ -13,7 +13,7 @@ class MuseumController extends BaseController
     
     
     /**
-     * @Route("/museum/{id}/{name}", defaults={"name"=""}, name="museum_show")
+     * @Route("/museum/{id}", name="museum_show")
      * @Template()
      */
     public function showAction($id)
@@ -25,6 +25,14 @@ class MuseumController extends BaseController
         return [
             'museum' => $museum,
         ];
+    }
+    
+    /**
+     * @Route("/museum/{id}/updated_at", defaults={"name"=""}, name="museum_updated_at", options={"expose" = true})
+     * @Template()
+     */
+    public function updatedAtAction($id) {
+        return new Response('2015-04-02');
     }
     
 }

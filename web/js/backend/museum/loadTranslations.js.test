@@ -1,0 +1,45 @@
+$('.articles').show().find('.article').each(function() {
+    var $article = $(this);
+    var language = $article.find('[id$=language]').val();
+    var title = $article.find('[id$=title]').val();
+    console.log(language, title);
+    downloadTranslations($article, language, title);
+});
+
+
+function downloadTranslations($article, language, title) {
+    var $translations = $article.find('.translations');
+    
+    wikipedia.getLangLinks(language, title, function(language, data) {
+        if (!data) { return; }
+        var num = data.length;
+        var completed = 0;
+        $.each(data, function(i, langlink) {
+            wikipedia.getArticle(
+                langlink.lang,
+                langlink['*'],
+                function(language, translation) {
+                    var $translation = Form.clonePrototype($translations, $translations);
+                    fillForm($translation, translation);
+                },
+                function() {},
+                function() {
+                    completed++;
+                    
+                    if (completed == num) {
+                        console.log('All translations downloaded for ' + title);
+                    }
+                }
+            );
+        })
+    }, function() {
+        alert('Er is een fout opgetreden bij het downloaden van de vertalingen.');
+    });
+}
+
+function fillForm($article, article) {
+    $article.find('[id$=plainContent]').val(article.plainContent);
+    $article.find('[id$=pageId]').val(article.pageId);
+    $article.find('[id$=title]').val(article.title);
+    $article.find('[id$=language]').val(article.language);
+}

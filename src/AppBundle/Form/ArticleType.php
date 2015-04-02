@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ArticleType extends TranslationType
+class ArticleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -17,20 +17,27 @@ class ArticleType extends TranslationType
         parent::buildForm($builder, $options);
         
         $builder
+            ->add('title')
+            ->add('pageId')
+            ->add('language')
+            ->add('plainContent')
+            ->add('imageTitle')
+            ->add('smallImage')
+            ->add('largeImage')
             ->add('position')
-            ->add('translations', 'collection', array(
-                'attr' => ['class' => 'translations'],
-                'type' => new TranslationType(),
-                'options'  => [
-                    'attr' => ['class' => 'article'],
-                    'cascade_validation' => true,
-                ],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'by_reference' => false,
-                'cascade_validation' => true,
-            ))
+            // ->add('translations', 'collection', array(
+            //     'attr' => ['class' => 'translations'],
+            //     'type' => new TranslationType(),
+            //     'options'  => [
+            //         'attr' => ['class' => 'translation'],
+            //         'cascade_validation' => true,
+            //     ],
+            //     'allow_add' => true,
+            //     'allow_delete' => true,
+            //     'prototype' => true,
+            //     'by_reference' => false,
+            //     'cascade_validation' => true,
+            // ))
         ;
     }
     

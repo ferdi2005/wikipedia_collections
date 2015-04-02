@@ -166,7 +166,8 @@ ul.record_actions > li {
 .museumEdit .searchBar .searchResults {
   margin: 20px 0 0;
 }
-.museumEdit .article {
+.museumEdit .article,
+.museumEdit .translation {
   margin-left: 20px;
 }
 .museumEdit .articlePreview {

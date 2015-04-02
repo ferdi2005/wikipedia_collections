@@ -14,6 +14,7 @@ $(function() {
     var loader = new Loader(menu);
     var idling = false;
     var idleTimeout;
+    var museumUpdatedAt;
     
     init();
     
@@ -35,7 +36,7 @@ $(function() {
         
         FastClick.attach(document.body);
         
-        $(document).on('touchstart keydown', stopIdle);
+        $(document).on('click touchstart keydown', stopIdle);
         
         $('.articleBar .article').eq(32).click();
     }
@@ -43,8 +44,22 @@ $(function() {
     function startIdle() {
         if (!idling) {
             console.log('start-idle');
-            $(document).trigger('start-idle');
             idling = true;
+            $(document).trigger('start-idle');
+            
+            // Check if reload is needed
+            $.ajax({
+                url: Routing.generate('museum_updated_at', {id: window.museum.id}),
+                cache: false,
+                success: function(updatedAt) {
+                    console.log(updatedAt);
+                    if (museumUpdatedAt && museumUpdatedAt != updatedAt) {
+                        console.log('New version detected, reloading');
+                        document.location.reload();
+                    }
+                    museumUpdatedAt = updatedAt;
+                }
+            });
         }
     }
     

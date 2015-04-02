@@ -51,9 +51,6 @@ function ArticleControls() {
             $('html').velocity('scroll', {
                 offset: '0px',
                 mobileHA: false,
-                complete: function() {
-                    carousel.enabled = true;
-                },
             });
         });
     }
