@@ -87,6 +87,7 @@ function Search(museum) {
         $button.toggleClass('active');
         if (open) {
             $(window).scrollTop(0);
+            $overlay.css('min-height', $(document).height());
             $input.val('').focus();
             $searchResults.empty();
             $h5.css('visibility', 'hidden');

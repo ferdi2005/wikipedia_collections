@@ -58,10 +58,17 @@ class Museum implements JsonSerializable
      */
     private $defaultLanguage;
     
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
         $this->articles = new ArrayCollection();
+        $this->updatedAt = new \DateTime();
     }
     
     public function __toString() {
@@ -172,5 +179,28 @@ class Museum implements JsonSerializable
     public function getDefaultLanguage()
     {
         return $this->defaultLanguage;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return Museum
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }

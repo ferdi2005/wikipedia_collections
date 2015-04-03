@@ -10922,6 +10922,7 @@ function Search(museum) {
         $button.toggleClass('active');
         if (open) {
             $(window).scrollTop(0);
+            $overlay.css('min-height', $(document).height());
             $input.val('').focus();
             $searchResults.empty();
             $h5.css('visibility', 'hidden');
@@ -11002,7 +11003,7 @@ function TocMenu() {
     init();
     
     function init() {
-        $menu.on('click', 'a', function(e) {
+        $menu.on('click', 'ul a', function(e) {
             e.preventDefault();
             var a = $(this);
             var pos = findHeader(a.attr('href')).position();
@@ -11017,11 +11018,22 @@ function TocMenu() {
             });
         });
         
+        $menu.on('click', '.returnToTop', function(e) {
+            e.preventDefault();
+            $('html').velocity('scroll', { 
+                offset: '0px', 
+                mobileHA: false,
+                complete: function() {
+                    hide();
+                },
+            });
+        });
+        
         $menuButton.velocity({rotateX: -91}, {duration: 0});
         $menuButton.add($carousel).on('click', function() {
             if (visible) { hide(); } else { show(); }
         });
-        $content.on('click', function() {
+        $content.on('touchstart', function() {
             if (visible) { hide(); }
         });
         
@@ -11057,8 +11069,7 @@ function TocMenu() {
         }
     }
     
-    function extractToc(articleData, $article) {
-        data = articleData;
+    function extractToc(article, $article) {
         $menu.empty();
         items = [];
         
@@ -11066,9 +11077,11 @@ function TocMenu() {
         if (!toc.length) { return; }
         toc.detach().appendTo($menu);
         
-        $('<h2 class="articleTitle" />').text(data.humanTitle).insertAfter($menu.find('#toctitle'));
+        $('<h2 class="articleTitle" />').text(article.title).insertAfter($menu.find('#toctitle'));
         
-        $menu.css('background-image', 'linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgb(0, 0, 0) 40%), url(' + articleData.image + ')');
+        $menu.css('background-image', 'linear-gradient(rgba(0, 0, 0, 0.5) 0%, rgb(0, 0, 0) 40%), url(' + article.smallImage + ')');
+        
+        $('<a class="returnToTop">Terug naar overzicht</a>').insertAfter(toc);
         
         toc.find('ul li a').each(function(i) {
             var a = $(this);

@@ -37,7 +37,7 @@ class ArticleController extends BaseController
         }
 
         // Limit to x results
-        $articles = array_slice($articles, 0, 6);
+        $articles = array_slice($articles, 0, 10);
         
         return $this->createJsonResponse(array_map(
             function($a) { return $a->getId(); }, 

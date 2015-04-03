@@ -119,6 +119,7 @@ class MuseumController extends BaseController
         
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $museum->setUpdatedAt(new \DateTime());
             $em->flush();
             
             $origArticles

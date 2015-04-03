@@ -113,11 +113,14 @@ body {
     .languageButton {
         .barButton();
         background-size: 60% auto;
-        color: white;
+        color: black;
         text-align: center;
         line-height: @height;
         font-family: "Lora", serif;
         font-size: 20px;
+        &.active {
+            color: white;
+        }
     }
     .searchButton {
         .barButton();
@@ -242,9 +245,10 @@ body {
     
     .searchOverlay {
         .overlay();
+        position: absolute;
         width: 100%;
-        bottom: 0px;
         overflow: auto;
+        top: 0px;
         
         h5 {
             text-align: left;

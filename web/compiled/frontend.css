@@ -441,6 +441,16 @@ body {
 .tocMenu ul ul ul a {
   font-size: 1.4rem;
 }
+.tocMenu .returnToTop {
+  display: block;
+  border: 1px solid #289f6d;
+  margin: 20px 80px 20px 30px;
+  text-align: center;
+  padding: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: 10px center no-repeat url('../img/back_to_top.svg');
+}
 
 /* Colors */
 body {
@@ -552,7 +562,7 @@ body.statusBarFix {
   background: white center center no-repeat;
   border-left: 1px solid rgba(0, 0, 0, 0.1);
   background-size: 60% auto;
-  color: white;
+  color: black;
   text-align: center;
   line-height: 40px;
   font-family: "Lora", serif;
@@ -561,6 +571,9 @@ body.statusBarFix {
 .topBar .languageButton.active,
 .topBar .languageButton:hover {
   background-color: black;
+}
+.topBar .languageButton.active {
+  color: white;
 }
 .topBar .searchButton {
   width: 40px;
@@ -704,9 +717,10 @@ body .searchOverlay {
   color: white;
   width: 300px;
   padding-bottom: 40px;
+  position: absolute;
   width: 100%;
-  bottom: 0px;
   overflow: auto;
+  top: 0px;
 }
 body .searchOverlay h5 {
   color: #c0c0c0;

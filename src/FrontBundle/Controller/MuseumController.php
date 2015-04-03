@@ -35,7 +35,11 @@ class MuseumController extends BaseController
      * @Template()
      */
     public function updatedAtAction($id) {
-        return new Response('2015-04-02');
+        $em = $this->getDoctrine()->getManager();
+        $museum = $em->getRepository('AppBundle:Museum')->find($id);
+        $this->checkExists($museum);
+        
+        return new Response($this->container->getParameter('assets_version') . '_' . $museum->getUpdatedAt()->format('Y-m-d'));
     }
     
 }
