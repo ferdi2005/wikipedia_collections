@@ -2,6 +2,10 @@
 
 body {
     padding-top: 40px;
+    
+    &.statusBarFix {
+        padding-top: 60px;
+    }
 }
 .topBar {
     @height: @topBarHeight;
@@ -95,6 +99,39 @@ body {
             background-color: black;
         }
     }
+    
+    .textSizeButton {
+        .barButton();
+        background-image: url('../img/text_size.svg');
+        background-size: 90% auto;
+        
+        &.active, &:hover {
+            background-image: url('../img/text_size_active.svg');
+        }
+    }
+    
+    .languageButton {
+        .barButton();
+        background-size: 60% auto;
+        color: white;
+        text-align: center;
+        line-height: @height;
+        font-family: "Lora", serif;
+        font-size: 20px;
+    }
+    .searchButton {
+        .barButton();
+        
+        background-image: url('../img/search_dark.svg');
+        
+        &.active, &:hover {
+            background-image: url('../img/search.svg');
+        }
+    }
+}
+
+body {
+    @height: @topBarHeight;
     .overlay() {
         position: fixed;
         top: @height;
@@ -134,15 +171,6 @@ body {
         }
     }
     
-    .textSizeButton {
-        .barButton();
-        background-image: url('../img/text_size.svg');
-        background-size: 90% auto;
-        
-        &.active, &:hover {
-            background-image: url('../img/text_size_active.svg');
-        }
-    }
     .textSizeOverlay {
         .overlay();
         
@@ -176,16 +204,6 @@ body {
         }
     }
     
-    
-    .languageButton {
-        .barButton();
-        background-size: 60% auto;
-        color: white;
-        text-align: center;
-        line-height: @height;
-        font-family: "Lora", serif;
-        font-size: 20px;
-    }
     .languageOverlay {
         .overlay();
         
@@ -222,18 +240,11 @@ body {
         }
     }
     
-    .searchButton {
-        .barButton();
-        
-        background-image: url('../img/search_dark.svg');
-        
-        &.active, &:hover {
-            background-image: url('../img/search.svg');
-        }
-    }
     .searchOverlay {
         .overlay();
         width: 100%;
+        bottom: 0px;
+        overflow: auto;
         
         h5 {
             text-align: left;

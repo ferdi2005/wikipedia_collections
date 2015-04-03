@@ -47,18 +47,7 @@ function Museum(museum) {
     }
     
     function isTranslationOf(article) {
-        if (this == article) { return true; }
-        for (var i = 0; i < this.translations.length; i++) {
-            if (this.translations[i] == article) { return true }
-        }
-        if (this.translationOf) {
-            if (this.translationOf == article) { return true; }
-            for (var i = 0; i < this.translationOf.translations.length; i++) {
-                console.log(article);
-                if (this.translationOf.translations[i] == article) { return true; }
-            }
-        }
-        return false;
+        return this.getTranslation(article.language) == article;
     }
     
     museum.articles.forEach(function(article) {

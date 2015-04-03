@@ -99,9 +99,6 @@ body {
   font-family: 'PT Sans', sans-serif;
   font-size: 1.6rem;
 }
-body.statusBarFix {
-  margin-top: 20px;
-}
 
 /* Colors */
 .articleBarWrap {
@@ -449,6 +446,9 @@ body.statusBarFix {
 body {
   padding-top: 40px;
 }
+body.statusBarFix {
+  padding-top: 60px;
+}
 .topBar {
   height: 40px;
   position: fixed;
@@ -545,65 +545,6 @@ body {
 .topBar .textSizeButton:hover {
   background-image: url('../img/text_size_active.svg');
 }
-.topBar .textSizeOverlay {
-  position: fixed;
-  top: 40px;
-  right: 0;
-  background: black;
-  color: white;
-  width: 300px;
-  padding-bottom: 40px;
-}
-.topBar .textSizeOverlay h5 {
-  color: #c0c0c0;
-  font-family: "Lora", sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 5px;
-  margin: 10px;
-}
-.topBar .textSizeOverlay .close {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.topBar .textSizeOverlay .size {
-  border-left: 5px solid transparent;
-  line-height: 60px;
-  font-family: "PT Sans", sans-serif;
-  font-weight: bold;
-}
-.topBar .textSizeOverlay .size .label {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  display: inline-block;
-  min-width: 200px;
-}
-.topBar .textSizeOverlay .size.active {
-  border-color: #289f6d;
-}
-.topBar .textSizeOverlay .size .letter {
-  padding: 20px;
-}
-.topBar .textSizeOverlay .size.normal .letter {
-  font-size: 20px;
-}
-.topBar .textSizeOverlay .size.normal .label {
-  font-size: 16px;
-}
-.topBar .textSizeOverlay .size.medium .letter {
-  font-size: 25px;
-}
-.topBar .textSizeOverlay .size.medium .label {
-  font-size: 21px;
-}
-.topBar .textSizeOverlay .size.large .letter {
-  font-size: 30px;
-}
-.topBar .textSizeOverlay .size.large .label {
-  font-size: 26px;
-}
 .topBar .languageButton {
   width: 40px;
   height: 40px;
@@ -621,65 +562,6 @@ body {
 .topBar .languageButton:hover {
   background-color: black;
 }
-.topBar .languageOverlay {
-  position: fixed;
-  top: 40px;
-  right: 0;
-  background: black;
-  color: white;
-  width: 300px;
-  padding-bottom: 40px;
-}
-.topBar .languageOverlay h5 {
-  color: #c0c0c0;
-  font-family: "Lora", sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 5px;
-  margin: 10px;
-}
-.topBar .languageOverlay .close {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.topBar .languageOverlay .language {
-  border-left: 5px solid transparent;
-  line-height: 60px;
-  font-family: "PT Sans", sans-serif;
-  font-weight: bold;
-  clear: both;
-}
-.topBar .languageOverlay .language .label {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  display: inline-block;
-  min-width: 200px;
-}
-.topBar .languageOverlay .language img {
-  width: 30px;
-  margin: 22px;
-  float: left;
-}
-.topBar .languageOverlay .language .label {
-  float: right;
-  margin-right: 20px;
-  min-width: 190px;
-}
-.topBar .languageOverlay input.search {
-  margin: 20px;
-  width: calc(100% -  40px );
-  background: transparent 5px center no-repeat url('../img/search.svg');
-  color: white;
-  border: 1px solid white;
-  border-radius: 100px;
-  padding: 5px 40px;
-  text-align: center;
-  font-size: 1.4rem;
-  font-family: "PT Sans", sans-serif;
-  font-weight: bold;
-}
 .topBar .searchButton {
   width: 40px;
   height: 40px;
@@ -696,7 +578,7 @@ body {
 .topBar .searchButton:hover {
   background-image: url('../img/search.svg');
 }
-.topBar .searchOverlay {
+body .textSizeOverlay {
   position: fixed;
   top: 40px;
   right: 0;
@@ -704,9 +586,8 @@ body {
   color: white;
   width: 300px;
   padding-bottom: 40px;
-  width: 100%;
 }
-.topBar .searchOverlay h5 {
+body .textSizeOverlay h5 {
   color: #c0c0c0;
   font-family: "Lora", sans-serif;
   font-size: 13px;
@@ -716,19 +597,140 @@ body {
   letter-spacing: 5px;
   margin: 10px;
 }
-.topBar .searchOverlay .close {
+body .textSizeOverlay .close {
   position: absolute;
   top: 0;
   right: 0;
 }
-.topBar .searchOverlay h5 {
+body .textSizeOverlay .size {
+  border-left: 5px solid transparent;
+  line-height: 60px;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
+body .textSizeOverlay .size .label {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  min-width: 200px;
+}
+body .textSizeOverlay .size.active {
+  border-color: #289f6d;
+}
+body .textSizeOverlay .size .letter {
+  padding: 20px;
+}
+body .textSizeOverlay .size.normal .letter {
+  font-size: 20px;
+}
+body .textSizeOverlay .size.normal .label {
+  font-size: 16px;
+}
+body .textSizeOverlay .size.medium .letter {
+  font-size: 25px;
+}
+body .textSizeOverlay .size.medium .label {
+  font-size: 21px;
+}
+body .textSizeOverlay .size.large .letter {
+  font-size: 30px;
+}
+body .textSizeOverlay .size.large .label {
+  font-size: 26px;
+}
+body .languageOverlay {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  background: black;
+  color: white;
+  width: 300px;
+  padding-bottom: 40px;
+}
+body .languageOverlay h5 {
+  color: #c0c0c0;
+  font-family: "Lora", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 5px;
+  margin: 10px;
+}
+body .languageOverlay .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+body .languageOverlay .language {
+  border-left: 5px solid transparent;
+  line-height: 60px;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+  clear: both;
+}
+body .languageOverlay .language .label {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+  display: inline-block;
+  min-width: 200px;
+}
+body .languageOverlay .language img {
+  width: 30px;
+  margin: 22px;
+  float: left;
+}
+body .languageOverlay .language .label {
+  float: right;
+  margin-right: 20px;
+  min-width: 190px;
+}
+body .languageOverlay input.search {
+  margin: 20px;
+  width: calc(100% -  40px );
+  background: transparent 5px center no-repeat url('../img/search.svg');
+  color: white;
+  border: 1px solid white;
+  border-radius: 100px;
+  padding: 5px 40px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-family: "PT Sans", sans-serif;
+  font-weight: bold;
+}
+body .searchOverlay {
+  position: fixed;
+  top: 40px;
+  right: 0;
+  background: black;
+  color: white;
+  width: 300px;
+  padding-bottom: 40px;
+  width: 100%;
+  bottom: 0px;
+  overflow: auto;
+}
+body .searchOverlay h5 {
+  color: #c0c0c0;
+  font-family: "Lora", sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 5px;
+  margin: 10px;
+}
+body .searchOverlay .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+body .searchOverlay h5 {
   text-align: left;
   margin: 20px 30px 0;
 }
-.topBar .searchOverlay h5 .numResults {
+body .searchOverlay h5 .numResults {
   color: #289f6d;
 }
-.topBar .searchOverlay input.search {
+body .searchOverlay input.search {
   font-size: 2.5rem;
   font-family: "Lora", serif;
   font-weight: bold;
@@ -739,7 +741,7 @@ body {
   width: calc(100% -  40px );
   padding: 10px;
 }
-.topBar .searchOverlay .article {
+body .searchOverlay .article {
   line-height: 80px;
   font-family: "Lora", serif;
   font-weight: bold;
@@ -748,10 +750,10 @@ body {
   margin: 0 30px;
   padding: 20px 0;
 }
-.topBar .searchOverlay .article:last-child {
+body .searchOverlay .article:last-child {
   border-bottom: none;
 }
-.topBar .searchOverlay .article .img {
+body .searchOverlay .article .img {
   width: 80px;
   height: 80px;
   float: left;
@@ -759,7 +761,7 @@ body {
   background-position: center center;
   background-size: cover;
 }
-.topBar .searchOverlay .article .label {
+body .searchOverlay .article .label {
   margin-left: 130px;
   min-width: 190px;
   width: 470px;

@@ -42,16 +42,6 @@
         
         <div class="topBar">
             <div class="searchButton"></div>
-            <div class="searchOverlay">
-                <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
-                <h5><span class="numResults">0</span> resultaten voor</h5>
-                <input type="text" class="search">
-                <div class="articleExample">
-                    <div class="img"></div>
-                    <span class="label"></span>
-                </div>
-                <div class="searchResults"></div>
-            </div>
             
             {# Text size #}
             <div class="languageButton"></div>
@@ -96,6 +86,17 @@
                 <div class="side back">Back</div>
             </div>
             <div class="menuButton"></div>
+        </div>
+        
+        <div class="searchOverlay">
+            <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
+            <h5><span class="numResults">0</span> resultaten voor</h5>
+            <input type="text" class="search">
+            <div class="articleExample">
+                <div class="img"></div>
+                <span class="label"></span>
+            </div>
+            <div class="searchResults"></div>
         </div>
         
         <div class="imageOverlay">

@@ -10558,20 +10558,23 @@ function Loader(menu) {
     }
     
     function render(article) {
-        $spinner.css('opacity', 0);
+        $spinner.hide();
+        // $spinner.css('opacity', 0);
         $content.velocity({ opacity: 0 }, function() {
             $spinner.velocity({ opacity: 1 });
         });
         
         loadArticle(article, function(html) {
-            var $article = $(html);
-            $content.empty().append($article);
-            cleanArticle($content);
-            addExtras(article, $content);
-            $content.velocity({ opacity: 1 });
-            menu.extractToc(article, $content);
-            
-            $spinner.velocity({ opacity: 0.01 });
+            $content.promise().done(function() {
+                var $article = $(html);
+                $content.empty().append($article);
+                cleanArticle($content);
+                addExtras(article, $content);
+                $content.velocity({ opacity: 1 });
+                menu.extractToc(article, $content);
+                
+                $spinner.velocity('stop').velocity({ opacity: 0 });
+            });
         });
     }
     
@@ -10805,18 +10808,7 @@ function Museum(museum) {
     }
     
     function isTranslationOf(article) {
-        if (this == article) { return true; }
-        for (var i = 0; i < this.translations.length; i++) {
-            if (this.translations[i] == article) { return true }
-        }
-        if (this.translationOf) {
-            if (this.translationOf == article) { return true; }
-            for (var i = 0; i < this.translationOf.translations.length; i++) {
-                console.log(article);
-                if (this.translationOf.translations[i] == article) { return true; }
-            }
-        }
-        return false;
+        return this.getTranslation(article.language) == article;
     }
     
     museum.articles.forEach(function(article) {
@@ -10929,6 +10921,7 @@ function Search(museum) {
         $overlay.toggle();
         $button.toggleClass('active');
         if (open) {
+            $(window).scrollTop(0);
             $input.val('').focus();
             $searchResults.empty();
             $h5.css('visibility', 'hidden');

@@ -86,6 +86,7 @@ function Search(museum) {
         $overlay.toggle();
         $button.toggleClass('active');
         if (open) {
+            $(window).scrollTop(0);
             $input.val('').focus();
             $searchResults.empty();
             $h5.css('visibility', 'hidden');

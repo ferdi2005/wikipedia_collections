@@ -33,20 +33,23 @@ function Loader(menu) {
     }
     
     function render(article) {
-        $spinner.css('opacity', 0);
+        $spinner.hide();
+        // $spinner.css('opacity', 0);
         $content.velocity({ opacity: 0 }, function() {
             $spinner.velocity({ opacity: 1 });
         });
         
         loadArticle(article, function(html) {
-            var $article = $(html);
-            $content.empty().append($article);
-            cleanArticle($content);
-            addExtras(article, $content);
-            $content.velocity({ opacity: 1 });
-            menu.extractToc(article, $content);
-            
-            $spinner.velocity({ opacity: 0.01 });
+            $content.promise().done(function() {
+                var $article = $(html);
+                $content.empty().append($article);
+                cleanArticle($content);
+                addExtras(article, $content);
+                $content.velocity({ opacity: 1 });
+                menu.extractToc(article, $content);
+                
+                $spinner.velocity('stop').velocity({ opacity: 0 });
+            });
         });
     }
     
