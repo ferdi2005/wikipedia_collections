@@ -2,17 +2,41 @@ function Loader(menu) {
     var $wrap = $('.articleBarWrap');
     var $bar = $wrap.find('.articleBar');
     var $content = $('.articleContent');
+    var $spinner = $('.articleSpinner');
+    var currentArticle;
+    var currentLanguage;
     
     init();
     
     function init() {
         $(document).on('article-selected', function(e, article) {
-            render(article);
+            if (article) {
+                render(article);
+                currentArticle = article;
+            } else {
+                renderNotAvailable(currentLanguage);
+            }
+        });
+        $(document).on('language-selected', function(e, language) {
+            currentLanguage = language;
+            
+            if (currentArticle) {
+                var translation = currentArticle.getTranslation(language);
+                if (translation) {
+                    currentArticle = translation;
+                    render(translation);
+                } else {
+                    renderNotAvailable(language);
+                }
+            }
         });
     }
     
     function render(article) {
-        $content.velocity({ opacity: 0 });
+        $spinner.css('opacity', 0);
+        $content.velocity({ opacity: 0 }, function() {
+            $spinner.velocity({ opacity: 1 });
+        });
         
         loadArticle(article, function(html) {
             var $article = $(html);
@@ -21,7 +45,13 @@ function Loader(menu) {
             addExtras(article, $content);
             $content.velocity({ opacity: 1 });
             menu.extractToc(article, $content);
+            
+            $spinner.velocity({ opacity: 0 });
         });
+    }
+    
+    function renderNotAvailable(languages) {
+        $content.empty().append('<h1>Unfortunately, this article isn\'t available in your language</h1>');
     }
     
     function loadArticle(article, callback) {

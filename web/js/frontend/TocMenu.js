@@ -15,7 +15,7 @@ function TocMenu() {
     var curIndex = -1;
     var carousel = new TocCarousel();
     var visible = false;
-    var contentScale = 0.5;
+    var contentScale = 0.505;
         
     init();
     

@@ -183,16 +183,29 @@ body {
     .languageButton {
         .barButton();
         background-size: 60% auto;
+        color: white;
+        text-align: center;
+        line-height: @height;
+        font-family: "Lora", serif;
+        font-size: 20px;
     }
     .languageOverlay {
         .overlay();
         
         .language {
             .overlayItem();
+            clear: both;
             
             img {
                 width: 30px;
-                margin: 0 20px;
+                margin: 22px;
+                float: left;
+            }
+            
+            .label {
+                float: right;
+                margin-right: 20px;
+                min-width: 190px;
             }
         }
     }

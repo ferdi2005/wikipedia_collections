@@ -9,7 +9,6 @@ function LanguagePicker(museum) {
     
     var open = false;
     var currentLanguage = museum.defaultLanguage;
-    var currentArticle;
     
     init();
     
@@ -32,10 +31,7 @@ function LanguagePicker(museum) {
         });
         
         $(document).on('start-idle', function() {
-        });
-        
-        $(document).on('article-selected', function(e, article) {
-            currentArticle = article;
+            pickLanguage(museum.defaultLanguage);
         });
         
         $search.on('keyup', function() {
@@ -67,8 +63,11 @@ function LanguagePicker(museum) {
     }
     
     function pickLanguage(language) {
-        var prevArticle = currentArticle;
-        $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+        if (app.defaultLanguages[language]) {
+            $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+        } else {
+            $button.css('background-image', '').text(language);
+        }
         $overlay.trigger('language-selected', language);
     }
     

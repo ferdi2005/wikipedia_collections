@@ -10289,15 +10289,19 @@ function ArticleBar(museum) {
     var idleRight = true;
     var scrollLeft = 0;
     var timeout;
+    var currentLanguage = museum.defaultLanguage;
+    var currentArticle;
     
     attachHandlers();
+    init();
     
     function attachHandlers() {
         $bar.on('click', '.article', function() {
             var $article = $(this);
             $bar.find('.active').removeClass('active');
             $article.addClass('active');
-            $article.trigger('article-selected', $article.data('article'));
+            currentArticle = $article.data('article').getTranslation(currentLanguage);
+            $article.trigger('article-selected', currentArticle);
         });
         
         $(document).on('start-idle', function() {
@@ -10311,13 +10315,28 @@ function ArticleBar(museum) {
         });
         
         $(document).on('language-selected', function(e, language) {
-            init(language)
+            currentLanguage = language;
+            var count = 0;
+            $articles.each(function(index) {
+                var $article = $(this);
+                var article = $article.data('article');
+                var translation = article.getTranslation(language);
+                if (translation) {
+                    $article.show().find('h4').text(translation.title);
+                    count++;
+                } else if ($article.is('.active')) {
+                    // Keep $article, to lessen confusion
+                    count++;
+                } else {
+                    $article.hide();
+                }
+            });
+            $bar.width(Math.ceil(count/2) * blockWidth);
         });
     }
     
     function init(language) {
-        var articles = museum.getArticles(language);
-        $bar.width(Math.ceil(articles.length/2) * blockWidth);
+        var articles = museum.articles;
         
         // Render article bar
         $bar.html($('#articleBar-tpl').twig({articles: articles, language: language}));
@@ -10334,7 +10353,7 @@ function ArticleBar(museum) {
         
         // Select article at random, scroll to it, click it.
         var $article = $articles.eq(Math.round( Math.random() * $articles.length ));
-        var scrollLeft = wrapElem.scrollLeft + $article.position().left  + $article.width()/2 - $(window).width()/2;
+        var scrollLeft = getScrollAmount($article);
         scrollLeft = Math.max(0, scrollLeft);
         $wrap
             .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5 })
@@ -10350,6 +10369,10 @@ function ArticleBar(museum) {
         
         // requestAnimationFrame(idle);
         // // setTimeout(idle, 500);
+    }
+    
+    function getScrollAmount($article) {
+        return wrapElem.scrollLeft + $article.position().left  + $article.width()/2 - $(window).width()/2
     }
     
     this.init = init;
@@ -10422,7 +10445,6 @@ function LanguagePicker(museum) {
     
     var open = false;
     var currentLanguage = museum.defaultLanguage;
-    var currentArticle;
     
     init();
     
@@ -10445,10 +10467,7 @@ function LanguagePicker(museum) {
         });
         
         $(document).on('start-idle', function() {
-        });
-        
-        $(document).on('article-selected', function(e, article) {
-            currentArticle = article;
+            pickLanguage(museum.defaultLanguage);
         });
         
         $search.on('keyup', function() {
@@ -10480,8 +10499,11 @@ function LanguagePicker(museum) {
     }
     
     function pickLanguage(language) {
-        var prevArticle = currentArticle;
-        $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+        if (app.defaultLanguages[language]) {
+            $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+        } else {
+            $button.css('background-image', '').text(language);
+        }
         $overlay.trigger('language-selected', language);
     }
     
@@ -10490,17 +10512,41 @@ function Loader(menu) {
     var $wrap = $('.articleBarWrap');
     var $bar = $wrap.find('.articleBar');
     var $content = $('.articleContent');
+    var $spinner = $('.articleSpinner');
+    var currentArticle;
+    var currentLanguage;
     
     init();
     
     function init() {
         $(document).on('article-selected', function(e, article) {
-            render(article);
+            if (article) {
+                render(article);
+                currentArticle = article;
+            } else {
+                renderNotAvailable(currentLanguage);
+            }
+        });
+        $(document).on('language-selected', function(e, language) {
+            currentLanguage = language;
+            
+            if (currentArticle) {
+                var translation = currentArticle.getTranslation(language);
+                if (translation) {
+                    currentArticle = translation;
+                    render(translation);
+                } else {
+                    renderNotAvailable(language);
+                }
+            }
         });
     }
     
     function render(article) {
-        $content.velocity({ opacity: 0 });
+        $spinner.css('opacity', 0);
+        $content.velocity({ opacity: 0 }, function() {
+            $spinner.velocity({ opacity: 1 });
+        });
         
         loadArticle(article, function(html) {
             var $article = $(html);
@@ -10509,7 +10555,13 @@ function Loader(menu) {
             addExtras(article, $content);
             $content.velocity({ opacity: 1 });
             menu.extractToc(article, $content);
+            
+            $spinner.velocity({ opacity: 0 });
         });
+    }
+    
+    function renderNotAvailable(languages) {
+        $content.empty().append('<h1>Unfortunately, this article isn\'t available in your language</h1>');
     }
     
     function loadArticle(article, callback) {
@@ -10691,6 +10743,7 @@ function Museum(museum) {
         });
         article.lang2article[article.language] = article;
     });
+    
     museum.getArticles = function(language) {
         var result = [];
         this.articles.forEach(function(article) {
@@ -10701,6 +10754,30 @@ function Museum(museum) {
         });
         return result;
     }
+    
+    function getTranslation(language) {
+        if (this.language == language) { return this; }
+        for (var i = 0; i < this.translations.length; i++) {
+            if (this.translations[i].language == language) { return this.translations[i]; }
+        }
+        if (this.translationOf) {
+            if (this.translationOf.language == language) {
+                return this.translationOf;
+            }
+            for (var i = 0; i < this.translationOf.translations.length; i++) {
+                if (this.translationOf.translations[i].language == language) { return this.translationOf.translations[i]; }
+            }
+        }
+        return null;
+    }
+    museum.articles.forEach(function(article) {
+        article.getTranslation = getTranslation;
+        article.translations.forEach(function(translation) {
+            translation.translationOf = article;
+            translation.getTranslation = getTranslation;
+        });
+    });
+    
     return museum;
 }
 Routing.getWebPath = function() {
@@ -10777,7 +10854,7 @@ function TocMenu() {
     var curIndex = -1;
     var carousel = new TocCarousel();
     var visible = false;
-    var contentScale = 0.5;
+    var contentScale = 0.505;
         
     init();
     
