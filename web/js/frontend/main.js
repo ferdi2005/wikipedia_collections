@@ -10,6 +10,7 @@ $(function() {
     var textSize = new TextSize();
     var loader = new Loader(menu);
     var languagePicker = new LanguagePicker(window.app.museum);
+    var search = new Search(window.app.museum);
     var idling = false;
     var idleTimeout;
     var museumUpdatedAt;
@@ -25,7 +26,7 @@ $(function() {
         $(window).on('resize', setMetaTag);
         setMetaTag();
         function setMetaTag() {
-            $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1');
+            $('meta#viewport').attr('content', 'width=' + $(window).width() + ', initial-scale=1, maximum-scale=1, user-scalable=no');
         }
         
         FastClick.attach(document.body);
@@ -33,6 +34,11 @@ $(function() {
         $(document).on('touchstart keydown', stopIdle);
         
         $('.articleBar .article').eq(0).click();
+        
+        // Css fix for messed up black bars in iOS webapp when iPad is upside down when app is launched
+        if (window.orientation == 180) {
+            $('body').addClass('statusBarFix');
+        }
     }
     
     function startIdle() {

@@ -38,6 +38,7 @@ function TextSize() {
     function toggle() {
         open = !open;
         $overlay.toggle();
+        $button.toggleClass('active');
     }
     
     function setSize(index) {

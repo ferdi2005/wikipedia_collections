@@ -13,7 +13,6 @@ use AppBundle\Entity\Museum;
 class MuseumController extends BaseController
 {
     
-    
     /**
      * @Route("/museum/{id}", name="museum_show")
      * @Template()

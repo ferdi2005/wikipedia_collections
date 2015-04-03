@@ -54,6 +54,20 @@ function ArticleBar(museum) {
                 }
             });
             $bar.width(Math.ceil(count/2) * blockWidth);
+            if (currentArticle) {
+                $wrap.prop('scrollLeft', getScrollAmount($articles.filter('.active')));
+            }
+        });
+        
+        $(document).on('search-result-selected', function(e, selectedArticle) {
+            $articles.each(function() {
+                var $article = $(this);
+                var article = $article.data('article');
+                if (article.isTranslationOf(selectedArticle)) {
+                    $wrap.prop('scrollLeft', getScrollAmount($article));
+                    $article.trigger('click');
+                }
+            })
         });
     }
     

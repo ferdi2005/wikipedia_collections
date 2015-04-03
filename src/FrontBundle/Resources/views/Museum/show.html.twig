@@ -5,7 +5,7 @@
     
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta id="viewport" name="viewport" content="width=768, initial-scale=1">
+        <meta id="viewport" name="viewport" content="width=768, initial-scale=1, maximum-scale=1, user-scalable=no"> {# changed by javascript #}
         <link rel="apple-touch-icon" href="{{ asset('img/icon.png') }}">
     
         <link href='http://fonts.googleapis.com/css?family=Lora:400,700|PT+Sans:400,700,400italic,700italic&subset=cyrillic,cyrillic-ext,latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -41,6 +41,18 @@
         <div class="tocMenu"></div>
         
         <div class="topBar">
+            <div class="searchButton"></div>
+            <div class="searchOverlay">
+                <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
+                <h5><span class="numResults">0</span> resultaten voor</h5>
+                <input type="text" class="search">
+                <div class="articleExample">
+                    <div class="img"></div>
+                    <span class="label"></span>
+                </div>
+                <div class="searchResults"></div>
+            </div>
+            
             {# Text size #}
             <div class="languageButton"></div>
             <div class="languageOverlay">

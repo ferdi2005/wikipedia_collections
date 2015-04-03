@@ -60,11 +60,12 @@ function LanguagePicker(museum) {
     function toggle() {
         open = !open;
         $overlay.toggle();
+        $button.toggleClass('active');
     }
     
     function pickLanguage(language) {
         if (app.defaultLanguages[language]) {
-            $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)');
+            $button.css('background-image', 'url(' + Routing.getWebPath() + '/img/flags/' + language + '.png)').text('');
         } else {
             $button.css('background-image', '').text(language);
         }

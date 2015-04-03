@@ -46,12 +46,13 @@ function Loader(menu) {
             $content.velocity({ opacity: 1 });
             menu.extractToc(article, $content);
             
-            $spinner.velocity({ opacity: 0 });
+            $spinner.velocity({ opacity: 0.01 });
         });
     }
     
     function renderNotAvailable(languages) {
         $content.empty().append('<h1>Unfortunately, this article isn\'t available in your language</h1>');
+        $spinner.css('opacity', 0);
     }
     
     function loadArticle(article, callback) {

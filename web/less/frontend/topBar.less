@@ -10,6 +10,10 @@ body {
     height: @height;
     position: fixed;
     top: 0;
+    .statusBarFix & {
+        border-top: 20px solid black;
+        height: @height + 20px;
+    }
     width: 100%;
     background: white;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
@@ -84,8 +88,12 @@ body {
         width: @height;
         height: @height;
         float: right;
-        background: black center center no-repeat;
-        border-left: 1px solid rgba(255,255,255,0.2);
+        background: white center center no-repeat;
+        border-left: 1px solid rgba(0,0,0,0.1);
+        
+        &.active, &:hover {
+            background-color: black;
+        }
     }
     .overlay() {
         position: fixed;
@@ -112,21 +120,6 @@ body {
             top: 0; 
             right: 0;
         }
-        
-        input.search {
-            @margin: 20px;
-            margin: @margin;
-            width: ~"calc(100% - " 2 * @margin  ~")";
-            background: transparent 5px center no-repeat url('../img/search.svg');
-            color: white;
-            border: 1px solid white;
-            border-radius: 100px;
-            padding: 5px 40px;
-            text-align: center;
-            font-size: 1.4rem;
-            font-family: "PT Sans", sans-serif;
-            font-weight: bold;
-        }
     }
     .overlayItem() {
         border-left: 5px solid transparent;
@@ -145,6 +138,10 @@ body {
         .barButton();
         background-image: url('../img/text_size.svg');
         background-size: 90% auto;
+        
+        &.active, &:hover {
+            background-image: url('../img/text_size_active.svg');
+        }
     }
     .textSizeOverlay {
         .overlay();
@@ -206,6 +203,91 @@ body {
                 float: right;
                 margin-right: 20px;
                 min-width: 190px;
+            }
+        }
+        
+        input.search {
+            @margin: 20px;
+            margin: @margin;
+            width: ~"calc(100% - " 2 * @margin  ~")";
+            background: transparent 5px center no-repeat url('../img/search.svg');
+            color: white;
+            border: 1px solid white;
+            border-radius: 100px;
+            padding: 5px 40px;
+            text-align: center;
+            font-size: 1.4rem;
+            font-family: "PT Sans", sans-serif;
+            font-weight: bold;
+        }
+    }
+    
+    .searchButton {
+        .barButton();
+        
+        background-image: url('../img/search_dark.svg');
+        
+        &.active, &:hover {
+            background-image: url('../img/search.svg');
+        }
+    }
+    .searchOverlay {
+        .overlay();
+        width: 100%;
+        
+        h5 {
+            text-align: left;
+            margin: 20px 30px 0;
+            
+            .numResults {
+                color: @marker;
+            }
+        }
+        
+        input.search {
+            @margin: 20px;
+            font-size: 2.5rem;
+            font-family: "Lora", serif;
+            font-weight: bold;
+            color: white;
+            margin: 0 @margin @margin;
+            background: transparent;
+            border: none;
+            width: ~"calc(100% - " 2 * @margin  ~")";
+            padding: 10px;
+            // border-bottom: 1px solid rgba(255,255,255,0.4);
+        }
+        
+        .article {
+            line-height: 80px;
+            font-family: "Lora", serif;
+            font-weight: bold;
+            clear: both;
+            border-bottom: 1px solid rgba(255,255,255,0.4);
+            margin: 0 30px;
+            padding: 20px 0;
+            
+            &:last-child {
+                border-bottom: none;
+            }
+            
+            .img {
+                width: 80px;
+                height: 80px;
+                float: left;
+                margin-right: 20px;
+                background-position: center center;
+                background-size: cover;
+            }
+            
+            .label {
+                margin-left: 130px;
+                min-width: 190px;
+                width: 470px;
+                display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }
