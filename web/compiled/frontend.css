@@ -91,6 +91,13 @@ img {
   }
 }
 
+* {
+  touch-callout: none;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
 html {
   /* For rem sizing. 1.0rem == 10px */
   font-size: 10px;
