@@ -156,6 +156,12 @@ ul.record_actions > li {
   margin: 10px;
   cursor: pointer;
 }
+.menu {
+  border-bottom: 1px solid lightgrey;
+}
+.menu ul {
+  margin: 10px auto;
+}
 
 .museumEdit .searchBar {
   background: #D5E0F5;

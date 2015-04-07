@@ -28,6 +28,7 @@ class MuseumController extends BaseController
     public function indexAction($page, $orderBy, $ascending)
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
         
         $museumsPerPage = 10;
         $museums = $em->getRepository('AppBundle:Museum')->createQueryBuilder('m')
@@ -39,6 +40,11 @@ class MuseumController extends BaseController
             ->select('count(m)')->from('AppBundle:Museum', 'm')
             ->getQuery()->getSingleScalarResult()
         ;
+        
+        if (!$this->isGranted('ROLE_SUPER_ADMIN')) {
+            $museums = [$user->getMuseum()];
+            $numMuseums = 1;
+        }
 
         return array(
             'museums' => $museums,
@@ -106,6 +112,7 @@ class MuseumController extends BaseController
 
         $museum = $em->getRepository('AppBundle:Museum')->find($id);
         $this->checkExists($museum);
+        $this->denyAccessUnlessGranted('edit', $museum);
 
         $form = $this->createForm(new MuseumType(), $museum, array(
             'action' => $this->generateUrl('museum_update', array('id' => $museum->getId())),
@@ -165,6 +172,7 @@ class MuseumController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $museum = $em->getRepository('AppBundle:Museum')->find($id);
             $this->checkExists($museum);
+            $this->denyAccessUnlessGranted('delete', $museum);
 
             $em->remove($museum);
             $em->flush();

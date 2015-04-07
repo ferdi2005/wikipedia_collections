@@ -1,0 +1,46 @@
+{% extends '::baseAdmin.html.twig' %}
+
+{% block content -%}
+    <h1>User</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ user.id }}</td>
+            </tr>
+            <tr>
+                <th>Username</th>
+                <td>{{ user.username }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ user.password }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            <tr>
+                <th>Isactive</th>
+                <td>{{ user.isActive }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+            <ul class="record_actions">
+        <li>
+            <a class="btn btn-default" href="{{ path('admin_user') }}">
+                Back to list
+            </a>
+        </li>
+        <li class="index_action">
+            <a class="btn btn-primary" href="{{ path('admin_user_edit', { 'id': user.id }) }}">
+                Edit
+            </a>
+        </li>
+        {% if delete_form is defined %}
+            <li class="delete_action">{{ form(delete_form) }}</li>
+        {% endif %}
+    </ul>
+{% endblock %}

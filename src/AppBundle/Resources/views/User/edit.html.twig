@@ -1,0 +1,18 @@
+{% extends '::baseAdmin.html.twig' %}
+
+{% block content -%}
+    <h1>Beheerder</h1>
+
+    {{ form(form) }}
+
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-default" href="{{ path('admin_user') }}">
+                Terug
+            </a>
+        </li>
+        {% if delete_form is defined %}
+            <li class="delete_action">{{ form(delete_form) }}</li>
+        {% endif %}
+    </ul>
+{% endblock %}

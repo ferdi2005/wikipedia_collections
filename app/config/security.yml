@@ -4,6 +4,8 @@ security:
     # http://symfony.com/doc/current/book/security.html#encoding-the-user-s-password
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext
+        AppBundle\Entity\User:
+            algorithm: bcrypt
 
     # http://symfony.com/doc/current/book/security.html#hierarchical-roles
     role_hierarchy:
@@ -12,11 +14,18 @@ security:
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
+        chain_provider:
+            chain:
+                providers: [ in_memory, db_provider ]
         in_memory:
             memory:
                 users:
                     # user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: WikiInMuseumLeuk!, roles: [ 'ROLE_ADMIN' ] }
+                    admin: { password: WikiInMuseumLeuk!, roles: [ 'ROLE_SUPER_ADMIN' ] }
+        db_provider:
+            entity:
+                class: AppBundle:User
+                property: username
 
     # the main part of the security, where you can set up firewalls
     # for specific sections of your app
@@ -49,9 +58,11 @@ security:
             pattern:    ^/admin/
             http_basic:
                realm: "Wikipedia Collections admin"
+            provider: chain_provider
 
     # with these settings you can restrict or allow access for different parts
     # of your application based on roles, ip, host or methods
     # http://symfony.com/doc/current/cookbook/security/access_control.html
     access_control:
-        - { path: ^/admin/, roles: ROLE_ADMIN }
+        - { path: ^/admin/museum, roles: [ROLE_ADMIN] }
+        - { path: ^/admin/user, roles: [ROLE_SUPER_ADMIN] }

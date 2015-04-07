@@ -1,0 +1,48 @@
+
+{% extends '::baseAdmin.html.twig' %}
+
+{% block content -%}
+    <h1>Beheerders</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'id', route: 'admin_user'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'username', route: 'admin_user', label: 'Gebruikersnaam'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'email', route: 'admin_user'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'museum', route: 'admin_user'} %}</th>
+                <th>{% include 'FrontwiseCrudBundle:index:order.html.twig' with {field: 'isActive', route: 'admin_user', label: 'Actief'} %}</th>
+                <th class="actions"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td><a href="{{ path('admin_user_show', { 'id': user.id }) }}">{{ user.id }}</a></td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.museum.name|default }}</td>
+                <td><i class="fa fa-{{ user.isActive ? 'check' : 'times' }}"></i></td>
+                <td class="actions">
+                    <ul class="actions">
+                        <li>
+                            <a class="btn btn-default" href="{{ path('admin_user_edit', { 'id': user.id }) }}">Bewerk</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    {% include 'FrontwiseCrudBundle:index:pagination.html.twig' with {route: 'admin_user'} %}
+
+    <ul class="record_actions">
+        <li>
+            <a class="btn btn-primary" href="{{ path('admin_user_new') }}">
+                Nieuwe beheerder
+            </a>
+        </li>
+    </ul>
+    
+{% endblock %}
