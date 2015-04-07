@@ -9346,7 +9346,7 @@ function Wikipedia() {
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
     this.getLangLinks = getLangLinks;
-    this.allLanguages = window.app.allLanguages;
+    this.allLanguages = window.app ? window.app.allLanguages : [];
     
     function search(language, query, success, error) {
         executeQuery(language, {

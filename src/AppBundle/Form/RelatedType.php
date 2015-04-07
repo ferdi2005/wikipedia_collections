@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ArticleType extends AbstractType
+class RelatedType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -20,24 +20,11 @@ class ArticleType extends AbstractType
             ->add('title')
             ->add('pageId')
             ->add('language')
-            ->add('plainContent')
+            // ->add('plainContent')
             ->add('imageTitle')
             ->add('smallImage')
             ->add('largeImage')
             ->add('position')
-            ->add('related', 'collection', array(
-                'attr' => ['class' => 'related'],
-                'type' => new RelatedType(),
-                'options'  => [
-                    'attr' => ['class' => 'relation'],
-                    'cascade_validation' => true,
-                ],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
-                'by_reference' => false,
-                'cascade_validation' => true,
-            ))
         ;
     }
     
@@ -56,6 +43,6 @@ class ArticleType extends AbstractType
      */
     public function getName()
     {
-        return 'appbundle_article';
+        return 'appbundle_related';
     }
 }

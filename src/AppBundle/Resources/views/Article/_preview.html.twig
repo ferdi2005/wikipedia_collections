@@ -11,8 +11,17 @@
     </div>
     
     <div class="actions">
-        <a class="btn btn-default pickImage">Kies afbeelding</a>
-        <a class="btn btn-danger remove">Verwijder</a>
+        <div class="btn-group">
+            <a class="btn btn-default pickImage" title="Kies afbeelding">
+                <i class="glyphicon glyphicon-picture"></i>
+            </a>
+            <a class="btn btn-default pickRelated" title="Kies gerelateerde artikelen">
+                <i class="glyphicon glyphicon-list"></i>
+            </a>
+            <a class="btn btn-danger remove" title="Verwijder">
+                <i class="glyphicon glyphicon-trash"></i>
+            </a>
+        </div>
     </div>
     
     <img src="{{ article.smallImage }}">

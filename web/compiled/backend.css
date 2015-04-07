@@ -167,7 +167,8 @@ ul.record_actions > li {
   margin: 20px 0 0;
 }
 .museumEdit .article,
-.museumEdit .translation {
+.museumEdit .translation,
+.museumEdit .relation {
   margin-left: 20px;
 }
 .museumEdit .articlePreview {

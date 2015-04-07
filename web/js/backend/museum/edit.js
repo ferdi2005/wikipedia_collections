@@ -1,9 +1,47 @@
 $(function() {
+    var $previews = $('.articlePreviews');
     var $form = $('form');
     var $submitBtn = $form.find('button[type=submit]');
     var $articles = $('.articles');
     var $previews = $('.articlePreviews');
     var $searchBar = $('.searchBar');
+    var $modal = $('.fwModal.articleEditor')
+    
+    var mainEditor;
+    var relatedEditor;
+    
+    init();
+    
+    function init() {
+        
+        $searchBar.insertAfter($articles);
+        $previews.insertAfter($articles);
+        // $articles.hide();
+        
+        mainEditor = new ArticleEditor($submitBtn, window.articles, $articles, $previews, $searchBar);
+        
+        $previews.on('click', '.btn.pickRelated', function() {
+            var preview = $(this).closest('.articlePreview');
+            var article = preview.data('article');
+            var $articleForm = preview.data('articleForm');
+            
+            var $previews = $('<div class="previews"/>').prependTo($modal);
+            var $newSearchBar = $searchBar.clone().prependTo($modal);
+            
+            $modal.fwModal({
+                closed: function() {
+                    $previews.remove();
+                    $newSearchBar.remove();
+                }
+            });
+            
+            
+            relatedEditor = new ArticleEditor($modal.find('.ok.btn'), article.related, $articleForm.find('.related'), $previews, $newSearchBar);
+        });
+    }
+})
+
+function ArticleEditor($submitBtn, articles, $articles, $previews, $searchBar) {
     var $search = $searchBar.find('#search');
     var $searchLang = $searchBar.find('#searchLang');
     var $searchBtn = $searchBar.find('button');
@@ -16,14 +54,9 @@ $(function() {
         { code: 'de', label: 'Duits' },
     ];
 
-    $articles.hide();
-
     init();
 
     function init() {
-        $searchBar.insertAfter($articles);
-        $previews.insertAfter($articles);
-
         languages.forEach(function(lang) {
             $('<option />').attr('value', lang.code).text(lang.label + 'e Wikipedia').appendTo($searchLang);
         });
@@ -41,7 +74,7 @@ $(function() {
         $previews.on('click', '.btn.remove', function() {
             var preview = $(this).closest('.articlePreview');
             var form = preview.data('articleForm');
-            window.articles.splice(form.index());
+            articles.splice(form.index());
             form.remove();
             preview.remove();
             updatePositions();
@@ -79,7 +112,7 @@ $(function() {
                 }
             });
         });
-
+        
         showArticles();
         updatePositions();
 
@@ -128,7 +161,7 @@ $(function() {
             function(language, article) {
                 fillForm($article, article);
 
-                window.articles.push(article);
+                articles.push(article);
                 showArticle(article, $article);
 
                 updatePositions();
@@ -151,9 +184,10 @@ $(function() {
     }
 
     function showArticles() {
+        console.log($articles);
         $articles.children().each(function() {
             var $articleForm = $(this);
-            showArticle(window.articles[$articleForm.index()], $articleForm);
+            showArticle(articles[$articleForm.index()], $articleForm);
         });
     }
 
@@ -165,5 +199,4 @@ $(function() {
             .data('articleForm', $articleForm)
         ;
     }
-
-})
+}

@@ -67,7 +67,7 @@ class Article implements JsonSerializable
     
     /**
      * @var string
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $plainContent;
     
@@ -89,10 +89,23 @@ class Article implements JsonSerializable
      */
     private $translationOf;
     
+    /**
+     * @var Article
+     * @ORM\OneToMany(targetEntity="Article", mappedBy="relatedTo", cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $related;
+    
+    /**
+     * @var Article
+     * @ORM\ManyToOne(targetEntity="Article", inversedBy="related")
+     */
+    private $relatedTo;
+    
     /* ============== Utility ============== */
     
     public function __construct() {
         $this->translations = new ArrayCollection();
+        $this->related = new ArrayCollection();
     }
     
     public function jsonSerialize() {
@@ -106,6 +119,7 @@ class Article implements JsonSerializable
             'imageTitle' => $this->imageTitle,
             'smallImage' => $this->smallImage,
             'largeImage' => $this->largeImage,
+            'related' => $this->related->toArray(),
         ];
         if ($this->translationOf) {
             $result['imageTitle'] = $this->translationOf->getImageTitle();
@@ -403,5 +417,67 @@ class Article implements JsonSerializable
     public function getTranslationOf()
     {
         return $this->translationOf;
+    }
+
+    /**
+     * Add related
+     *
+     * @param \AppBundle\Entity\Article $related
+     * @return Article
+     */
+    public function addRelated(\AppBundle\Entity\Article $related)
+    {
+        if ($related) {
+            $related->setRelatedTo($this);
+        }
+        $this->related[] = $related;
+
+        return $this;
+    }
+
+    /**
+     * Remove related
+     *
+     * @param \AppBundle\Entity\Article $related
+     */
+    public function removeRelated(\AppBundle\Entity\Article $related)
+    {
+        if ($related) {
+            $related->setRelatedTo(null);
+        }
+        $this->related->removeElement($related);
+    }
+
+    /**
+     * Get related
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRelated()
+    {
+        return $this->related;
+    }
+
+    /**
+     * Set relatedTo
+     *
+     * @param \AppBundle\Entity\Article $relatedTo
+     * @return Article
+     */
+    public function setRelatedTo(\AppBundle\Entity\Article $relatedTo = null)
+    {
+        $this->relatedTo = $relatedTo;
+
+        return $this;
+    }
+
+    /**
+     * Get relatedTo
+     *
+     * @return \AppBundle\Entity\Article 
+     */
+    public function getRelatedTo()
+    {
+        return $this->relatedTo;
     }
 }
