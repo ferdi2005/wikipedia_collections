@@ -29,6 +29,7 @@ function TocMenu() {
             $('html').velocity('scroll', { 
                 offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
+                duration: Math.max(400, $('body').scrollTop()/10),
                 complete: function() {
                     carousel.enabled = true;
                 },
@@ -38,7 +39,7 @@ function TocMenu() {
         $menu.on('click', '.returnToTop', function(e) {
             e.preventDefault();
             $('html').velocity('scroll', { 
-                offset: '0px', 
+                offset: '0px',
                 mobileHA: false,
                 complete: function() {
                     hide();
@@ -149,6 +150,7 @@ function TocMenu() {
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        $window.off('scroll', onScroll);
         
         requestAnimationFrame(function() {
             $content.velocity({ scale: contentScale, translateZ: 0 }, {
@@ -157,6 +159,8 @@ function TocMenu() {
                     requestAnimationFrame(function() {
                         window.scrollTo(window.scrollX, window.scrollY - (1 - contentScale) * offsetContent);
                         findHeaderPositions();
+                        $window.on('scroll', onScroll);
+                        onScroll();
                     });
                 }
             });
@@ -170,6 +174,7 @@ function TocMenu() {
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
+        $window.off('scroll', onScroll);
         
         requestAnimationFrame(function() {
             window.scrollTo(window.scrollX, window.scrollY - offsetContent + (1/contentScale) * offsetContent);
@@ -177,6 +182,8 @@ function TocMenu() {
             $content.velocity({ scale: 1, translateZ: 0 }, {
                 complete: function() {
                     findHeaderPositions();
+                    $window.on('scroll', onScroll);
+                    onScroll();
                 }
             });
             $menu.velocity({ translateX: -1, translateZ: 0 });

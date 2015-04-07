@@ -26,7 +26,11 @@
         </script>
         
         <script type="template/twig" id="articleHeader-tpl">
-            {{ source('FrontBundle:Museum:_articleHeader.html.twig') }}
+            {{ source('FrontBundle:Article:_header.html.twig') }}
+        </script>
+        
+        <script type="template/twig" id="related-tpl">
+            {{ source('FrontBundle:Article:_related.html.twig') }}
         </script>
         
     <body>
@@ -34,9 +38,15 @@
             <div class="articleBar"></div>
         </div>
         
+        <div class="contentBg">
+            <div class="articleContent"></div>
+        </div>
+        
         <div class="roundSpinner articleSpinner"></div>
         
-        <div class="articleContent"></div>
+        <div class="scrollReminder">
+            <h1>Scroll om te beginnen</h1>
+        </div>
         
         <div class="tocMenu"></div>
         
@@ -91,7 +101,7 @@
         <div class="searchOverlay">
             <img src="{{ asset('img/close.svg') }}" alt="Close" class="close">
             <h5><span class="numResults">0</span> resultaten voor</h5>
-            <input type="text" class="search">
+            <input type="text" class="search" placeholder="Typ je zoekopdracht">
             <div class="articleExample">
                 <div class="img"></div>
                 <span class="label"></span>

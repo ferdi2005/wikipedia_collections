@@ -33,8 +33,7 @@ function Loader(menu) {
     }
     
     function render(article) {
-        $spinner.hide();
-        // $spinner.css('opacity', 0);
+        $spinner.css('opacity', 0);
         $content.velocity({ opacity: 0 }, function() {
             $spinner.velocity({ opacity: 1 });
         });
@@ -150,9 +149,8 @@ function Loader(menu) {
     }
     
     function addExtras(article, $article) {
-        /* Article header */
-        var tpl = twig({ data: $('#articleHeader-tpl').html() });
-        $article.prepend(tpl.render({article: article}));
+        $article.prepend($('#articleHeader-tpl').twig({article: article}));
+        $article.append($('#related-tpl').twig({article: article}));
     }
     
     this.render = render;

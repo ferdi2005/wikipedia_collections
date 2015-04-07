@@ -1,8 +1,9 @@
-function ArticleControls() {
+function ArticleExtras() {
 
     var $content = $('.articleContent');
     var $imageOverlay = $('.imageOverlay');
     var $imageSpinner = $imageOverlay.find('.spinner');
+    var $scrollReminder = $('.scrollReminder');
 
     init();
 
@@ -43,15 +44,27 @@ function ArticleControls() {
             }
         });
         
+        $content.on('click', '.returnToTop', function(e) {
+            e.preventDefault();
+            $('html').velocity('scroll', {offset: '0px', mobileHA: false, duration: Math.max(400, $(document).height()/10) });
+        });
+        
+        $content.on('click', '.related .article', function(e) {
+            $content.velocity('scroll');
+            $(this).trigger('related-selected', window.app.museum.findArticleById($(this).data('id')));
+        });
+        
         $imageOverlay.on('click', function() {
             $imageOverlay.hide().css('background-image', '');
         });
 
         $(document).on('start-idle', function() {
-            $('html').velocity('scroll', {
-                offset: '0px',
-                mobileHA: false,
-            });
+            $('html').velocity('scroll', {offset: '0px', mobileHA: false });
+            $scrollReminder.velocity({opacity: 1}, {display: 'block'});
+        });
+        
+        $(document).on('stop-idle', function() {
+            $scrollReminder.hide().css('opacity', 0);
         });
     }
 }

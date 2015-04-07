@@ -10311,7 +10311,7 @@ function ArticleBar(museum) {
         
         $(document).on('stop-idle', function() {
             idling = false;
-            $wrap.stop();
+            $wrap.velocity('stop');
         });
         
         $(document).on('language-selected', function(e, language) {
@@ -10337,15 +10337,22 @@ function ArticleBar(museum) {
             }
         });
         
-        $(document).on('search-result-selected', function(e, selectedArticle) {
+        $(document).on('search-result-selected related-selected', function(e, selectedArticle) {
+            var found = false;
             $articles.each(function() {
                 var $article = $(this);
                 var article = $article.data('article');
                 if (article.isTranslationOf(selectedArticle)) {
                     $wrap.prop('scrollLeft', getScrollAmount($article));
                     $article.trigger('click');
+                    found = true;
                 }
             })
+            
+            if (!found) {
+                currentArticle = selectedArticle;
+                $bar.trigger('article-selected', selectedArticle);
+            }
         });
     }
     
@@ -10370,7 +10377,13 @@ function ArticleBar(museum) {
         var scrollLeft = getScrollAmount($article);
         scrollLeft = Math.max(0, scrollLeft);
         $wrap
-            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5 })
+            .velocity('scroll', {
+                offset: scrollLeft,
+                container: $wrap,
+                axis: 'x',
+                mobileHA: false,
+                duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5,
+            })
             .promise().done(function() {
                 if (!idling) { return; }
                 
@@ -10391,11 +10404,12 @@ function ArticleBar(museum) {
     
     this.init = init;
 }
-function ArticleControls() {
+function ArticleExtras() {
 
     var $content = $('.articleContent');
     var $imageOverlay = $('.imageOverlay');
     var $imageSpinner = $imageOverlay.find('.spinner');
+    var $scrollReminder = $('.scrollReminder');
 
     init();
 
@@ -10436,15 +10450,27 @@ function ArticleControls() {
             }
         });
         
+        $content.on('click', '.returnToTop', function(e) {
+            e.preventDefault();
+            $('html').velocity('scroll', {offset: '0px', mobileHA: false, duration: Math.max(400, $(document).height()/10) });
+        });
+        
+        $content.on('click', '.related .article', function(e) {
+            $content.velocity('scroll');
+            $(this).trigger('related-selected', window.app.museum.findArticleById($(this).data('id')));
+        });
+        
         $imageOverlay.on('click', function() {
             $imageOverlay.hide().css('background-image', '');
         });
 
         $(document).on('start-idle', function() {
-            $('html').velocity('scroll', {
-                offset: '0px',
-                mobileHA: false,
-            });
+            $('html').velocity('scroll', {offset: '0px', mobileHA: false });
+            $scrollReminder.velocity({opacity: 1}, {display: 'block'});
+        });
+        
+        $(document).on('stop-idle', function() {
+            $scrollReminder.hide().css('opacity', 0);
         });
     }
 }
@@ -10558,8 +10584,7 @@ function Loader(menu) {
     }
     
     function render(article) {
-        $spinner.hide();
-        // $spinner.css('opacity', 0);
+        $spinner.css('opacity', 0);
         $content.velocity({ opacity: 0 }, function() {
             $spinner.velocity({ opacity: 1 });
         });
@@ -10675,9 +10700,8 @@ function Loader(menu) {
     }
     
     function addExtras(article, $article) {
-        /* Article header */
-        var tpl = twig({ data: $('#articleHeader-tpl').html() });
-        $article.prepend(tpl.render({article: article}));
+        $article.prepend($('#articleHeader-tpl').twig({article: article}));
+        $article.append($('#related-tpl').twig({article: article}));
     }
     
     this.render = render;
@@ -10689,7 +10713,7 @@ $(function() {
     var self = this;    
     var museum = Museum(window.app.museum);
     var menu = new TocMenu();
-    var articleControls = new ArticleControls();
+    var articleExtras = new ArticleExtras();
     var articleBar = new ArticleBar(window.app.museum);
     var textSize = new TextSize();
     var loader = new Loader(menu);
@@ -10733,7 +10757,7 @@ $(function() {
             
             // Check if reload is needed
             $.ajax({
-                url: Routing.generate('museum_updated_at', {id: window.museum.id}),
+                url: Routing.generate('museum_updated_at', {id: window.app.museum.id}),
                 cache: false,
                 success: function(updatedAt) {
                     if (museumUpdatedAt && museumUpdatedAt != updatedAt) {
@@ -10787,6 +10811,12 @@ function Museum(museum) {
             article.translations.forEach(function(translation) {
                 if (translation.id == id) { result = translation; }
             });
+            article.related.forEach(function(relation) {
+                if (relation.id == id) { result = relation; }
+                relation.translations.forEach(function(translation) {
+                    if (translation.id == id) { result = translation; }
+                });
+            });
         });
         return result;
     }
@@ -10819,6 +10849,12 @@ function Museum(museum) {
             translation.translationOf = article;
             translation.getTranslation = getTranslation;
             translation.isTranslationOf = isTranslationOf;
+            translation.related = article.related;
+        });
+        
+        article.related.forEach(function(relation) {
+            relation.relatedTo = article;
+            relation.getTranslation = getTranslation;
         });
     });
     
@@ -11012,6 +11048,7 @@ function TocMenu() {
             $('html').velocity('scroll', { 
                 offset: (pos.top - topBarHeight) + 'px', 
                 mobileHA: false,
+                duration: Math.max(400, $('body').scrollTop()/10),
                 complete: function() {
                     carousel.enabled = true;
                 },
@@ -11021,7 +11058,7 @@ function TocMenu() {
         $menu.on('click', '.returnToTop', function(e) {
             e.preventDefault();
             $('html').velocity('scroll', { 
-                offset: '0px', 
+                offset: '0px',
                 mobileHA: false,
                 complete: function() {
                     hide();
@@ -11132,6 +11169,7 @@ function TocMenu() {
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + offsetContent + 'px');
+        $window.off('scroll', onScroll);
         
         requestAnimationFrame(function() {
             $content.velocity({ scale: contentScale, translateZ: 0 }, {
@@ -11140,6 +11178,8 @@ function TocMenu() {
                     requestAnimationFrame(function() {
                         window.scrollTo(window.scrollX, window.scrollY - (1 - contentScale) * offsetContent);
                         findHeaderPositions();
+                        $window.on('scroll', onScroll);
+                        onScroll();
                     });
                 }
             });
@@ -11153,6 +11193,7 @@ function TocMenu() {
         var offsetContent = window.scrollY - $content.position().top + topBarHeight;
         offsetContent = Math.max(0, offsetContent);
         $content.css('transform-origin', 'right ' + ((1/contentScale) * offsetContent) + 'px');
+        $window.off('scroll', onScroll);
         
         requestAnimationFrame(function() {
             window.scrollTo(window.scrollX, window.scrollY - offsetContent + (1/contentScale) * offsetContent);
@@ -11160,6 +11201,8 @@ function TocMenu() {
             $content.velocity({ scale: 1, translateZ: 0 }, {
                 complete: function() {
                     findHeaderPositions();
+                    $window.on('scroll', onScroll);
+                    onScroll();
                 }
             });
             $menu.velocity({ translateX: -1, translateZ: 0 });

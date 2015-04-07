@@ -26,6 +26,12 @@ function Museum(museum) {
             article.translations.forEach(function(translation) {
                 if (translation.id == id) { result = translation; }
             });
+            article.related.forEach(function(relation) {
+                if (relation.id == id) { result = relation; }
+                relation.translations.forEach(function(translation) {
+                    if (translation.id == id) { result = translation; }
+                });
+            });
         });
         return result;
     }
@@ -58,6 +64,12 @@ function Museum(museum) {
             translation.translationOf = article;
             translation.getTranslation = getTranslation;
             translation.isTranslationOf = isTranslationOf;
+            translation.related = article.related;
+        });
+        
+        article.related.forEach(function(relation) {
+            relation.relatedTo = article;
+            relation.getTranslation = getTranslation;
         });
     });
     

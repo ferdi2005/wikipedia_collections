@@ -92,6 +92,7 @@ class Article implements JsonSerializable
     /**
      * @var Article
      * @ORM\OneToMany(targetEntity="Article", mappedBy="relatedTo", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({ "position" = "asc" })
      */
     private $related;
     

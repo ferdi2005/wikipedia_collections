@@ -1,0 +1,18 @@
+<div class="related">
+    {% if article.related|length %}
+        <h2>Gerelateerde artikelen</h2>
+        <div class="articles">
+            {% for relation in article.related %}
+                {% set translation = relation.getTranslation(article.language) %}
+                {% if translation is not null %}
+                    <div class="article" data-id="{{ translation.id }}">
+                        <div class="image" {% if translation.smallImage %}style="background-image: url('{{ translation.smallImage }}');"{% endif %}></div>
+                        <h4>{{ translation.title }}</h4>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <a class="returnToTop">Terug naar overzicht</a>
+</div>

@@ -33,7 +33,7 @@ function ArticleBar(museum) {
         
         $(document).on('stop-idle', function() {
             idling = false;
-            $wrap.stop();
+            $wrap.velocity('stop');
         });
         
         $(document).on('language-selected', function(e, language) {
@@ -59,15 +59,22 @@ function ArticleBar(museum) {
             }
         });
         
-        $(document).on('search-result-selected', function(e, selectedArticle) {
+        $(document).on('search-result-selected related-selected', function(e, selectedArticle) {
+            var found = false;
             $articles.each(function() {
                 var $article = $(this);
                 var article = $article.data('article');
                 if (article.isTranslationOf(selectedArticle)) {
                     $wrap.prop('scrollLeft', getScrollAmount($article));
                     $article.trigger('click');
+                    found = true;
                 }
             })
+            
+            if (!found) {
+                currentArticle = selectedArticle;
+                $bar.trigger('article-selected', selectedArticle);
+            }
         });
     }
     
@@ -92,7 +99,13 @@ function ArticleBar(museum) {
         var scrollLeft = getScrollAmount($article);
         scrollLeft = Math.max(0, scrollLeft);
         $wrap
-            .animate({ scrollLeft: scrollLeft }, { duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5 })
+            .velocity('scroll', {
+                offset: scrollLeft,
+                container: $wrap,
+                axis: 'x',
+                mobileHA: false,
+                duration: 200 + Math.abs(wrapElem.scrollLeft - scrollLeft) * 3.5,
+            })
             .promise().done(function() {
                 if (!idling) { return; }
                 

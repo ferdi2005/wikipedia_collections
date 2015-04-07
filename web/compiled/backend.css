@@ -220,6 +220,9 @@ ul.record_actions > li {
 .museumEdit .articlePreviews .articlePreview:nth-child(2n-1) {
   background-color: rgba(0, 0, 0, 0.1);
 }
+.fwModal.articleEditor .pickRelated {
+  display: none;
+}
 
 
 /*# sourceMappingURL=backend.css.map */

@@ -1,10 +1,19 @@
 @import "import.less";
 
+.contentBg {
+    overflow: auto;
+    background-color: white;
+    transform: translate3d(0,0,0);
+    margin-top: 2 * @blockHeight;
+}
 .articleContent {
     
     @gutter: @articleGutter;
-    margin-bottom: 60vh;
     transform: translate3d(0,0,0);
+    
+    img {
+        max-width: 100%;
+    }
     
     .greenBox() {
         background: #f4f4f4;
@@ -20,7 +29,7 @@
     
     font-family: "PT Sans", sans-serif;
     font-size: 1.85rem;
-    padding: 0 @gutter @gutter @gutter;
+    padding: 0 @gutter 0 @gutter;
     overflow: auto;
     
     p {
@@ -51,6 +60,12 @@
         > tbody > tr > th {
             display: inline !important;
         }
+    }
+    
+    table {
+        display: block;
+        max-width: 100%;
+        overflow: auto;
     }
     
     /* infobox */

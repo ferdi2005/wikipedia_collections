@@ -5,7 +5,7 @@ $(function() {
     var self = this;    
     var museum = Museum(window.app.museum);
     var menu = new TocMenu();
-    var articleControls = new ArticleControls();
+    var articleExtras = new ArticleExtras();
     var articleBar = new ArticleBar(window.app.museum);
     var textSize = new TextSize();
     var loader = new Loader(menu);
@@ -49,7 +49,7 @@ $(function() {
             
             // Check if reload is needed
             $.ajax({
-                url: Routing.generate('museum_updated_at', {id: window.museum.id}),
+                url: Routing.generate('museum_updated_at', {id: window.app.museum.id}),
                 cache: false,
                 success: function(updatedAt) {
                     if (museumUpdatedAt && museumUpdatedAt != updatedAt) {

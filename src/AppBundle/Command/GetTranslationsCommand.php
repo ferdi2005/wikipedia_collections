@@ -13,6 +13,9 @@ use AppBundle\Entity\Article;
 use AppBundle\Entity\Museum;
 
 class GetTranslationsCommand extends ContainerAwareCommand {
+    private $output;
+    private $indentation = 0;
+    
     protected function configure()
     {
         $this
@@ -27,6 +30,8 @@ class GetTranslationsCommand extends ContainerAwareCommand {
     
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->output = $output;
+        
         $em = $this->getContainer()->get('doctrine')->getManager();
         $mr = $em->getRepository('AppBundle:Museum');
         
@@ -38,7 +43,7 @@ class GetTranslationsCommand extends ContainerAwareCommand {
         } else if ($museumId) {
             $museum = $mr->find($museumId);
             if (!$museum) {
-                return $output->writeln('museum not found: ' . $museumId);
+                return $this->writeln('museum not found: ' . $museumId);
             }
             foreach ($museum->getArticles() as $article) {
                 $this->downloadTranslations($article->getId(), $input, $output);
@@ -46,9 +51,12 @@ class GetTranslationsCommand extends ContainerAwareCommand {
         } else {
             $museums = $mr->findAll();
             foreach ($museums as $museum) {
+                $this->writeln("\nProcessing museum: " . $museum->getName());
+                $this->indentation++;
                 foreach ($museum->getArticles() as $article) {
                     $this->downloadTranslations($article->getId(), $input, $output);
                 }
+                $this->indentation--;
             }
         }
     }
@@ -58,43 +66,54 @@ class GetTranslationsCommand extends ContainerAwareCommand {
         $redownload = $input->getOption('redownload');
         $article = $em->getRepository('AppBundle:Article')->find($articleId);
         if (!$article) {
-            return $output->writeln('Article not found: ' . $articleId);
+            return $this->writeln('Article not found: ' . $articleId);
         }
         
         if (count($article->getTranslations()) > 0 && !$redownload) {
-            $output->writeln('Translations already downloaded: ' . $article->getTitle());
-            return;
-        }
-        $output->writeln('Downloading translations for: ' . $article->getTitle());
-        
-        // Delete old translations
-        foreach ($article->getTranslations() as $translation) {
-            $article->removeTranslation($translation);
-            $em->remove($translation);
-        }
-        
-        $langlinks = Wikipedia::getLangLinks($article->getLanguage(), $article->getTitle());
-        if (!$langlinks) {
-            $output->writeln('Error downloading langlinks for ' . $article->getTitle());
-            return;
-        }
-        
-        foreach ($langlinks as $langlink) {
-            $output->writeln("\tDownloading " . $langlink['lang']);
+            $this->writeln('Translations already downloaded: ' . $article->getTitle());
+        } else {
+            $this->writeln('Downloading translations for: ' . $article->getTitle());
             
-            $data = Wikipedia::getArticle($langlink['lang'], $langlink['*']);
-            if (!$data) { continue; }
+            // Delete old translations
+            foreach ($article->getTranslations() as $translation) {
+                $article->removeTranslation($translation);
+                $em->remove($translation);
+            }
             
-            $translation = (new Article())
-                ->setLanguage($langlink['lang'])
-                ->setFromData($data)
-            ;
-            
-            $article->addTranslation($translation);
-            
-            $em->persist($translation);
+            $langlinks = Wikipedia::getLangLinks($article->getLanguage(), $article->getTitle());
+            if (!$langlinks) {
+                $this->writeln("\tError downloading langlinks for " . $article->getTitle());
+            } else {
+                $this->indentation++;
+                foreach ($langlinks as $langlink) {
+                    $this->writeln("Downloading " . $langlink['lang']);
+                    
+                    $data = Wikipedia::getArticle($langlink['lang'], $langlink['*']);
+                    if (!$data) { continue; }
+                    
+                    $translation = (new Article())
+                        ->setLanguage($langlink['lang'])
+                        ->setFromData($data)
+                    ;
+                    
+                    $article->addTranslation($translation);
+                    
+                    $em->persist($translation);
+                }
+                $this->indentation--;
+                
+                $em->flush();
+            }
         }
         
-        $em->flush();
+        $this->indentation++;
+        foreach ($article->getRelated() as $relation) {
+            $this->downloadTranslations($relation->getId(), $input, $output);
+        }
+        $this->indentation--;
+    }
+    
+    private function writeln($msg) {
+        $this->output->writeln(str_repeat("\t", $this->indentation) . $msg);
     }
 }

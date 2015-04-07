@@ -16,7 +16,7 @@ $(function() {
         
         $searchBar.insertAfter($articles);
         $previews.insertAfter($articles);
-        // $articles.hide();
+        $articles.hide();
         
         mainEditor = new ArticleEditor($submitBtn, window.articles, $articles, $previews, $searchBar);
         
