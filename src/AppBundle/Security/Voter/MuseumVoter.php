@@ -35,8 +35,11 @@ class MuseumVoter implements VoterInterface
         if (!$this->supportsClass(get_class($museum))) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
+        
+        // get current logged in user
+        $user = $token->getUser();
 
-        if (in_array('ROLE_SUPER_ADMIN', $token->getRoles())) {
+        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles())) {
             return VoterInterface::ACCESS_GRANTED;
         }
 
@@ -48,8 +51,6 @@ class MuseumVoter implements VoterInterface
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
-        // get current logged in user
-        $user = $token->getUser();
 
         // make sure there is a user object (i.e. that the user is logged in)
         if (!$user instanceof UserInterface) {
