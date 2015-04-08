@@ -10453,6 +10453,7 @@ function ArticleExtras() {
         $content.on('click', '.returnToTop', function(e) {
             e.preventDefault();
             $('html').velocity('scroll', {offset: '0px', mobileHA: false, duration: Math.max(400, $(document).height()/10) });
+            $(this).trigger('returntotop-article');
         });
         
         $content.on('click', '.related .article', function(e) {
@@ -10712,6 +10713,7 @@ $(function() {
 
     var self = this;    
     var museum = Museum(window.app.museum);
+    var tracker = new Tracker();
     var menu = new TocMenu();
     var articleExtras = new ArticleExtras();
     var articleBar = new ArticleBar(window.app.museum);
@@ -10938,7 +10940,7 @@ function Search(museum) {
                         .find('.label').text(article.title).end()
                         .show()
                         .on('click', function() {
-                            $(this).trigger('search-result-selected', article);
+                            $(this).trigger('search-result-selected', [article, query]);
                             toggle();
                             $searchResults.empty();
                         })
@@ -11015,6 +11017,7 @@ function TextSize() {
         currentSize = index;
         $sizes.removeClass('active').eq(currentSize).addClass('active');
         $html.css('font-size', fontSizes[currentSize]);
+        $('document').trigger('textsize-selected', [currentSize]);
     }
 }
 function TocMenu() {
@@ -11064,6 +11067,7 @@ function TocMenu() {
                     hide();
                 },
             });
+            $(this).trigger('returntotop-toc');
         });
         
         $menuButton.velocity({rotateX: -91}, {duration: 0});
@@ -11185,6 +11189,8 @@ function TocMenu() {
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
         });
+        
+        $menu.trigger('open-toc');
     }
     
     function hide() {
@@ -11282,4 +11288,56 @@ function TocCarousel() {
     return self;
 }
 
+function Tracker() {
+    var tracker = Piwik.getTracker('http://analytics.frontwise.com/piwik.php', 3);
+    var idling = false;
+    var currentArticle;
+    
+    $(document).on('start-idle', function() {
+        idling = true;
+    });
+    
+    $(document).on('stop-idle', function() {
+        idling = false;
+    });
+    
+    $(document).on('article-selected', function(e, article) {
+        track('/show_article/' + article.language + '/' + article.title, article.title);
+        currentArticle = article;
+    });
+    
+    $(document).on('related-selected', function(e, article) {
+        track('/show_related/' + article.language + '/' + article.title, article.title);
+    });
+    
+    $(document).on('open-toc', function(e) {
+        track('/open-toc/' + currentArticle.language + '/' + currentArticle.title, currentArticle.title);
+    });
+    
+    $(document).on('returntotop-toc', function(e) {
+        track('/return_to_top/toc', 'Return to top');
+    });
+    
+    $(document).on('returntotop-article', function(e) {
+        track('/return_to_top/article_bottom', 'Return to top');
+    });
+    
+    $(document).on('language-selected', function(e, language) {
+        track('/switch_language/' + language, window.app.allLanguages[language]);
+    });
+    
+    $(document).on('search-result-selected', function(e, article, query) {
+        track('/search?s=' + query, 'search');
+    });
+    
+    $(document).on('textsize-selected', function(e, size) {
+        track('/change_textsize/' + labels[size], 'Change text size');
+    });
+    
+    function track(actionUrl, title) {
+        if (idling) { return; }
+        tracker.setCustomUrl('/' + window.app.museum.name + actionUrl);
+        tracker.trackPageView(title);
+    }
+}
 //# sourceMappingURL=frontend.js.map

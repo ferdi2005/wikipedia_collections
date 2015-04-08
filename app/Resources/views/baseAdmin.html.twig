@@ -12,17 +12,23 @@
 
 {% block body %}
     {% block menu %}
-        <div class=" menu">
-            <ul class="nav nav-pills container">
-                <li>
-                    <a href="{{ path('museum') }}">Musea</a>
-                </li>
-                {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <div class="menu">
+            <div class="container">
+                <p class="help">
+                    <b>Problemen?</b> Neem contact op met Wikimedia Nederland: <br>
+                    06 1495 1308 - <a href="mailto: hay@wikimedia.nl">hay@wikimedia.nl</a>
+                </p>
+                <ul class="nav nav-pills">
                     <li>
-                        <a href="{{ path('admin_user') }}">Beheerders</a>
+                        <a href="{{ path('museum') }}">Musea</a>
                     </li>
-                {% endif %}
-            </ul>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <li>
+                            <a href="{{ path('admin_user') }}">Beheerders</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     {% endblock %}
     <div class="container">

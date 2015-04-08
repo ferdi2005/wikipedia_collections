@@ -45,6 +45,7 @@ function TocMenu() {
                     hide();
                 },
             });
+            $(this).trigger('returntotop-toc');
         });
         
         $menuButton.velocity({rotateX: -91}, {duration: 0});
@@ -166,6 +167,8 @@ function TocMenu() {
             });
             $menu.velocity({ translateX: $menu.outerWidth(), translateZ: 0 });
         });
+        
+        $menu.trigger('open-toc');
     }
     
     function hide() {

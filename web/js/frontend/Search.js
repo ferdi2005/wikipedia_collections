@@ -67,7 +67,7 @@ function Search(museum) {
                         .find('.label').text(article.title).end()
                         .show()
                         .on('click', function() {
-                            $(this).trigger('search-result-selected', article);
+                            $(this).trigger('search-result-selected', [article, query]);
                             toggle();
                             $searchResults.empty();
                         })

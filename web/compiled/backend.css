@@ -159,6 +159,12 @@ ul.record_actions > li {
 .menu {
   border-bottom: 1px solid lightgrey;
 }
+.menu .help {
+  float: right;
+  font-size: 12px;
+  margin: 0;
+  margin-top: 12px;
+}
 .menu ul {
   margin: 10px auto;
 }

@@ -47,6 +47,7 @@ function ArticleExtras() {
         $content.on('click', '.returnToTop', function(e) {
             e.preventDefault();
             $('html').velocity('scroll', {offset: '0px', mobileHA: false, duration: Math.max(400, $(document).height()/10) });
+            $(this).trigger('returntotop-article');
         });
         
         $content.on('click', '.related .article', function(e) {

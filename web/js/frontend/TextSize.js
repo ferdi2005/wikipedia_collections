@@ -45,5 +45,6 @@ function TextSize() {
         currentSize = index;
         $sizes.removeClass('active').eq(currentSize).addClass('active');
         $html.css('font-size', fontSizes[currentSize]);
+        $('document').trigger('textsize-selected', [currentSize]);
     }
 }

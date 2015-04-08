@@ -4,6 +4,7 @@ $(function() {
 
     var self = this;    
     var museum = Museum(window.app.museum);
+    var tracker = new Tracker();
     var menu = new TocMenu();
     var articleExtras = new ArticleExtras();
     var articleBar = new ArticleBar(window.app.museum);
