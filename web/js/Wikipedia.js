@@ -9,6 +9,7 @@ function Wikipedia() {
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
     this.getLangLinks = getLangLinks;
+    this.getImageInfo = getImageInfo;
     this.allLanguages = window.app ? window.app.allLanguages : [];
     
     function search(language, query, success, error) {
@@ -153,6 +154,21 @@ function Wikipedia() {
             });
             
             success(result);
+        }, error);
+    }
+    
+    function getImageInfo(language, titles, thumbWidth, thumbHeight, success, error) {
+        executeQuery(language, {
+            action: 'query',
+            prop: 'imageinfo',
+            format: 'json',
+            iiprop: 'extmetadata|url',
+            iiurlwidth: thumbWidth,
+            iiurlheight: thumbHeight,
+            titles: titles.join('|'),
+        }, function(language, data) {
+            console.log(data);
+            success($.map(data.query.pages, function(val, key) { return val; }));
         }, error);
     }
     

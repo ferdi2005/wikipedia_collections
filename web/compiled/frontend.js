@@ -10111,6 +10111,7 @@ function Wikipedia() {
     this.getTitleFromUrl = getTitleFromUrl;
     this.cleanImageTitle = cleanImageTitle;
     this.getLangLinks = getLangLinks;
+    this.getImageInfo = getImageInfo;
     this.allLanguages = window.app ? window.app.allLanguages : [];
     
     function search(language, query, success, error) {
@@ -10255,6 +10256,21 @@ function Wikipedia() {
             });
             
             success(result);
+        }, error);
+    }
+    
+    function getImageInfo(language, titles, thumbWidth, thumbHeight, success, error) {
+        executeQuery(language, {
+            action: 'query',
+            prop: 'imageinfo',
+            format: 'json',
+            iiprop: 'extmetadata|url',
+            iiurlwidth: thumbWidth,
+            iiurlheight: thumbHeight,
+            titles: titles.join('|'),
+        }, function(language, data) {
+            console.log(data);
+            success($.map(data.query.pages, function(val, key) { return val; }));
         }, error);
     }
     
@@ -10407,9 +10423,17 @@ function ArticleBar(museum) {
 function ArticleExtras() {
 
     var $content = $('.articleContent');
+    
     var $imageOverlay = $('.imageOverlay');
+    var $imageImage = $imageOverlay.find('.image');
+    var $imageExtras = $imageOverlay.find('.extras');
+    var $imageArtist = $imageOverlay.find('.artist');
+    var $imageCredit = $imageOverlay.find('.credit');
+    var $imageLicence = $imageOverlay.find('.licence .value');
     var $imageSpinner = $imageOverlay.find('.spinner');
+    
     var $scrollReminder = $('.scrollReminder');
+    var currentLanguage = window.app.museum.defaultLanguage;
 
     init();
 
@@ -10427,6 +10451,10 @@ function ArticleExtras() {
             ;
         });
         
+        $(document).on('language-selected', function(e, language) {
+            currentLanguage = language;
+        });
+        
         $content.on('click', 'a', function(e) {
             e.preventDefault();
             var a = $(this);
@@ -10435,18 +10463,50 @@ function ArticleExtras() {
                 $imageOverlay.show();
                 $imageSpinner.show();
                 
-                var titles = [a.attr('href')].map(wikipedia.getTitleFromUrl).map(wikipedia.cleanImageTitle);
-                wikipedia.getThumbs(titles, '1536x2048', function(urls) {
+                var title = wikipedia.getTitleFromUrl(a.attr('href'));
+                wikipedia.getImageInfo(currentLanguage, [title], 1536, 2048, function(data) {
+                    var imgInfo = data[0].imageinfo[0];
+                    
+                    console.log(data);
+                    console.log(imgInfo.thumburl);
+                    console.log(imgInfo.extmetadata.Artist.value);
+                    console.log(imgInfo.extmetadata.LicenseShortName.value);
+                    
                     // Preload img
                     var img = new Image();
                     img.onload = function() {
                         $imageSpinner.hide();
-                        $imageOverlay.css('background-image', 'url(' + urls[0].image + ')');
+                        $imageImage.css({
+                            'background-image': 'url(' + imgInfo.thumburl + ')',
+                            'bottom': $imageExtras.outerHeight(),
+                        });
                     };
-                    img.src = urls[0].image;
+                    img.src = imgInfo.thumburl;
+                    
+                    $imageExtras.show();
+                    
+                    if (imgInfo.extmetadata.Artist) {
+                        $imageArtist.html($(imgInfo.extmetadata.Artist.value).text());
+                    } else {
+                        $imageArtist.html('');
+                    }
+                    if (imgInfo.extmetadata.Credit) {
+                        $imageCredit.html(
+                            ($imageArtist.text() ? ' - ' : '') + $(imgInfo.extmetadata.Credit.value).text()
+                        );
+                    } else {
+                        $imageCredit.html('');
+                    }
+                    if (imgInfo.extmetadata.LicenseShortName) {
+                        $imageLicence.html(imgInfo.extmetadata.LicenseShortName.value);
+                    } else {
+                        $imageLicence.html('');
+                    }
                 }, function() {
                     $imageOverlay.hide();
                 });
+                
+                a.trigger('image-opened', [title]);
             }
         });
         
@@ -10462,7 +10522,9 @@ function ArticleExtras() {
         });
         
         $imageOverlay.on('click', function() {
-            $imageOverlay.hide().css('background-image', '');
+            $imageOverlay.hide();
+            $imageImage.css('background-image', '');
+            $imageExtras.hide();
         });
 
         $(document).on('start-idle', function() {
@@ -10702,6 +10764,7 @@ function Loader(menu) {
     
     function addExtras(article, $article) {
         $article.prepend($('#articleHeader-tpl').twig({article: article}));
+        $article.append('<p class="extra-licence">De tekst is beschikbaar onder de licentie Creative Commons Naamsvermelding/Gelijk delen, er kunnen aanvullende voorwaarden van toepassing zijn. Zie de gebruiksvoorwaarden voor meer informatie.</p>');
         $article.append($('#related-tpl').twig({article: article}));
     }
     
@@ -11324,6 +11387,10 @@ function Tracker() {
     
     $(document).on('language-selected', function(e, language) {
         track('/switch_language/' + language, window.app.allLanguages[language]);
+    });
+    
+    $(document).on('image-opened', function(e, title) {
+        track('/open_image/' + currentArticle.language + '/' + title, 'Open image');
     });
     
     $(document).on('search-result-selected', function(e, article, query) {

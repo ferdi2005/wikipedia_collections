@@ -150,6 +150,7 @@ function Loader(menu) {
     
     function addExtras(article, $article) {
         $article.prepend($('#articleHeader-tpl').twig({article: article}));
+        $article.append('<p class="extra-licence">De tekst is beschikbaar onder de licentie Creative Commons Naamsvermelding/Gelijk delen, er kunnen aanvullende voorwaarden van toepassing zijn. Zie de gebruiksvoorwaarden voor meer informatie.</p>');
         $article.append($('#related-tpl').twig({article: article}));
     }
     

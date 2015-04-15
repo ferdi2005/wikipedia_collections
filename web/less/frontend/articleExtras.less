@@ -51,6 +51,13 @@
         }
     }
     
+    .extra-licence {
+        font-size: 1.4rem;
+        line-height: 2.2rem;
+        color: rgba(0,0,0,0.5);
+        margin-top: 4.0rem
+    }
+    
     .related {
         margin: 50px -@gutter 0;
         background: black;
@@ -99,18 +106,40 @@
     right: 0;
     bottom: 0;
     background-color: rgba(0,0,0,0.8);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center center;
     display: none;
+    
+    .spinner {
+        margin-top: 40vh;
+    }
+    
+    .image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+    
+    .extras {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255,255,255,0.7);
+        padding: 5px 20px;
+        
+        .licence {
+            float: right;
+        }
+    }
     
     .close {
         position: absolute;
         top: 0; 
         right: 0;
-    }
-    .spinner {
-        margin-top: 40vh;
     }
 }
 

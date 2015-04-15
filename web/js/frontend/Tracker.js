@@ -36,6 +36,10 @@ function Tracker() {
         track('/switch_language/' + language, window.app.allLanguages[language]);
     });
     
+    $(document).on('image-opened', function(e, title) {
+        track('/open_image/' + currentArticle.language + '/' + title, 'Open image');
+    });
+    
     $(document).on('search-result-selected', function(e, article, query) {
         track('/search?s=' + query, 'search');
     });
