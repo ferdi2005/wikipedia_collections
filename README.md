@@ -29,5 +29,5 @@ The short version:
 ** Backend is at `http://YOUR_HOST_NAME/admin` 
 ** Username `admin`
 ** Password is in `app/parameters.yml`, change as neccesary, clear `app/cache` directory afterwards.
-* Run 'php app/console app:wiki:download_translations' in the project root to download translations for all articles.
+* Run `php app/console app:wiki:download_translations` in the project root to download translations for all articles.
 ** Setup a crontab to do this regularly, as the multilanguage and search function depend on it.
