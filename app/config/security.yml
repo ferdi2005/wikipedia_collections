@@ -21,7 +21,7 @@ security:
             memory:
                 users:
                     # user:  { password: userpass, roles: [ 'ROLE_USER' ] }
-                    admin: { password: WikiInMuseumLeuk!, roles: [ 'ROLE_SUPER_ADMIN' ] }
+                    admin: { password: "%admin_password%", roles: [ 'ROLE_SUPER_ADMIN' ] }
         db_provider:
             entity:
                 class: AppBundle:User

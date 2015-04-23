@@ -19,4 +19,6 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    assets_version:    '2015-04-08'
+    admin_password:    PleaseChangeThisAdminPassword
+
+    assets_version:    '2015-04-15'
