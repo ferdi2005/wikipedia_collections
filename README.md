@@ -25,6 +25,10 @@ The short version:
 * Fix file permissions
   * `app/logs` and `app/cache` should be writable by the web server (apache)
 * Make sure the web server serves ONLY the `web` directory of the project. Doing otherwise is a security risk.
+* Setup the database
+    * Create a database for the project (mysql is tested)
+    * Enter connection details into `app/parameters.yml`
+    * run `php app/console doctrine:schema:update --force --no-debug` in the project root to create all tables.
 * You should now be able to visit the app backend and frontend in your web browser.
   * Backend is at `http://YOUR_HOST_NAME/admin` 
   * Username `admin`
